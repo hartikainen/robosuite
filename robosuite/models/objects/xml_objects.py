@@ -97,6 +97,13 @@ class PlateWithHoleObject(MujocoXMLObject):
         super().__init__(xml_path_completion("objects/plate-with-hole.xml"))
 
 
+class ScrewObject(MujocoXMLObject):
+    """Cube with a colored/alphabetized sides."""
+
+    def __init__(self):
+        super().__init__(xml_path_completion("objects/screw.xml"))
+
+
 class CustomCubeObject(MujocoXMLObject):
     """Cube with a colored/alphabetized sides."""
 

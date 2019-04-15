@@ -1,0 +1,18 @@
+<mujoco model="screw">
+  <worldbody>
+    <body>
+      <body name="collision">
+        <geom name="spoke1" type="capsule" pos="0.050625 0 0" size="0.02 0.03375" condim="4" rgba="0.74117 0.0745 0.372549 1" mass=".05" euler="0 1.57 0"/>
+        <geom name="spoke2" type="capsule" pos="-0.050625 0 0" size="0.02 0.03375" condim="4" rgba="0 0.4627451 0.63921569 1" mass=".05" euler="0 1.57 0"/>
+
+        <geom name="spoke3" type="capsule" pos="0 -0.050625 0" size="0.02 0.03375" condim="4" rgba="0.92156863, 0.90588235, 0.3254902 1" mass=".05" euler="1.57 0 0"/>
+        <geom name="spoke4" type="capsule" pos="0 0.050625 0" size="0.02 0.03375" condim="4" rgba="0.33333333, 0.24313725, 0.83137255 1" mass=".05" euler="1.57 0 0"/>
+
+        <geom name="base" type="cylinder" pos="0 0 -0.01" size="0.028 0.014" condim="4" rgba="0 0 0 1" mass=".05" euler="0 0 0"/>
+      </body>
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.024" name="bottom_site"/>
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 0.02" name="top_site"/>
+      <site rgba="0 0 0 0" size="0.005" pos="0.0675 0.0675 0" name="horizontal_radius_site"/>
+    </body>
+  </worldbody>
+</mujoco>

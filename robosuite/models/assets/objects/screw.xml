@@ -2,11 +2,11 @@
   <worldbody>
     <body>
       <body name="collision">
-        <geom name="spoke1" type="capsule" pos="0.050625 0 0" size="0.02 0.03375" condim="4" rgba="0.74117 0.0745 0.372549 1" mass=".05" euler="0 1.57 0"/>
-        <geom name="spoke2" type="capsule" pos="-0.050625 0 0" size="0.02 0.03375" condim="4" rgba="0 0.4627451 0.63921569 1" mass=".05" euler="0 1.57 0"/>
+        <geom name="spoke1" type="capsule" pos="0.050625 0 0" size="0.02 0.03375" condim="4" rgba="0.23529412 0.72941176 0.32941176 1" mass=".05" euler="0 1.57 0"/>
+        <geom name="spoke2" type="capsule" pos="-0.050625 0 0" size="0.02 0.03375" condim="4" rgba="0.95686275 0.76078431 0.05098039 1" euler="0 1.57 0"/>
 
-        <geom name="spoke3" type="capsule" pos="0 -0.050625 0" size="0.02 0.03375" condim="4" rgba="0.92156863, 0.90588235, 0.3254902 1" mass=".05" euler="1.57 0 0"/>
-        <geom name="spoke4" type="capsule" pos="0 0.050625 0" size="0.02 0.03375" condim="4" rgba="0.33333333, 0.24313725, 0.83137255 1" mass=".05" euler="1.57 0 0"/>
+        <geom name="spoke3" type="capsule" pos="0 -0.050625 0" size="0.02 0.03375" condim="4" rgba="0.85882353 0.19607843 0.21176471 1" mass=".05" euler="1.57 0 0"/>
+        <geom name="spoke4" type="capsule" pos="0 0.050625 0" size="0.02 0.03375" condim="4" rgba="0.28235294 0.52156863 0.92941176 1" mass=".05" euler="1.57 0 0"/>
 
         <geom name="base" type="cylinder" pos="0 0 -0.01" size="0.028 0.014" condim="4" rgba="0 0 0 1" mass=".05" euler="0 0 0"/>
       </body>

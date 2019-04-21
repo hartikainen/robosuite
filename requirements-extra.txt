@@ -9,3 +9,5 @@ hidapi
 
 # required for demonstration utils
 h5py
+
+yapf==0.27.0

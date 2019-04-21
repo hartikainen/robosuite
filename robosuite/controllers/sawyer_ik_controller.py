@@ -51,7 +51,8 @@ class SawyerIKController(Controller):
 
     def get_control(self, dpos=None, rotation=None):
         """Returns joint velocities to control the robot after the target end
-        effector position and orientation are updated from arguments @dpos and
+        effector position and orientation are updated from arguments @dpos and.
+
         @rotation. If no arguments are provided, joint velocities will be
         computed based on the previously recorded target.
 

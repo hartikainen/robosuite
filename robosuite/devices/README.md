@@ -4,7 +4,7 @@ Devices are used to read user input and collect human demonstrations. Demonstrat
 
 ## Keyboard
 
-We support keyboard input through the GLFW window created by the mujoco-py renderer. 
+We support keyboard input through the GLFW window created by the mujoco-py renderer.
 
 **Keyboard controls**
 
@@ -35,5 +35,3 @@ We support the use of a  [SpaceNavigator 3D Mouse](https://www.3dconnexion.com/s
 |   Move mouse vertically   |          move arm vertically          |
 | Twist mouse about an axis | rotate arm about a corresponding axis |
 |      ESC (keyboard)       |                 quit                  |
-
- 

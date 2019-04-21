@@ -1,6 +1,5 @@
-"""
-Record video of agent episodes with the imageio library.
-This script uses offscreen rendering.
+"""Record video of agent episodes with the imageio library. This script uses
+offscreen rendering.
 
 Example:
     $ python demo_video_recording.py --environment SawyerLift

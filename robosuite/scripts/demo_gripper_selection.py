@@ -1,5 +1,5 @@
-"""
-This script shows you how to select gripper for an environment.
+"""This script shows you how to select gripper for an environment.
+
 This is controlled by gripper_type keyword argument
 """
 import robosuite as suite

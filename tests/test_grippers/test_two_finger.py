@@ -1,6 +1,4 @@
-"""
-Tests two finger gripper and left two finger gripper on grabbing task
-"""
+"""Tests two finger gripper and left two finger gripper on grabbing task."""
 from robosuite.models.grippers import (
     TwoFingerGripper,
     GripperTester,

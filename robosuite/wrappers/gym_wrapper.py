@@ -1,7 +1,8 @@
-"""
-This file implements a wrapper for facilitating compatibility with OpenAI gym.
-This is useful when using these environments with code that assumes a gym-like 
-interface.
+"""This file implements a wrapper for facilitating compatibility with OpenAI
+gym.
+
+This is useful when using these environments with code that assumes a
+gym-like interface.
 """
 
 import numpy as np
@@ -13,8 +14,7 @@ class GymWrapper(Wrapper):
     env = None
 
     def __init__(self, env, keys=None):
-        """
-        Initializes the Gym wrapper.
+        """Initializes the Gym wrapper.
 
         Args:
             env (MujocoEnv instance): The environment to wrap.
@@ -39,8 +39,7 @@ class GymWrapper(Wrapper):
         self.action_space = spaces.Box(low=low, high=high)
 
     def _flatten_obs(self, obs_dict, verbose=False):
-        """
-        Filters keys of interest out and concatenate the information.
+        """Filters keys of interest out and concatenate the information.
 
         Args:
             obs_dict: ordered dictionary of observations

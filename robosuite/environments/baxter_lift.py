@@ -11,9 +11,8 @@ from robosuite.models.tasks import TableTopTask, UniformRandomSampler
 
 
 class BaxterLift(BaxterEnv):
-    """
-    This class corresponds to the bimanual lifting task for the Baxter robot.
-    """
+    """This class corresponds to the bimanual lifting task for the Baxter
+    robot."""
 
     def __init__(self,
                  gripper_type_right="TwoFingerGripper",
@@ -69,9 +68,7 @@ class BaxterLift(BaxterEnv):
                          **kwargs)
 
     def _load_model(self):
-        """
-        Loads the arena and pot object.
-        """
+        """Loads the arena and pot object."""
         super()._load_model()
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
@@ -94,10 +91,11 @@ class BaxterLift(BaxterEnv):
         self.model.place_objects()
 
     def _get_reference(self):
-        """
-        Sets up references to important components. A reference is typically an
-        index or a list of indices that point to the corresponding elements
-        in a flattened array, which is how MuJoCo stores physical simulation data.
+        """Sets up references to important components.
+
+        A reference is typically an index or a list of indices that
+        point to the corresponding elements in a flattened array, which
+        is how MuJoCo stores physical simulation data.
         """
         super()._get_reference()
         self.cube_body_id = self.sim.model.body_name2id("pot")
@@ -107,24 +105,21 @@ class BaxterLift(BaxterEnv):
         self.pot_center_id = self.sim.model.site_name2id("pot_center")
 
     def _reset_internal(self):
-        """
-        Resets simulation internal configurations.
-        """
+        """Resets simulation internal configurations."""
         super()._reset_internal()
 
         self.model.place_objects()
 
     def reward(self, action):
-        """
-        Reward function for the task.
+        """Reward function for the task.
 
-          1. the agent only gets the lifting reward when flipping no more than 30 degrees.
-          2. the lifting reward is smoothed and ranged from 0 to 2, capped at 2.0.
-             the initial lifting reward is 0 when the pot is on the table;
-             the agent gets the maximum 2.0 reward when the pot’s height is above a threshold.
-          3. the reaching reward is 0.5 when the left gripper touches the left handle,
-             or when the right gripper touches the right handle before the gripper geom
-             touches the handle geom, and once it touches we use 0.5
+        1. the agent only gets the lifting reward when flipping no more than 30 degrees.
+        2. the lifting reward is smoothed and ranged from 0 to 2, capped at 2.0.
+           the initial lifting reward is 0 when the pot is on the table;
+           the agent gets the maximum 2.0 reward when the pot’s height is above a threshold.
+        3. the reaching reward is 0.5 when the left gripper touches the left handle,
+           or when the right gripper touches the right handle before the gripper geom
+           touches the handle geom, and once it touches we use 0.5
         """
         reward = 0
 
@@ -211,8 +206,8 @@ class BaxterLift(BaxterEnv):
         return self._handle_2_xpos - self._r_eef_xpos
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
 
         Important keys:
             robot-state: contains robot-centric information.
@@ -267,9 +262,7 @@ class BaxterLift(BaxterEnv):
         return di
 
     def _check_contact(self):
-        """
-        Returns True if gripper is in contact with an object.
-        """
+        """Returns True if gripper is in contact with an object."""
         collision = False
         contact_geoms = (self.gripper_right.contact_geoms() +
                          self.gripper_left.contact_geoms())
@@ -282,9 +275,7 @@ class BaxterLift(BaxterEnv):
         return collision
 
     def _check_success(self):
-        """
-        Returns True if task is successfully completed
-        """
+        """Returns True if task is successfully completed."""
         # cube is higher than the table top above a margin
         cube_height = self.sim.data.body_xpos[self.cube_body_id][2]
         table_height = self.table_full_size[2]

@@ -92,9 +92,7 @@ class SawyerEnv(MujocoEnv):
         )
 
     def _load_model(self):
-        """
-        Loads robot and optionally add grippers.
-        """
+        """Loads robot and optionally add grippers."""
         super()._load_model()
         self.mujoco_robot = Sawyer()
         if self.has_gripper:
@@ -104,9 +102,7 @@ class SawyerEnv(MujocoEnv):
             self.mujoco_robot.add_gripper("right_hand", self.gripper)
 
     def _reset_internal(self):
-        """
-        Sets initial pose of arm and grippers.
-        """
+        """Sets initial pose of arm and grippers."""
         super()._reset_internal()
         self.sim.data.qpos[
             self._ref_joint_pos_indexes] = self.mujoco_robot.init_qpos
@@ -117,9 +113,7 @@ class SawyerEnv(MujocoEnv):
                 _ref_joint_gripper_actuator_indexes] = self.gripper.init_qpos
 
     def _get_reference(self):
-        """
-        Sets up necessary reference for robots, grippers, and objects.
-        """
+        """Sets up necessary reference for robots, grippers, and objects."""
         super()._get_reference()
 
         # indices for joints in qpos, qvel
@@ -177,22 +171,19 @@ class SawyerEnv(MujocoEnv):
         self.eef_cylinder_id = self.sim.model.site_name2id("grip_site_cylinder")
 
     def move_indicator(self, pos):
-        """
-        Sets 3d position of indicator object to @pos.
-        """
+        """Sets 3d position of indicator object to @pos."""
         if self.use_indicator_object:
             index = self._ref_indicator_pos_low
             self.sim.data.qpos[index:index + 3] = pos
 
     def _pre_action(self, action):
-        """
-        Overrides the superclass method to actuate the robot with the 
-        passed joint velocities and gripper control.
+        """Overrides the superclass method to actuate the robot with the passed
+        joint velocities and gripper control.
 
         Args:
             action (numpy array): The control to apply to the robot. The first
-                @self.mujoco_robot.dof dimensions should be the desired 
-                normalized joint velocities and if the robot has 
+                @self.mujoco_robot.dof dimensions should be the desired
+                normalized joint velocities and if the robot has
                 a gripper, the next @self.gripper.dof dimensions should be
                 actuation controls for the gripper.
         """
@@ -231,16 +222,14 @@ class SawyerEnv(MujocoEnv):
                     self._ref_indicator_vel_low:self._ref_indicator_vel_high]
 
     def _post_action(self, action):
-        """
-        (Optional) does gripper visualization after actions.
-        """
+        """(Optional) does gripper visualization after actions."""
         ret = super()._post_action(action)
         self._gripper_visualization()
         return ret
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
 
         Important keys:
             robot-state: contains robot-centric information.
@@ -282,28 +271,22 @@ class SawyerEnv(MujocoEnv):
 
     @property
     def action_spec(self):
-        """
-        Action lower/upper limits per dimension.
-        """
+        """Action lower/upper limits per dimension."""
         low = np.ones(self.dof) * -1.
         high = np.ones(self.dof) * 1.
         return low, high
 
     @property
     def dof(self):
-        """
-        Returns the DoF of the robot (with grippers).
-        """
+        """Returns the DoF of the robot (with grippers)."""
         dof = self.mujoco_robot.dof
         if self.has_gripper:
             dof += self.gripper.dof
         return dof
 
     def pose_in_base_from_name(self, name):
-        """
-        A helper function that takes in a named data field and returns the pose
-        of that object in the base frame.
-        """
+        """A helper function that takes in a named data field and returns the
+        pose of that object in the base frame."""
 
         pos_in_world = self.sim.data.get_body_xpos(name)
         rot_in_world = self.sim.data.get_body_xmat(name).reshape((3, 3))
@@ -319,39 +302,31 @@ class SawyerEnv(MujocoEnv):
         return pose_in_base
 
     def set_robot_joint_positions(self, jpos):
-        """
-        Helper method to force robot joint positions to the passed values.
-        """
+        """Helper method to force robot joint positions to the passed
+        values."""
         self.sim.data.qpos[self._ref_joint_pos_indexes] = jpos
         self.sim.forward()
 
     @property
     def _right_hand_joint_cartesian_pose(self):
-        """
-        Returns the cartesian pose of the last robot joint in base frame of robot.
-        """
+        """Returns the cartesian pose of the last robot joint in base frame of
+        robot."""
         return self.pose_in_base_from_name("right_l6")
 
     @property
     def _right_hand_pose(self):
-        """
-        Returns eef pose in base frame of robot.
-        """
+        """Returns eef pose in base frame of robot."""
         return self.pose_in_base_from_name("right_hand")
 
     @property
     def _right_hand_quat(self):
-        """
-        Returns eef quaternion in base frame of robot.
-        """
+        """Returns eef quaternion in base frame of robot."""
         return T.mat2quat(self._right_hand_orn)
 
     @property
     def _right_hand_total_velocity(self):
-        """
-        Returns the total eef velocity (linear + angular) in the base frame
-        as a numpy array of shape (6,)
-        """
+        """Returns the total eef velocity (linear + angular) in the base frame
+        as a numpy array of shape (6,)"""
 
         # Use jacobian to translate joint velocities to end effector velocities.
         Jp = self.sim.data.get_body_jacp("right_hand").reshape((3, -1))
@@ -366,60 +341,51 @@ class SawyerEnv(MujocoEnv):
 
     @property
     def _right_hand_pos(self):
-        """
-        Returns position of eef in base frame of robot.
-        """
+        """Returns position of eef in base frame of robot."""
         eef_pose_in_base = self._right_hand_pose
         return eef_pose_in_base[:3, 3]
 
     @property
     def _right_hand_orn(self):
-        """
-        Returns orientation of eef in base frame of robot as a rotation matrix.
-        """
+        """Returns orientation of eef in base frame of robot as a rotation
+        matrix."""
         eef_pose_in_base = self._right_hand_pose
         return eef_pose_in_base[:3, :3]
 
     @property
     def _right_hand_vel(self):
-        """
-        Returns velocity of eef in base frame of robot.
-        """
+        """Returns velocity of eef in base frame of robot."""
         return self._right_hand_total_velocity[:3]
 
     @property
     def _right_hand_ang_vel(self):
-        """
-        Returns angular velocity of eef in base frame of robot.
-        """
+        """Returns angular velocity of eef in base frame of robot."""
         return self._right_hand_total_velocity[3:]
 
     @property
     def _joint_positions(self):
-        """
-        Returns a numpy array of joint positions.
-        Sawyer robots have 7 joints and positions are in rotation angles.
+        """Returns a numpy array of joint positions.
+
+        Sawyer robots have 7 joints and positions are in rotation
+        angles.
         """
         return self.sim.data.qpos[self._ref_joint_pos_indexes]
 
     @property
     def _joint_velocities(self):
-        """
-        Returns a numpy array of joint velocities.
-        Sawyer robots have 7 joints and velocities are angular velocities.
+        """Returns a numpy array of joint velocities.
+
+        Sawyer robots have 7 joints and velocities are angular
+        velocities.
         """
         return self.sim.data.qvel[self._ref_joint_vel_indexes]
 
     def _gripper_visualization(self):
-        """
-        Do any needed visualization here.
-        """
+        """Do any needed visualization here."""
 
         # By default, don't do any coloring.
         self.sim.model.site_rgba[self.eef_site_id] = [0., 0., 0., 0.]
 
     def _check_contact(self):
-        """
-        Returns True if the gripper is in contact with another object.
-        """
+        """Returns True if the gripper is in contact with another object."""
         return False

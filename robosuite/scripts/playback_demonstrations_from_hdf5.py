@@ -1,10 +1,9 @@
-"""
-A convenience script to playback random demonstrations from
-a set of demonstrations stored in a hdf5 file.
+"""A convenience script to playback random demonstrations from a set of
+demonstrations stored in a hdf5 file.
 
 Arguments:
     --folder (str): Path to demonstrations
-    --use_actions (optional): If this flag is provided, the actions are played back 
+    --use_actions (optional): If this flag is provided, the actions are played back
         through the MuJoCo simulator, instead of loading the simulator states
         one by one.
 

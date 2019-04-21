@@ -6,9 +6,7 @@ from robosuite.utils.mjcf_utils import RED, GREEN, BLUE
 
 
 class PotWithHandlesObject(MujocoGeneratedObject):
-    """
-    Generates the Pot object with side handles (used in BaxterLift)
-    """
+    """Generates the Pot object with side handles (used in BaxterLift)"""
 
     def __init__(
             self,
@@ -285,10 +283,7 @@ DEFAULT_FRICTION_RANGE = [0.25, 0.5, 1, 1.5, 2]
 
 
 def _get_size(size, size_max, size_min, default_max, default_min):
-    """
-        Helper method for providing a size,
-        or a range to randomize from
-    """
+    """Helper method for providing a size, or a range to randomize from."""
     if len(default_max) != len(default_min):
         raise ValueError('default_max = {} and default_min = {}'.format(
             str(default_max), str(default_min)) + ' have different lengths')
@@ -310,10 +305,8 @@ def _get_size(size, size_max, size_min, default_max, default_min):
 
 
 def _get_randomized_range(val, provided_range, default_range):
-    """
-        Helper to initialize by either value or a range
-        Returns a range to randomize from
-    """
+    """Helper to initialize by either value or a range Returns a range to
+    randomize from."""
     if val is None:
         if provided_range is None:
             return default_range
@@ -327,9 +320,7 @@ def _get_randomized_range(val, provided_range, default_range):
 
 
 class BoxObject(MujocoGeneratedObject):
-    """
-    An object that is a box
-    """
+    """An object that is a box."""
 
     def __init__(
             self,
@@ -377,9 +368,7 @@ class BoxObject(MujocoGeneratedObject):
 
 
 class CylinderObject(MujocoGeneratedObject):
-    """
-    A randomized cylinder object.
-    """
+    """A randomized cylinder object."""
 
     def __init__(
             self,
@@ -426,9 +415,7 @@ class CylinderObject(MujocoGeneratedObject):
 
 
 class BallObject(MujocoGeneratedObject):
-    """
-    A randomized ball (sphere) object.
-    """
+    """A randomized ball (sphere) object."""
 
     def __init__(
             self,
@@ -475,9 +462,7 @@ class BallObject(MujocoGeneratedObject):
 
 
 class CapsuleObject(MujocoGeneratedObject):
-    """
-    A randomized capsule object.
-    """
+    """A randomized capsule object."""
 
     def __init__(
             self,

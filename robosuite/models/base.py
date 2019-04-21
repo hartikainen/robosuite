@@ -8,15 +8,14 @@ from robosuite.utils import XMLError
 
 
 class MujocoXML(object):
-    """
-    Base class of Mujoco xml file
-    Wraps around ElementTree and provides additional functionality for merging different models.
+    """Base class of Mujoco xml file Wraps around ElementTree and provides
+    additional functionality for merging different models.
+
     Specially, we keep track of <worldbody/>, <actuator/> and <asset/>
     """
 
     def __init__(self, fname):
-        """
-        Loads a mujoco xml from file.
+        """Loads a mujoco xml from file.
 
         Args:
             fname (str): path to the MJCF xml file.
@@ -35,9 +34,8 @@ class MujocoXML(object):
         self.resolve_asset_dependency()
 
     def resolve_asset_dependency(self):
-        """
-        Converts every file dependency into absolute path so when we merge we don't break things.
-        """
+        """Converts every file dependency into absolute path so when we merge
+        we don't break things."""
 
         for node in self.asset.findall("./*[@file]"):
             file = node.get("file")
@@ -46,9 +44,7 @@ class MujocoXML(object):
             node.set("file", abs_path)
 
     def create_default_element(self, name):
-        """
-        Creates a <@name/> tag under root if there is none.
-        """
+        """Creates a <@name/> tag under root if there is none."""
 
         found = self.root.find(name)
         if found is not None:
@@ -58,8 +54,7 @@ class MujocoXML(object):
         return ele
 
     def merge(self, other, merge_body=True):
-        """
-        Default merge method.
+        """Default merge method.
 
         Args:
             other: another MujocoXML instance
@@ -85,9 +80,7 @@ class MujocoXML(object):
         # self.config.append(other.config)
 
     def get_model(self, mode="mujoco_py"):
-        """
-        Returns a MjModel instance from the current xml tree.
-        """
+        """Returns a MjModel instance from the current xml tree."""
 
         available_modes = ["mujoco_py"]
         with io.StringIO() as string:
@@ -102,16 +95,13 @@ class MujocoXML(object):
                     mode, ",".join(available_modes)))
 
     def get_xml(self):
-        """
-        Returns a string of the MJCF XML file.
-        """
+        """Returns a string of the MJCF XML file."""
         with io.StringIO() as string:
             string.write(ET.tostring(self.root, encoding="unicode"))
             return string.getvalue()
 
     def save_model(self, fname, pretty=False):
-        """
-        Saves the xml to file.
+        """Saves the xml to file.
 
         Args:
             fname: output file location
@@ -126,9 +116,7 @@ class MujocoXML(object):
             f.write(xml_str)
 
     def merge_asset(self, other):
-        """
-        Useful for merging other files in a custom logic.
-        """
+        """Useful for merging other files in a custom logic."""
         for asset in other.asset:
             asset_name = asset.get("name")
             asset_type = asset.tag

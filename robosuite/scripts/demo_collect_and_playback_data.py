@@ -1,5 +1,5 @@
-"""
-Record trajectory data with the DataCollectionWrapper wrapper and play them back.
+"""Record trajectory data with the DataCollectionWrapper wrapper and play them
+back.
 
 Example:
     $ python demo_collect_and_playback_data.py --environment BaxterLift
@@ -17,8 +17,9 @@ from robosuite import DataCollectionWrapper
 def collect_random_trajectory(env, timesteps=1000):
     """Run a random policy to collect trajectories.
 
-    The rollout trajectory is saved to files in npz format.
-    Modify the DataCollectionWrapper wrapper to add new fields or change data formats.
+    The rollout trajectory is saved to files in npz format. Modify the
+    DataCollectionWrapper wrapper to add new fields or change data
+    formats.
     """
 
     obs = env.reset()

@@ -11,9 +11,10 @@ from robosuite.models import MujocoWorldBase
 
 
 class BaxterPegInHole(BaxterEnv):
-    """
-    This class corresponds to the peg in hole task for the Baxter robot. There's
-    a cylinder attached to one gripper and a hole attached to the other one.
+    """This class corresponds to the peg in hole task for the Baxter robot.
+
+    There's a cylinder attached to one gripper and a hole attached to
+    the other one.
     """
 
     def __init__(self,
@@ -56,9 +57,7 @@ class BaxterPegInHole(BaxterEnv):
         super().__init__(gripper_left=None, gripper_right=None, **kwargs)
 
     def _load_model(self):
-        """
-        Loads the peg and the hole models.
-        """
+        """Loads the peg and the hole models."""
         super()._load_model()
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
@@ -88,27 +87,27 @@ class BaxterPegInHole(BaxterEnv):
             "rgba", "0 1 0 1")
 
     def _get_reference(self):
-        """
-        Sets up references to important components. A reference is typically an
-        index or a list of indices that point to the corresponding elements
-        in a flattened array, which is how MuJoCo stores physical simulation data.
+        """Sets up references to important components.
+
+        A reference is typically an index or a list of indices that
+        point to the corresponding elements in a flattened array, which
+        is how MuJoCo stores physical simulation data.
         """
         super()._get_reference()
         self.hole_body_id = self.sim.model.body_name2id("hole")
         self.cyl_body_id = self.sim.model.body_name2id("cylinder")
 
     def _reset_internal(self):
-        """
-        Resets simulation internal configurations.
-        """
+        """Resets simulation internal configurations."""
         super()._reset_internal()
 
     def _compute_orientation(self):
-        """
-        Helper function to return the relative positions between the hole and the peg.
-        In particular, the intersection of the line defined by the peg and the plane
-        defined by the hole is computed; the parallel distance, perpendicular distance,
-        and angle are returned.
+        """Helper function to return the relative positions between the hole
+        and the peg.
+
+        In particular, the intersection of the line defined by the peg
+        and the plane defined by the hole is computed; the parallel
+        distance, perpendicular distance, and angle are returned.
         """
         cyl_mat = self.sim.data.body_xmat[self.cyl_body_id]
         cyl_mat.shape = (3, 3)
@@ -135,8 +134,7 @@ class BaxterPegInHole(BaxterEnv):
         )
 
     def reward(self, action):
-        """
-        Reward function for the task.
+        """Reward function for the task.
 
         The sparse reward is 0 if the peg is outside the hole, and 1 if it's inside.
         We enforce that it's inside at an appropriate angle (cos(theta) > 0.95).
@@ -172,10 +170,8 @@ class BaxterPegInHole(BaxterEnv):
         return reward
 
     def _peg_pose_in_hole_frame(self):
-        """
-        A helper function that takes in a named data field and returns the pose of that
-        object in the base frame.
-        """
+        """A helper function that takes in a named data field and returns the
+        pose of that object in the base frame."""
         # World frame
         peg_pos_in_world = self.sim.data.get_body_xpos("cylinder")
         peg_rot_in_world = self.sim.data.get_body_xmat("cylinder").reshape(
@@ -194,9 +190,9 @@ class BaxterPegInHole(BaxterEnv):
         return peg_pose_in_hole
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
-        
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
+
         Important keys:
             robot-state: contains robot-centric information.
             object-state: requires @self.use_object_obs to be True.
@@ -255,9 +251,7 @@ class BaxterPegInHole(BaxterEnv):
         return di
 
     def _check_contact(self):
-        """
-        Returns True if gripper is in contact with an object.
-        """
+        """Returns True if gripper is in contact with an object."""
         collision = False
         contact_geoms = (self.gripper_right.contact_geoms() +
                          self.gripper_left.contact_geoms())
@@ -270,9 +264,7 @@ class BaxterPegInHole(BaxterEnv):
         return collision
 
     def _check_success(self):
-        """
-        Returns True if task is successfully completed.
-        """
+        """Returns True if task is successfully completed."""
         t, d, cos = self._compute_orientation()
 
         return d < 0.06 and t >= -0.12 and t <= 0.14 and cos > 0.95

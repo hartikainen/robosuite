@@ -1,6 +1,4 @@
-"""
-6-DoF gripper with its open/close variant
-"""
+"""6-DoF gripper with its open/close variant."""
 import numpy as np
 
 from robosuite.models.grippers import Gripper
@@ -8,9 +6,7 @@ from robosuite.utils.mjcf_utils import xml_path_completion
 
 
 class RobotiqGripperBase(Gripper):
-    """
-    6-DoF Robotiq gripper.
-    """
+    """6-DoF Robotiq gripper."""
 
     def __init__(self):
         super().__init__(xml_path_completion("grippers/robotiq_gripper.xml"))
@@ -70,9 +66,7 @@ class RobotiqGripperBase(Gripper):
 
 
 class RobotiqGripper(RobotiqGripperBase):
-    """
-    1-DoF variant of RobotiqGripperBase.
-    """
+    """1-DoF variant of RobotiqGripperBase."""
 
     def format_action(self, action):
         """

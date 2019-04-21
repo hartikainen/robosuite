@@ -36,7 +36,5 @@ class PegsArena(Arena):
 
     @property
     def table_top_abs(self):
-        """
-        Returns the absolute position of table top.
-        """
+        """Returns the absolute position of table top."""
         return string_to_array(self.table_body.get("pos"))

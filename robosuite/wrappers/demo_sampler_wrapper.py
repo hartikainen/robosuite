@@ -1,8 +1,8 @@
-"""
-This file contains a wrapper for sampling environment states
-from a set of demonstrations on every reset. The main use case is for 
-altering the start state distribution of training episodes for 
-learning RL policies.
+"""This file contains a wrapper for sampling environment states from a set of
+demonstrations on every reset.
+
+The main use case is for altering the start state distribution of
+training episodes for learning RL policies.
 """
 
 import random
@@ -30,19 +30,18 @@ class DemoSamplerWrapper(Wrapper):
             open_loop_initial_window_width=25,
             open_loop_window_increment=25,
     ):
-        """
-        Initializes a wrapper that provides support for resetting the environment
-        state to one from a demonstration. It also supports curriculums for
-        altering how often to sample from demonstration vs. sampling a reset
-        state from the environment.
+        """Initializes a wrapper that provides support for resetting the
+        environment state to one from a demonstration. It also supports
+        curriculums for altering how often to sample from demonstration vs.
+        sampling a reset state from the environment.
 
         Args:
             env (MujocoEnv instance): The environment to wrap.
 
             demo_path (string): The path to the folder containing the demonstrations.
-                There should be a `demo.hdf5` file and a folder named `models` with 
+                There should be a `demo.hdf5` file and a folder named `models` with
                 all of the stored model xml files from the demonstrations.
-            
+
             need_xml (bool): If True, the mujoco model needs to be reloaded when
                 sampling a state from a demonstration. This could be because every
                 demonstration was taken under varied object properties, for example.
@@ -52,7 +51,7 @@ class DemoSamplerWrapper(Wrapper):
             preload (bool): If True, fetch all demonstrations into memory at the
                 beginning. Otherwise, load demonstrations as they are needed lazily.
 
-            num_traj (int): If provided, subsample @number demonstrations from the 
+            num_traj (int): If provided, subsample @number demonstrations from the
                 provided set of demonstrations instead of using all of them.
 
             sampling_schemes (list of strings): A list of sampling schemes
@@ -140,10 +139,8 @@ class DemoSamplerWrapper(Wrapper):
         self.open_loop_window_size = open_loop_initial_window_width
 
     def reset(self):
-        """
-        Logic for sampling a state from the demonstration and resetting
-        the simulation to that state. 
-        """
+        """Logic for sampling a state from the demonstration and resetting the
+        simulation to that state."""
         state = self.sample()
         if state is None:
             # None indicates that a normal env reset should occur
@@ -164,9 +161,10 @@ class DemoSamplerWrapper(Wrapper):
             return self.env._get_observation()
 
     def sample(self):
-        """
-        This is the core sampling method. Samples a state from a
-        demonstration, in accordance with the configuration.
+        """This is the core sampling method.
+
+        Samples a state from a demonstration, in accordance with the
+        configuration.
         """
 
         # chooses a sampling scheme randomly based on the mixing ratios
@@ -182,20 +180,19 @@ class DemoSamplerWrapper(Wrapper):
         return sample_method()
 
     def _random_sample(self):
-        """
-        Sampling method.
+        """Sampling method.
 
-        Return None to indicate that the state should be sampled directly
-        from the environment.
+        Return None to indicate that the state should be sampled
+        directly from the environment.
         """
         return None
 
     def _uniform_sample(self):
-        """
-        Sampling method.
+        """Sampling method.
 
-        First uniformly sample a demonstration from the set of demonstrations.
-        Then uniformly sample a state from the selected demonstration.
+        First uniformly sample a demonstration from the set of
+        demonstrations. Then uniformly sample a state from the selected
+        demonstration.
         """
 
         # get a random episode index
@@ -212,13 +209,12 @@ class DemoSamplerWrapper(Wrapper):
         return state
 
     def _reverse_sample_open_loop(self):
-        """
-        Sampling method.
+        """Sampling method.
 
-        Open loop reverse sampling from demonstrations. Starts by 
+        Open loop reverse sampling from demonstrations. Starts by
         sampling from states near the end of the demonstrations.
-        Increases the window backwards as the number of calls to
-        this sampling method increases at a fixed rate.
+        Increases the window backwards as the number of calls to this
+        sampling method increases at a fixed rate.
         """
 
         # get a random episode index
@@ -246,13 +242,12 @@ class DemoSamplerWrapper(Wrapper):
         return state
 
     def _forward_sample_open_loop(self):
-        """
-        Sampling method.
+        """Sampling method.
 
         Open loop forward sampling from demonstrations. Starts by
         sampling from states near the beginning of the demonstrations.
-        Increases the window forwards as the number of calls to
-        this sampling method increases at a fixed rate.
+        Increases the window forwards as the number of calls to this
+        sampling method increases at a fixed rate.
         """
 
         # get a random episode index
@@ -279,10 +274,8 @@ class DemoSamplerWrapper(Wrapper):
         return state
 
     def _xml_for_episode_index(self, ep_ind):
-        """
-        Helper method to retrieve the corresponding model xml string
-        for the passed episode index.
-        """
+        """Helper method to retrieve the corresponding model xml string for the
+        passed episode index."""
 
         # read the model xml, using the metadata stored in the attribute for this episode
         model_file = self.demo_file["data/{}".format(

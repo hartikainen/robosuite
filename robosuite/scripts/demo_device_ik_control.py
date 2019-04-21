@@ -33,7 +33,6 @@ SpaceMouse:
 
 Example:
     $ python demo_device_ik_control.py --environment SawyerPickPlaceCan
-
 """
 
 import argparse

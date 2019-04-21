@@ -11,9 +11,7 @@ from robosuite.models.tasks import TableTopTask, UniformRandomSampler
 
 
 class SawyerLift(SawyerEnv):
-    """
-    This class corresponds to the lifting task for the Sawyer robot arm.
-    """
+    """This class corresponds to the lifting task for the Sawyer robot arm."""
 
     def __init__(
             self,
@@ -136,9 +134,7 @@ class SawyerLift(SawyerEnv):
         )
 
     def _load_model(self):
-        """
-        Loads an xml model, puts it in self.model
-        """
+        """Loads an xml model, puts it in self.model."""
         super()._load_model()
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
@@ -169,10 +165,11 @@ class SawyerLift(SawyerEnv):
         self.model.place_objects()
 
     def _get_reference(self):
-        """
-        Sets up references to important components. A reference is typically an
-        index or a list of indices that point to the corresponding elements
-        in a flatten array, which is how MuJoCo stores physical simulation data.
+        """Sets up references to important components.
+
+        A reference is typically an index or a list of indices that
+        point to the corresponding elements in a flatten array, which is
+        how MuJoCo stores physical simulation data.
         """
         super()._get_reference()
         self.cube_body_id = self.sim.model.body_name2id("cube")
@@ -187,9 +184,7 @@ class SawyerLift(SawyerEnv):
         self.cube_geom_id = self.sim.model.geom_name2id("cube")
 
     def _reset_internal(self):
-        """
-        Resets simulation internal configurations.
-        """
+        """Resets simulation internal configurations."""
         super()._reset_internal()
 
         # reset positions of objects
@@ -202,8 +197,7 @@ class SawyerLift(SawyerEnv):
         self.sim.data.qpos[self._ref_joint_pos_indexes] = np.array(init_pos)
 
     def reward(self, action=None):
-        """
-        Reward function for the task.
+        """Reward function for the task.
 
         The dense reward has three components.
 
@@ -254,8 +248,8 @@ class SawyerLift(SawyerEnv):
         return reward
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
 
         Important keys:
             robot-state: contains robot-centric information.
@@ -300,9 +294,7 @@ class SawyerLift(SawyerEnv):
         return di
 
     def _check_contact(self):
-        """
-        Returns True if gripper is in contact with an object.
-        """
+        """Returns True if gripper is in contact with an object."""
         collision = False
         for contact in self.sim.data.contact[:self.sim.data.ncon]:
             if (self.sim.model.geom_id2name(
@@ -314,9 +306,7 @@ class SawyerLift(SawyerEnv):
         return collision
 
     def _check_success(self):
-        """
-        Returns True if task has been completed.
-        """
+        """Returns True if task has been completed."""
         cube_height = self.sim.data.body_xpos[self.cube_body_id][2]
         table_height = self.table_full_size[2]
 
@@ -324,8 +314,9 @@ class SawyerLift(SawyerEnv):
         return cube_height > table_height + 0.04
 
     def _gripper_visualization(self):
-        """
-        Do any needed visualization here. Overrides superclass implementations.
+        """Do any needed visualization here.
+
+        Overrides superclass implementations.
         """
 
         # color the gripper site appropriately based on distance to cube

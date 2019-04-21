@@ -1,5 +1,5 @@
-"""
-This file implements a wrapper for saving simulation states to disk.
+"""This file implements a wrapper for saving simulation states to disk.
+
 This data collection wrapper is useful for collecting demonstrations.
 """
 
@@ -14,8 +14,7 @@ from robosuite.wrappers import IKWrapper
 class DataCollectionWrapper(Wrapper):
 
     def __init__(self, env, directory, collect_freq=1, flush_freq=100):
-        """
-        Initializes the data collection wrapper.
+        """Initializes the data collection wrapper.
 
         Args:
             env: The environment to monitor.
@@ -50,9 +49,7 @@ class DataCollectionWrapper(Wrapper):
         self.has_interaction = False
 
     def _start_new_episode(self):
-        """
-        Bookkeeping to do at the start of each new episode.
-        """
+        """Bookkeeping to do at the start of each new episode."""
 
         # flush any data left over from the previous episode if any interactions have happened
         if self.has_interaction:
@@ -63,11 +60,12 @@ class DataCollectionWrapper(Wrapper):
         self.has_interaction = False
 
     def _on_first_interaction(self):
-        """
-        Bookkeeping for first timestep of episode.
-        This function is necessary to make sure that logging only happens after the first
-        step call to the simulation, instead of on the reset (people tend to call
-        reset more than is necessary in code).
+        """Bookkeeping for first timestep of episode.
+
+        This function is necessary to make sure that logging only
+        happens after the first step call to the simulation, instead of
+        on the reset (people tend to call reset more than is necessary
+        in code).
         """
 
         self.has_interaction = True
@@ -86,9 +84,7 @@ class DataCollectionWrapper(Wrapper):
         self.env.model.save_model(xml_path)
 
     def _flush(self):
-        """
-        Method to flush internal state to disk.
-        """
+        """Method to flush internal state to disk."""
         t1, t2 = str(time.time()).split(".")
         state_path = os.path.join(self.ep_directory,
                                   "state_{}_{}.npz".format(t1, t2))
@@ -152,8 +148,6 @@ class DataCollectionWrapper(Wrapper):
         return ret
 
     def close(self):
-        """
-        Override close method in order to flush left over data
-        """
+        """Override close method in order to flush left over data."""
         self._start_new_episode()
         self.env.close()

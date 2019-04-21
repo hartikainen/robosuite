@@ -7,8 +7,7 @@ from robosuite.utils.mjcf_utils import string_to_array, array_to_string
 
 
 class MujocoObject:
-    """
-    Base class for all objects.
+    """Base class for all objects.
 
     We use Mujoco Objects to implement all objects that
         1) may appear for multiple times in a task
@@ -24,9 +23,8 @@ class MujocoObject:
         self.asset = ET.Element("asset")
 
     def get_bottom_offset(self):
-        """
-        Returns vector from object center to object bottom
-        Helps us put objects on a surface
+        """Returns vector from object center to object bottom Helps us put
+        objects on a surface.
 
         Returns:
             np.array: eg. np.array([0, 0, -2])
@@ -37,9 +35,8 @@ class MujocoObject:
         raise NotImplementedError
 
     def get_top_offset(self):
-        """
-        Returns vector from object center to object top
-        Helps us put other objects on this object
+        """Returns vector from object center to object top Helps us put other
+        objects on this object.
 
         Returns:
             np.array: eg. np.array([0, 0, 2])
@@ -50,11 +47,9 @@ class MujocoObject:
         raise NotImplementedError
 
     def get_horizontal_radius(self):
-        """
-        Returns scalar
-        If object a,b has horizontal distance d
-        a.get_horizontal_radius() + b.get_horizontal_radius() < d
-        should mean that a, b has no contact
+        """Returns scalar If object a,b has horizontal distance d
+        a.get_horizontal_radius() + b.get_horizontal_radius() < d should mean
+        that a, b has no contact.
 
         Helps us put objects programmatically without them flying away due to
         a huge initial contact force
@@ -69,10 +64,8 @@ class MujocoObject:
         # return 2
 
     def get_collision(self, name=None, site=False):
-        """
-        Returns a ET.Element
-        It is a <body/> subtree that defines all collision related fields
-        of this object.
+        """Returns a ET.Element It is a <body/> subtree that defines all
+        collision related fields of this object.
 
         Return is a copy
 
@@ -90,10 +83,8 @@ class MujocoObject:
         raise NotImplementedError
 
     def get_visual(self, name=None, site=False):
-        """
-        Returns a ET.Element
-        It is a <body/> subtree that defines all visualization related fields
-        of this object.
+        """Returns a ET.Element It is a <body/> subtree that defines all
+        visualization related fields of this object.
 
         Return is a copy
 
@@ -111,8 +102,7 @@ class MujocoObject:
         raise NotImplementedError
 
     def get_site_attrib_template(self):
-        """
-        Returns attribs of spherical site used to mark body origin
+        """Returns attribs of spherical site used to mark body origin.
 
         Returns:
             Dictionary of default site attributes
@@ -126,9 +116,7 @@ class MujocoObject:
 
 
 class MujocoXMLObject(MujocoXML, MujocoObject):
-    """
-    MujocoObjects that are loaded from xml files
-    """
+    """MujocoObjects that are loaded from xml files."""
 
     def __init__(self, fname):
         """
@@ -190,10 +178,8 @@ class MujocoXMLObject(MujocoXML, MujocoObject):
 
 
 class MujocoGeneratedObject(MujocoObject):
-    """
-    Base class for all programmatically generated mujoco object
-    i.e., every MujocoObject that does not have an corresponding xml file
-    """
+    """Base class for all programmatically generated mujoco object i.e., every
+    MujocoObject that does not have an corresponding xml file."""
 
     def __init__(
             self,
@@ -204,9 +190,9 @@ class MujocoGeneratedObject(MujocoObject):
             density_range=None,
             friction_range=None,
     ):
-        """
-        Provides default initialization of physical attributes:
-            also supports randomization of (rgba, density, friction).
+        """Provides default initialization of physical attributes: also
+        supports randomization of (rgba, density, friction).
+
             - rgb is randomly generated if rgba='random' (alpha will be 1 in this case)
             - If density is None and density_range is not:
               Density is chosen uniformly at random specified from density range,
@@ -262,10 +248,9 @@ class MujocoGeneratedObject(MujocoObject):
         self.sanity_check()
 
     def sanity_check(self):
-        """
-        Checks if data provided makes sense.
-        Called in __init__()
-        For subclasses to inherit from
+        """Checks if data provided makes sense.
+
+        Called in __init__() For subclasses to inherit from
         """
         pass
 

@@ -1,9 +1,8 @@
-"""
-A script to collect a batch of human demonstrations that can be used
-to generate a learning curriculum (see `demo_learning_curriculum.py`).
+"""A script to collect a batch of human demonstrations that can be used to
+generate a learning curriculum (see `demo_learning_curriculum.py`).
 
-The demonstrations can be played back using the `playback_demonstrations_from_pkl.py`
-script.
+The demonstrations can be played back using the
+`playback_demonstrations_from_pkl.py` script.
 """
 
 import os
@@ -22,10 +21,10 @@ from robosuite.wrappers import DataCollectionWrapper
 
 
 def collect_human_trajectory(env, device):
-    """
-    Use the device (keyboard or SpaceNav 3D mouse) to collect a demonstration.
-    The rollout trajectory is saved to files in npz format.
-    Modify the DataCollectionWrapper wrapper to add new fields or change data formats.
+    """Use the device (keyboard or SpaceNav 3D mouse) to collect a
+    demonstration. The rollout trajectory is saved to files in npz format.
+    Modify the DataCollectionWrapper wrapper to add new fields or change data
+    formats.
 
     Args:
         env: environment to control
@@ -101,10 +100,8 @@ def collect_human_trajectory(env, device):
 
 
 def gather_demonstrations_as_hdf5(directory, out_dir):
-    """
-    Gathers the demonstrations saved in @directory into a
-    single hdf5 file, and another directory that contains the 
-    raw model.xml files.
+    """Gathers the demonstrations saved in @directory into a single hdf5 file,
+    and another directory that contains the raw model.xml files.
 
     The strucure of the hdf5 file is as follows.
 
@@ -133,7 +130,7 @@ def gather_demonstrations_as_hdf5(directory, out_dir):
 
     Args:
         directory (str): Path to the directory containing raw demonstrations.
-        out_dir (str): Path to where to store the hdf5 file and model xmls. 
+        out_dir (str): Path to where to store the hdf5 file and model xmls.
             The model xmls will be stored in a subdirectory called `models`.
     """
 

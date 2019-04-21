@@ -1,6 +1,5 @@
-"""
-Defines GripperTester that is used to test the physical properties of various grippers
-"""
+"""Defines GripperTester that is used to test the physical properties of
+various grippers."""
 import numpy as np
 import xml.etree.ElementTree as ET
 from mujoco_py import MjSim, MjViewer
@@ -13,9 +12,7 @@ from robosuite.models.objects.generated_objects import BoxObject
 
 
 class GripperTester:
-    """
-    A class that is used to test gripper
-    """
+    """A class that is used to test gripper."""
 
     def __init__(self,
                  gripper,
@@ -26,8 +23,7 @@ class GripperTester:
                  box_size=None,
                  box_density=10000,
                  render=True):
-        """
-        Initializes world and gripper positioning
+        """Initializes world and gripper positioning.
 
         Args:
             gripper: A Gripper instance
@@ -113,9 +109,7 @@ class GripperTester:
         self.gripper_high_pos = gripper_high_pos
 
     def start_simulation(self):
-        """
-            Starts simulation of the test world
-        """
+        """Starts simulation of the test world."""
         model = self.world.get_model(mode="mujoco_py")
 
         self.sim = MjSim(model)
@@ -148,15 +142,12 @@ class GripperTester:
         self.simulation_ready = True
 
     def reset(self):
-        """
-            Resets the simulation to the initial state
-        """
+        """Resets the simulation to the initial state."""
         self.sim.set_state(self.sim_state)
         self.cur_step = 0
 
     def step(self):
-        """
-        Forward the simulation by one timestep
+        """Forward the simulation by one timestep.
 
         Raises:
             RuntimeError: if start_simulation is not yet called.
@@ -210,8 +201,6 @@ class GripperTester:
 
     @property
     def object_height(self):
-        """
-            Queries the height (z) of the object compared to on the ground
-        """
+        """Queries the height (z) of the object compared to on the ground."""
         return self.sim.data.body_xpos[self.object_id][2]\
             - self.object_default_pos[2]

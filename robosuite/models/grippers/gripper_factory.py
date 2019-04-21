@@ -1,6 +1,4 @@
-"""
-Defines a string based method of initializing grippers
-"""
+"""Defines a string based method of initializing grippers."""
 from .two_finger_gripper import TwoFingerGripper, LeftTwoFingerGripper
 from .pr2_gripper import PR2Gripper
 from .robotiq_gripper import RobotiqGripper
@@ -9,8 +7,7 @@ from .robotiq_three_finger_gripper import RobotiqThreeFingerGripper
 
 
 def gripper_factory(name):
-    """
-    Genreator for grippers
+    """Genreator for grippers.
 
     Creates a Gripper instance with the provided name.
 

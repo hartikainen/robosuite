@@ -248,9 +248,9 @@ class BaxterEnv(MujocoEnv):
         return ret
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
-        
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
+
         Important keys:
             robot-state: contains robot-centric information.
         """
@@ -314,10 +314,8 @@ class BaxterEnv(MujocoEnv):
         return dof
 
     def pose_in_base_from_name(self, name):
-        """
-        A helper function that takes in a named data field and returns the pose of that
-        object in the base frame.
-        """
+        """A helper function that takes in a named data field and returns the
+        pose of that object in the base frame."""
 
         pos_in_world = self.sim.data.get_body_xpos(name)
         rot_in_world = self.sim.data.get_body_xmat(name).reshape((3, 3))
@@ -333,9 +331,8 @@ class BaxterEnv(MujocoEnv):
         return pose_in_base
 
     def set_robot_joint_positions(self, jpos):
-        """
-        Helper method to force robot joint positions to the passed values.
-        """
+        """Helper method to force robot joint positions to the passed
+        values."""
         self.sim.data.qpos[self._ref_joint_pos_indexes] = jpos
         self.sim.forward()
 
@@ -347,17 +344,13 @@ class BaxterEnv(MujocoEnv):
 
     @property
     def _right_hand_pose(self):
-        """
-        Returns eef pose in base frame of robot.
-        """
+        """Returns eef pose in base frame of robot."""
         return self.pose_in_base_from_name("right_hand")
 
     @property
     def _right_hand_total_velocity(self):
-        """
-        Returns the total eef velocity (linear + angular) in the base frame as a numpy
-        array of shape (6,)
-        """
+        """Returns the total eef velocity (linear + angular) in the base frame
+        as a numpy array of shape (6,)"""
 
         # Use jacobian to translate joint velocities to end effector velocities.
         Jp = self.sim.data.get_body_jacp("right_hand").reshape((3, -1))
@@ -372,54 +365,41 @@ class BaxterEnv(MujocoEnv):
 
     @property
     def _right_hand_pos(self):
-        """
-        Returns position of eef in base frame of robot. 
-        """
+        """Returns position of eef in base frame of robot."""
         eef_pose_in_base = self._right_hand_pose
         return eef_pose_in_base[:3, 3]
 
     @property
     def _right_hand_orn(self):
-        """
-        Returns orientation of eef in base frame of robot as a rotation matrix.
-        """
+        """Returns orientation of eef in base frame of robot as a rotation
+        matrix."""
         eef_pose_in_base = self._right_hand_pose
         return eef_pose_in_base[:3, :3]
 
     @property
     def _right_hand_quat(self):
-        """
-        Returns eef orientation of right hand in base from of robot.
-        """
+        """Returns eef orientation of right hand in base from of robot."""
         return T.mat2quat(self._right_hand_orn)
 
     @property
     def _right_hand_vel(self):
-        """
-        Returns velocity of eef in base frame of robot.
-        """
+        """Returns velocity of eef in base frame of robot."""
         return self._right_hand_total_velocity[:3]
 
     @property
     def _right_hand_ang_vel(self):
-        """
-        Returns angular velocity of eef in base frame of robot.
-        """
+        """Returns angular velocity of eef in base frame of robot."""
         return self._right_hand_total_velocity[3:]
 
     @property
     def _left_hand_pose(self):
-        """
-        Returns eef pose in base frame of robot.
-        """
+        """Returns eef pose in base frame of robot."""
         return self.pose_in_base_from_name("left_hand")
 
     @property
     def _left_hand_total_velocity(self):
-        """
-        Returns the total eef velocity (linear + angular) in the base frame as a numpy
-        array of shape (6,)
-        """
+        """Returns the total eef velocity (linear + angular) in the base frame
+        as a numpy array of shape (6,)"""
 
         # Use jacobian to translate joint velocities to end effector velocities.
         Jp = self.sim.data.get_body_jacp("left_hand").reshape((3, -1))
@@ -434,49 +414,42 @@ class BaxterEnv(MujocoEnv):
 
     @property
     def _left_hand_pos(self):
-        """
-        Returns position of eef in base frame of robot. 
-        """
+        """Returns position of eef in base frame of robot."""
         eef_pose_in_base = self._left_hand_pose
         return eef_pose_in_base[:3, 3]
 
     @property
     def _left_hand_orn(self):
-        """
-        Returns orientation of eef in base frame of robot as a rotation matrix.
-        """
+        """Returns orientation of eef in base frame of robot as a rotation
+        matrix."""
         eef_pose_in_base = self._left_hand_pose
         return eef_pose_in_base[:3, :3]
 
     @property
     def _left_hand_quat(self):
-        """
-        Returns eef orientation of left hand in base from of robot.
-        """
+        """Returns eef orientation of left hand in base from of robot."""
         return T.mat2quat(self._left_hand_orn)
 
     @property
     def _left_hand_vel(self):
-        """
-        Returns velocity of eef in base frame of robot.
-        """
+        """Returns velocity of eef in base frame of robot."""
         return self._left_hand_total_velocity[:3]
 
     @property
     def _left_hand_ang_vel(self):
-        """
-        Returns angular velocity of eef in base frame of robot.
-        """
+        """Returns angular velocity of eef in base frame of robot."""
         return self._left_hand_total_velocity[3:]
 
     @property
     def _joint_positions(self):
-        """Returns a numpy array of joint positions (angles), of dimension 14."""
+        """Returns a numpy array of joint positions (angles), of dimension
+        14."""
         return self.sim.data.qpos[self._ref_joint_pos_indexes]
 
     @property
     def _joint_velocities(self):
-        """Returns a numpy array of joint (angular) velocities, of dimension 14."""
+        """Returns a numpy array of joint (angular) velocities, of dimension
+        14."""
         return self.sim.data.qvel[self._ref_joint_vel_indexes]
 
     @property
@@ -490,13 +463,12 @@ class BaxterEnv(MujocoEnv):
         return self.sim.data.site_xpos[self.right_eef_site_id]
 
     def _gripper_visualization(self):
-        """
-        Do any needed visualization here. Using defaults.
+        """Do any needed visualization here.
+
+        Using defaults.
         """
         pass
 
     def _check_contact(self):
-        """
-        Returns True if the gripper is in contact with another object.
-        """
+        """Returns True if the gripper is in contact with another object."""
         return False

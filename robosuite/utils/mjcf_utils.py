@@ -12,10 +12,10 @@ BLUE = [0, 0, 1, 1]
 
 
 def xml_path_completion(xml_path):
-    """
-    Takes in a local xml path and returns a full path.
-        if @xml_path is absolute, do nothing
-        if @xml_path is not absolute, load xml that is shipped by the package
+    """Takes in a local xml path and returns a full path.
+
+    if @xml_path is absolute, do nothing if @xml_path is not absolute,
+    load xml that is shipped by the package
     """
     if xml_path.startswith("/"):
         full_path = xml_path
@@ -25,8 +25,7 @@ def xml_path_completion(xml_path):
 
 
 def array_to_string(array):
-    """
-    Converts a numeric array into the string format in mujoco.
+    """Converts a numeric array into the string format in mujoco.
 
     Examples:
         [0, 1, 2] => "0 1 2"
@@ -35,8 +34,7 @@ def array_to_string(array):
 
 
 def string_to_array(string):
-    """
-    Converts a array string in mujoco xml to np.array.
+    """Converts a array string in mujoco xml to np.array.
 
     Examples:
         "0 1 2" => [0, 1, 2]
@@ -45,34 +43,27 @@ def string_to_array(string):
 
 
 def set_alpha(node, alpha=0.1):
-    """
-    Sets all a(lpha) field of the rgba attribute to be @alpha
-    for @node and all subnodes
-    used for managing display
-    """
+    """Sets all a(lpha) field of the rgba attribute to be @alpha for @node and
+    all subnodes used for managing display."""
     for child_node in node.findall(".//*[@rgba]"):
         rgba_orig = string_to_array(child_node.get("rgba"))
         child_node.set("rgba", array_to_string(list(rgba_orig[0:3]) + [alpha]))
 
 
 def new_joint(**kwargs):
-    """
-    Creates a joint tag with attributes specified by @**kwargs.
-    """
+    """Creates a joint tag with attributes specified by @**kwargs."""
 
     element = ET.Element("joint", attrib=kwargs)
     return element
 
 
 def new_actuator(joint, act_type="actuator", **kwargs):
-    """
-    Creates an actuator tag with attributes specified by @**kwargs.
+    """Creates an actuator tag with attributes specified by @**kwargs.
 
     Args:
         joint: type of actuator transmission.
             see all types here: http://mujoco.org/book/modeling.html#actuator
         act_type (str): actuator type. Defaults to "actuator"
-
     """
     element = ET.Element(act_type, attrib=kwargs)
     element.set("joint", joint)
@@ -80,8 +71,7 @@ def new_actuator(joint, act_type="actuator", **kwargs):
 
 
 def new_site(name, rgba=RED, pos=(0, 0, 0), size=(0.005,), **kwargs):
-    """
-    Creates a site element with attributes specified by @**kwargs.
+    """Creates a site element with attributes specified by @**kwargs.
 
     Args:
         name (str): site name.
@@ -98,8 +88,7 @@ def new_site(name, rgba=RED, pos=(0, 0, 0), size=(0.005,), **kwargs):
 
 
 def new_geom(geom_type, size, pos=(0, 0, 0), rgba=RED, group=0, **kwargs):
-    """
-    Creates a geom element with attributes specified by @**kwargs.
+    """Creates a geom element with attributes specified by @**kwargs.
 
     Args:
         geom_type (str): type of the geom.
@@ -120,8 +109,7 @@ def new_geom(geom_type, size, pos=(0, 0, 0), rgba=RED, group=0, **kwargs):
 
 
 def new_body(name=None, pos=None, **kwargs):
-    """
-    Creates a body element with attributes specified by @**kwargs.
+    """Creates a body element with attributes specified by @**kwargs.
 
     Args:
         name (str): body name.
@@ -136,8 +124,7 @@ def new_body(name=None, pos=None, **kwargs):
 
 
 def new_inertial(name=None, pos=(0, 0, 0), mass=None, **kwargs):
-    """
-    Creates a inertial element with attributes specified by @**kwargs.
+    """Creates a inertial element with attributes specified by @**kwargs.
 
     Args:
         mass: The mass of inertial
@@ -150,10 +137,8 @@ def new_inertial(name=None, pos=(0, 0, 0), mass=None, **kwargs):
 
 
 def postprocess_model_xml(xml_str):
-    """
-    This function postprocesses the model.xml collected from a MuJoCo demonstration
-    in order to make sure that the STL files can be found.
-    """
+    """This function postprocesses the model.xml collected from a MuJoCo
+    demonstration in order to make sure that the STL files can be found."""
 
     path = os.path.split(robosuite.__file__)[0]
     path_split = path.split("/")

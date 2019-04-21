@@ -2,10 +2,10 @@
 
 Several prior works have demonstrated the effectiveness of altering the
 start state distribution of training episodes for learning RL policies.
-We provide a generic utility for setting various types of learning 
+We provide a generic utility for setting various types of learning
 curriculums which dictate how to sample from demonstration episodes
-when doing an environment reset. For more information see the 
-`DemoSamplerWrapper` class. 
+when doing an environment reset. For more information see the
+`DemoSamplerWrapper` class.
 
 Related work:
 

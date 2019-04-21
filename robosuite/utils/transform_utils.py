@@ -1,5 +1,4 @@
-"""
-Utility functions of matrix and vector transformations.
+"""Utility functions of matrix and vector transformations.
 
 NOTE: convention for quaternions is (x, y, z, w)
 """
@@ -45,10 +44,9 @@ _TUPLE2AXES = dict((v, k) for k, v in _AXES2TUPLE.items())
 
 
 def convert_quat(q, to="xyzw"):
-    """
-    Converts quaternion from one convention to another.
-    The convention to convert TO is specified as an optional argument.
-    If to == 'xyzw', then the input is in 'wxyz' format, and vice-versa.
+    """Converts quaternion from one convention to another. The convention to
+    convert TO is specified as an optional argument. If to == 'xyzw', then the
+    input is in 'wxyz' format, and vice-versa.
 
     Args:
         q: a 4-dim numpy array corresponding to a quaternion
@@ -64,6 +62,7 @@ def convert_quat(q, to="xyzw"):
 
 def quat_multiply(quaternion1, quaternion0):
     """Return multiplication of two quaternions.
+
     >>> q = quat_multiply([1, -2, 3, 4], [-5, 6, 7, 8])
     >>> np.allclose(q, [-44, -14, 48, 28])
     True
@@ -83,6 +82,7 @@ def quat_multiply(quaternion1, quaternion0):
 
 def quat_conjugate(quaternion):
     """Return conjugate of quaternion.
+
     >>> q0 = random_quaternion()
     >>> q1 = quat_conjugate(q0)
     >>> q1[3] == q0[3] and all(q1[:3] == -q0[:3])
@@ -96,6 +96,7 @@ def quat_conjugate(quaternion):
 
 def quat_inverse(quaternion):
     """Return inverse of quaternion.
+
     >>> q0 = random_quaternion()
     >>> q1 = quat_inverse(q0)
     >>> np.allclose(quat_multiply(q0, q1), [0, 0, 0, 1])
@@ -106,6 +107,7 @@ def quat_inverse(quaternion):
 
 def quat_slerp(quat0, quat1, fraction, spin=0, shortestpath=True):
     """Return spherical linear interpolation between two quaternions.
+
     >>> q0 = random_quat()
     >>> q1 = random_quat()
     >>> q = quat_slerp(q0, q1, 0.0)
@@ -171,8 +173,7 @@ def random_quat(rand=None):
 
 
 def vec(values):
-    """
-    Converts value tuple into a numpy vector.
+    """Converts value tuple into a numpy vector.
 
     Args:
         values: a tuple of numbers
@@ -184,8 +185,7 @@ def vec(values):
 
 
 def mat4(array):
-    """
-    Converts an array to 4x4 matrix.
+    """Converts an array to 4x4 matrix.
 
     Args:
         array: the array in form of vec, list, or tuple
@@ -197,8 +197,7 @@ def mat4(array):
 
 
 def mat2pose(hmat):
-    """
-    Converts a homogeneous 4x4 matrix into pose.
+    """Converts a homogeneous 4x4 matrix into pose.
 
     Args:
         hmat: a 4x4 homogeneous matrix
@@ -213,8 +212,7 @@ def mat2pose(hmat):
 
 
 def mat2quat(rmat, precise=False):
-    """
-    Converts given rotation matrix to quaternion.
+    """Converts given rotation matrix to quaternion.
 
     Args:
         rmat: 3x3 rotation matrix
@@ -273,8 +271,7 @@ def mat2quat(rmat, precise=False):
 
 
 def mat2euler(rmat, axes="sxyz"):
-    """
-    Converts given rotation matrix to euler angles in radian.
+    """Converts given rotation matrix to euler angles in radian.
 
     Args:
         rmat: 3x3 rotation matrix
@@ -322,8 +319,7 @@ def mat2euler(rmat, axes="sxyz"):
 
 
 def pose2mat(pose):
-    """
-    Converts pose to homogeneous matrix.
+    """Converts pose to homogeneous matrix.
 
     Args:
         pose: a (pos, orn) tuple where pos is vec3 float cartesian, and
@@ -340,8 +336,7 @@ def pose2mat(pose):
 
 
 def quat2mat(quaternion):
-    """
-    Converts given quaternion (x, y, z, w) to matrix.
+    """Converts given quaternion (x, y, z, w) to matrix.
 
     Args:
         quaternion: vec4 float angles
@@ -363,9 +358,8 @@ def quat2mat(quaternion):
 
 
 def pose_in_A_to_pose_in_B(pose_A, pose_A_in_B):
-    """
-    Converts a homogenous matrix corresponding to a point C in frame A
-    to a homogenous matrix corresponding to the same point C in frame B.
+    """Converts a homogenous matrix corresponding to a point C in frame A to a
+    homogenous matrix corresponding to the same point C in frame B.
 
     Args:
         pose_A: numpy array of shape (4,4) corresponding to the pose of C in frame A
@@ -384,9 +378,8 @@ def pose_in_A_to_pose_in_B(pose_A, pose_A_in_B):
 
 
 def pose_inv(pose):
-    """
-    Computes the inverse of a homogenous matrix corresponding to the pose of some
-    frame B in frame A. The inverse is the pose of frame A in frame B.
+    """Computes the inverse of a homogenous matrix corresponding to the pose of
+    some frame B in frame A. The inverse is the pose of frame A in frame B.
 
     Args:
         pose: numpy array of shape (4,4) for the pose to inverse
@@ -413,10 +406,8 @@ def pose_inv(pose):
 
 
 def _skew_symmetric_translation(pos_A_in_B):
-    """
-    Helper function to get a skew symmetric translation matrix for converting quantities
-    between frames.
-    """
+    """Helper function to get a skew symmetric translation matrix for
+    converting quantities between frames."""
     return np.array([
         0.,
         -pos_A_in_B[2],
@@ -431,8 +422,8 @@ def _skew_symmetric_translation(pos_A_in_B):
 
 
 def vel_in_A_to_vel_in_B(vel_A, ang_vel_A, pose_A_in_B):
-    """
-    Converts linear and angular velocity of a point in frame A to the equivalent in frame B.
+    """Converts linear and angular velocity of a point in frame A to the
+    equivalent in frame B.
 
     Args:
         vel_A: 3-dim iterable for linear velocity in A
@@ -451,8 +442,8 @@ def vel_in_A_to_vel_in_B(vel_A, ang_vel_A, pose_A_in_B):
 
 
 def force_in_A_to_force_in_B(force_A, torque_A, pose_A_in_B):
-    """
-    Converts linear and rotational force at a point in frame A to the equivalent in frame B.
+    """Converts linear and rotational force at a point in frame A to the
+    equivalent in frame B.
 
     Args:
         force_A: 3-dim iterable for linear force in A
@@ -472,8 +463,7 @@ def force_in_A_to_force_in_B(force_A, torque_A, pose_A_in_B):
 
 
 def rotation_matrix(angle, direction, point=None):
-    """
-    Returns matrix to rotate about axis defined by point and direction.
+    """Returns matrix to rotate about axis defined by point and direction.
 
     Examples:
 
@@ -494,7 +484,6 @@ def rotation_matrix(angle, direction, point=None):
         >>> numpy.allclose(2., numpy.trace(rotation_matrix(math.pi/2,
         ...                                                direc, point)))
         True
-
     """
     sina = math.sin(angle)
     cosa = math.cos(angle)
@@ -522,8 +511,8 @@ def rotation_matrix(angle, direction, point=None):
 
 
 def make_pose(translation, rotation):
-    """
-    Makes a homogenous pose matrix from a translation vector and a rotation matrix.
+    """Makes a homogenous pose matrix from a translation vector and a rotation
+    matrix.
 
     Args:
         translation: a 3-dim iterable
@@ -540,8 +529,7 @@ def make_pose(translation, rotation):
 
 
 def unit_vector(data, axis=None, out=None):
-    """
-    Returns ndarray normalized by length, i.e. eucledian norm, along axis.
+    """Returns ndarray normalized by length, i.e. eucledian norm, along axis.
 
     Examples:
 
@@ -566,7 +554,6 @@ def unit_vector(data, axis=None, out=None):
         []
         >>> list(unit_vector([1.0]))
         [1.0]
-
     """
     if out is None:
         data = np.array(data, dtype=np.float32, copy=True)
@@ -587,9 +574,8 @@ def unit_vector(data, axis=None, out=None):
 
 
 def get_orientation_error(target_orn, current_orn):
-    """
-    Returns the difference between two quaternion orientations as a 3 DOF numpy array.
-    For use in an impedance controller / task-space PD controller.
+    """Returns the difference between two quaternion orientations as a 3 DOF
+    numpy array. For use in an impedance controller / task-space PD controller.
 
     Args:
         target_orn: 4-dim iterable, desired orientation as a (x, y, z, w) quaternion

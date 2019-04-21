@@ -1,15 +1,11 @@
-"""
-Gripper with two fingers.
-"""
+"""Gripper with two fingers."""
 import numpy as np
 from robosuite.utils.mjcf_utils import xml_path_completion
 from robosuite.models.grippers.gripper import Gripper
 
 
 class TwoFingerGripperBase(Gripper):
-    """
-    Gripper with two fingers.
-    """
+    """Gripper with two fingers."""
 
     def __init__(self):
         super().__init__(xml_path_completion("grippers/two_finger_gripper.xml"))
@@ -53,14 +49,10 @@ class TwoFingerGripperBase(Gripper):
 
 
 class TwoFingerGripper(TwoFingerGripperBase):
-    """
-    Modifies two finger base to only take one action.
-    """
+    """Modifies two finger base to only take one action."""
 
     def format_action(self, action):
-        """
-        1 => open, -1 => closed
-        """
+        """1 => open, -1 => closed."""
         assert len(action) == 1
         return np.array([1 * action[0], -1 * action[0]])
 
@@ -70,10 +62,8 @@ class TwoFingerGripper(TwoFingerGripperBase):
 
 
 class LeftTwoFingerGripperBase(Gripper):
-    """
-    A copy of two finger gripper with non-overlapping names
-    to allow two grippers on a same robot.
-    """
+    """A copy of two finger gripper with non-overlapping names to allow two
+    grippers on a same robot."""
 
     def __init__(self):
         super().__init__(
@@ -119,10 +109,8 @@ class LeftTwoFingerGripperBase(Gripper):
 
 
 class LeftTwoFingerGripper(LeftTwoFingerGripperBase):
-    """
-    A copy of two finger gripper with non-overlapping names
-    to allow two grippers on a same robot.
-    """
+    """A copy of two finger gripper with non-overlapping names to allow two
+    grippers on a same robot."""
 
     def format_action(self, action):
         """

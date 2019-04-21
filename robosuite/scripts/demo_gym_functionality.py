@@ -1,7 +1,6 @@
-"""
-This script shows how to adapt an environment to be compatible
-with the OpenAI gym API. This is extremely useful when using
-learning pipelines that require supporting these APIs.
+"""This script shows how to adapt an environment to be compatible with the
+OpenAI gym API. This is extremely useful when using learning pipelines that
+require supporting these APIs.
 
 For instance, this can be used with OpenAI Baselines
 (https://github.com/openai/baselines) to train agents
@@ -10,7 +9,7 @@ with RL.
 
 
 We base this script off of some code snippets found
-in the "Getting Started with Gym" section of the OpenAI 
+in the "Getting Started with Gym" section of the OpenAI
 gym documentation.
 
 The following snippet was used to show how to list all environments.
@@ -31,7 +30,6 @@ The following snippet was used to demo basic functionality.
             if done:
                 print("Episode finished after {} timesteps".format(t+1))
                 break
-
 """
 """
 The following snippet was used to show how to list all environments.

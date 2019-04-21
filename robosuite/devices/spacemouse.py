@@ -13,7 +13,6 @@ To set up a new SpaceMouse controller:
 
 For Linux support, you can find open-source Linux drivers and SDKs online.
     See http://spacenav.sourceforge.net/
-
 """
 
 import time
@@ -101,9 +100,7 @@ class SpaceMouse(Device):
         self.thread.start()
 
     def _display_controls(self):
-        """
-        Method to pretty print controls.
-        """
+        """Method to pretty print controls."""
 
         def print_command(char, info):
             char += " " * (30 - len(char))
@@ -122,22 +119,19 @@ class SpaceMouse(Device):
         print("")
 
     def _reset_internal_state(self):
-        """
-        Resets internal state of controller, except for the reset signal.
-        """
+        """Resets internal state of controller, except for the reset signal."""
         self.rotation = np.array([[-1., 0., 0.], [0., 1., 0.], [0., 0., -1.]])
 
     def start_control(self):
-        """
-        Method that should be called externally before controller can
-        start receiving commands.
-        """
+        """Method that should be called externally before controller can start
+        receiving commands."""
         self._reset_internal_state()
         self._reset_state = 0
         self._enabled = True
 
     def get_controller_state(self):
-        """Returns the current state of the 3d mouse, a dictionary of pos, orn, grasp, and reset."""
+        """Returns the current state of the 3d mouse, a dictionary of pos, orn,
+        grasp, and reset."""
         dpos = self.control[:3] * 0.005
         roll, pitch, yaw = self.control[3:] * 0.005
         self.grasp = self.control_gripper

@@ -1,7 +1,8 @@
-"""
-This file implements a wrapper for controlling the robot through end effector
-movements instead of joint velocities. This is useful in learning pipelines
-that want to output actions in end effector space instead of joint space.
+"""This file implements a wrapper for controlling the robot through end
+effector movements instead of joint velocities.
+
+This is useful in learning pipelines that want to output actions in end
+effector space instead of joint space.
 """
 
 import os
@@ -15,10 +16,9 @@ class IKWrapper(Wrapper):
     env = None
 
     def __init__(self, env, action_repeat=1):
-        """
-        Initializes the inverse kinematics wrapper.
-        This wrapper allows for controlling the robot through end effector
-        movements instead of joint velocities.
+        """Initializes the inverse kinematics wrapper. This wrapper allows for
+        controlling the robot through end effector movements instead of joint
+        velocities.
 
         Args:
             env (MujocoEnv instance): The environment to wrap.
@@ -52,18 +52,14 @@ class IKWrapper(Wrapper):
         self.action_repeat = action_repeat
 
     def set_robot_joint_positions(self, positions):
-        """
-        Overrides the function to set the joint positions directly, since we need to notify
-        the IK controller of the change.
-        """
+        """Overrides the function to set the joint positions directly, since we
+        need to notify the IK controller of the change."""
         self.env.set_robot_joint_positions(positions)
         self.controller.sync_state()
 
     def _robot_jpos_getter(self):
-        """
-        Helper function to pass to the ik controller for access to the
-        current robot joint positions.
-        """
+        """Helper function to pass to the ik controller for access to the
+        current robot joint positions."""
         return np.array(self.env._joint_positions)
 
     def reset(self):
@@ -72,8 +68,7 @@ class IKWrapper(Wrapper):
         return ret
 
     def step(self, action):
-        """
-        Move the end effector(s) according to the input control.
+        """Move the end effector(s) according to the input control.
 
         Args:
             action (numpy array): The array should have the corresponding elements.
@@ -114,10 +109,12 @@ class IKWrapper(Wrapper):
         return ret
 
     def _make_input(self, action, old_quat):
-        """
-        Helper function that returns a dictionary with keys dpos, rotation from a raw input
-        array. The first three elements are taken to be displacement in position, and a
-        quaternion indicating the change in rotation with respect to @old_quat.
+        """Helper function that returns a dictionary with keys dpos, rotation
+        from a raw input array.
+
+        The first three elements are taken to be displacement in
+        position, and a quaternion indicating the change in rotation
+        with respect to @old_quat.
         """
         return {
             "dpos": action[:3],

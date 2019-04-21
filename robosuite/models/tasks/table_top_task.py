@@ -3,12 +3,11 @@ from robosuite.utils.mjcf_utils import new_joint, array_to_string
 
 
 class TableTopTask(Task):
-    """
-    Creates MJCF model of a tabletop task.
+    """Creates MJCF model of a tabletop task.
 
-    A tabletop task consists of one robot interacting with a variable number of
-    objects placed on the tabletop. This class combines the robot, the table
-    arena, and the objetcts into a single MJCF model.
+    A tabletop task consists of one robot interacting with a variable
+    number of objects placed on the tabletop. This class combines the
+    robot, the table arena, and the objetcts into a single MJCF model.
     """
 
     def __init__(self,
@@ -66,7 +65,8 @@ class TableTopTask(Task):
                                              obj_mjcf.get_horizontal_radius())
 
     def place_objects(self):
-        """Places objects randomly until no collisions or max iterations hit."""
+        """Places objects randomly until no collisions or max iterations
+        hit."""
         pos_arr, quat_arr = self.initializer.sample()
         for i in range(len(self.objects)):
             self.objects[i].set("pos", array_to_string(pos_arr[i]))

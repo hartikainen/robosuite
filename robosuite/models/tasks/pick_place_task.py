@@ -7,12 +7,12 @@ from robosuite.utils.mjcf_utils import new_joint, array_to_string, string_to_arr
 
 
 class PickPlaceTask(Task):
-    """
-    Creates MJCF model of a pick-and-place task.
+    """Creates MJCF model of a pick-and-place task.
 
-    A pick-and-place task consists of one robot picking objects from a bin
-    and placing them into another bin. This class combines the robot, the
-    arena, and the objects into a single MJCF model of the task.
+    A pick-and-place task consists of one robot picking objects from a
+    bin and placing them into another bin. This class combines the
+    robot, the arena, and the objects into a single MJCF model of the
+    task.
     """
 
     def __init__(self, mujoco_arena, mujoco_robot, mujoco_objects,
@@ -86,7 +86,8 @@ class PickPlaceTask(Task):
         return [1, 0, 0, 0]
 
     def place_objects(self):
-        """Places objects randomly until no collisions or max iterations hit."""
+        """Places objects randomly until no collisions or max iterations
+        hit."""
         placed_objects = []
         index = 0
 
@@ -128,7 +129,8 @@ class PickPlaceTask(Task):
             index += 1
 
     def place_visual(self):
-        """Places visual objects randomly until no collisions or max iterations hit."""
+        """Places visual objects randomly until no collisions or max iterations
+        hit."""
         index = 0
         bin_pos = string_to_array(self.bin2_body.get("pos"))
         bin_size = self.bin_size

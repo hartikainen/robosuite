@@ -3,12 +3,12 @@ from robosuite.models.tasks import Task, UniformRandomPegsSampler
 
 
 class NutAssemblyTask(Task):
-    """
-    Creates MJCF model of a nut assembly task.
+    """Creates MJCF model of a nut assembly task.
 
-    A nut assembly task consists of one robot picking up nuts from a table and
-    and assembling them into pegs positioned on the tabletop. This class combines
-    the robot, the arena with pegs, and the nut objetcts into a single MJCF model.
+    A nut assembly task consists of one robot picking up nuts from a
+    table and and assembling them into pegs positioned on the tabletop.
+    This class combines the robot, the arena with pegs, and the nut
+    objetcts into a single MJCF model.
     """
 
     def __init__(self,
@@ -68,7 +68,8 @@ class NutAssemblyTask(Task):
                                              obj_mjcf.get_horizontal_radius())
 
     def place_objects(self):
-        """Places objects randomly until no collisions or max iterations hit."""
+        """Places objects randomly until no collisions or max iterations
+        hit."""
         pos_arr, quat_arr = self.initializer.sample()
         for k, obj_name in enumerate(self.objects):
             self.objects[obj_name].set("pos", array_to_string(pos_arr[k]))

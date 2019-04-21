@@ -1,5 +1,5 @@
-"""
-This file contains the base wrapper class for Mujoco environments.
+"""This file contains the base wrapper class for Mujoco environments.
+
 Wrappers are useful for data collection and logging. Highly recommended.
 """
 

@@ -21,7 +21,7 @@ def make(env_name, *args, **kwargs):
 
 
 class EnvMeta(type):
-    """Metaclass for registering environments"""
+    """Metaclass for registering environments."""
 
     def __new__(meta, name, bases, class_dict):
         cls = super().__new__(meta, name, bases, class_dict)
@@ -112,9 +112,7 @@ class MujocoEnv(metaclass=EnvMeta):
         self._reset_internal()
 
     def initialize_time(self, control_freq):
-        """
-        Initializes the time constants used for simulation.
-        """
+        """Initializes the time constants used for simulation."""
         self.cur_time = 0
         self.model_timestep = self.sim.model.opt.timestep
         if self.model_timestep <= 0:
@@ -126,14 +124,15 @@ class MujocoEnv(metaclass=EnvMeta):
         self.control_timestep = 1. / control_freq
 
     def _load_model(self):
-        """Loads an xml model, puts it in self.model"""
+        """Loads an xml model, puts it in self.model."""
         pass
 
     def _get_reference(self):
-        """
-        Sets up references to important components. A reference is typically an
-        index or a list of indices that point to the corresponding elements
-        in a flatten array, which is how MuJoCo stores physical simulation data.
+        """Sets up references to important components.
+
+        A reference is typically an index or a list of indices that
+        point to the corresponding elements in a flatten array, which is
+        how MuJoCo stores physical simulation data.
         """
         pass
 
@@ -182,7 +181,8 @@ class MujocoEnv(metaclass=EnvMeta):
         self.done = False
 
     def _get_observation(self):
-        """Returns an OrderedDict containing observations [(name_string, np.array), ...]."""
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...]."""
         return OrderedDict()
 
     def step(self, action):
@@ -216,19 +216,16 @@ class MujocoEnv(metaclass=EnvMeta):
         return 0
 
     def render(self):
-        """
-        Renders to an on-screen window.
-        """
+        """Renders to an on-screen window."""
         self.viewer.render()
 
     def observation_spec(self):
-        """
-        Returns an observation as observation specification.
+        """Returns an observation as observation specification.
 
         An alternative design is to return an OrderedDict where the keys
-        are the observation names and the values are the shapes of observations.
-        We leave this alternative implementation commented out, as we find the
-        current design is easier to use in practice.
+        are the observation names and the values are the shapes of
+        observations. We leave this alternative implementation commented
+        out, as we find the current design is easier to use in practice.
         """
         observation = self._get_observation()
         return observation
@@ -239,16 +236,17 @@ class MujocoEnv(metaclass=EnvMeta):
         # return observation_spec
 
     def action_spec(self):
-        """
-        Action specification should be implemented in subclasses.
+        """Action specification should be implemented in subclasses.
 
-        Action space is represented by a tuple of (low, high), which are two numpy
-        vectors that specify the min/max action limits per dimension.
+        Action space is represented by a tuple of (low, high), which are
+        two numpy vectors that specify the min/max action limits per
+        dimension.
         """
         raise NotImplementedError
 
     def reset_from_xml_string(self, xml_string):
-        """Reloads the environment from an XML description of the environment."""
+        """Reloads the environment from an XML description of the
+        environment."""
 
         # if there is an active viewer window, destroy it
         self.close()
@@ -286,8 +284,7 @@ class MujocoEnv(metaclass=EnvMeta):
         self.sim.forward()
 
     def find_contacts(self, geoms_1, geoms_2):
-        """
-        Finds contact between two geom groups.
+        """Finds contact between two geom groups.
 
         Args:
             geoms_1: a list of geom names (string)
@@ -311,9 +308,7 @@ class MujocoEnv(metaclass=EnvMeta):
         return False
 
     def _check_success(self):
-        """
-        Returns True if task has been completed.
-        """
+        """Returns True if task has been completed."""
         return False
 
     def _destroy_viewer(self):

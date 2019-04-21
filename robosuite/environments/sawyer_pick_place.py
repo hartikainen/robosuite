@@ -234,9 +234,9 @@ class SawyerPickPlace(SawyerEnv):
         self.bin_size = self.model.bin_size
 
     def clear_objects(self, obj):
-        """
-        Clears objects with name @obj out of the task space. This is useful
-        for supporting task modes with single types of objects, as in
+        """Clears objects with name @obj out of the task space. This is useful
+        for supporting task modes with single types of objects, as in.
+
         @self.single_object_mode without changing the model definition.
         """
         for obj_name, obj_mjcf in self.mujoco_objects.items():
@@ -316,8 +316,8 @@ class SawyerPickPlace(SawyerEnv):
         return reward
 
     def staged_rewards(self):
-        """
-        Returns staged rewards based on current physical states.
+        """Returns staged rewards based on current physical states.
+
         Stages consist of reaching, grasping, lifting, and hovering.
         """
 
@@ -426,9 +426,9 @@ class SawyerPickPlace(SawyerEnv):
         return res
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
-        
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
+
         Important keys:
             robot-state: contains robot-centric information.
             object-state: requires @self.use_object_obs to be True.
@@ -505,9 +505,7 @@ class SawyerPickPlace(SawyerEnv):
         return di
 
     def _check_contact(self):
-        """
-        Returns True if gripper is in contact with an object.
-        """
+        """Returns True if gripper is in contact with an object."""
         collision = False
         for contact in self.sim.data.contact[:self.sim.data.ncon]:
             if (self.sim.model.geom_id2name(contact.geom1) in self.finger_names
@@ -518,9 +516,7 @@ class SawyerPickPlace(SawyerEnv):
         return collision
 
     def _check_success(self):
-        """
-        Returns True if task has been completed.
-        """
+        """Returns True if task has been completed."""
 
         # remember objects that are in the correct bins
         gripper_site_pos = self.sim.data.site_xpos[self.eef_site_id]
@@ -540,8 +536,9 @@ class SawyerPickPlace(SawyerEnv):
         return np.sum(self.objects_in_bins) == len(self.ob_inits)
 
     def _gripper_visualization(self):
-        """
-        Do any needed visualization here. Overrides superclass implementations.
+        """Do any needed visualization here.
+
+        Overrides superclass implementations.
         """
         # color the gripper site appropriately based on distance to nearest object
         if self.gripper_visualization:

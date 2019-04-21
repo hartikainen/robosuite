@@ -1,7 +1,7 @@
 """End-effector control for bimanual Baxter robot.
 
-This script shows how to use inverse kinematics solver from Bullet
-to command the end-effectors of two arms of the Baxter robot.
+This script shows how to use inverse kinematics solver from Bullet to
+command the end-effectors of two arms of the Baxter robot.
 """
 
 import os

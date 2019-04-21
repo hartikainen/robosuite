@@ -13,9 +13,8 @@ from robosuite.models.tasks import NutAssemblyTask, UniformRandomPegsSampler
 
 
 class SawyerNutAssembly(SawyerEnv):
-    """
-    This class corresponds to the nut assembly task for the Sawyer robot arm.
-    """
+    """This class corresponds to the nut assembly task for the Sawyer robot
+    arm."""
 
     def __init__(
             self,
@@ -210,9 +209,9 @@ class SawyerNutAssembly(SawyerEnv):
             self.model.peg2_body.get("pos"))  # round
 
     def clear_objects(self, obj):
-        """
-        Clears objects with name @obj out of the task space. This is useful
-        for supporting task modes with single types of objects, as in
+        """Clears objects with name @obj out of the task space. This is useful
+        for supporting task modes with single types of objects, as in.
+
         @self.single_object_mode without changing the model definition.
         """
         for obj_name, obj_mjcf in self.mujoco_objects.items():
@@ -291,8 +290,8 @@ class SawyerNutAssembly(SawyerEnv):
         return reward
 
     def staged_rewards(self):
-        """
-        Returns staged rewards based on current physical states.
+        """Returns staged rewards based on current physical states.
+
         Stages consist of reaching, grasping, lifting, and hovering.
         """
 
@@ -389,9 +388,9 @@ class SawyerNutAssembly(SawyerEnv):
         return res
 
     def _get_observation(self):
-        """
-        Returns an OrderedDict containing observations [(name_string, np.array), ...].
-        
+        """Returns an OrderedDict containing observations [(name_string,
+        np.array), ...].
+
         Important keys:
             robot-state: contains robot-centric information.
             object-state: requires @self.use_object_obs to be True.
@@ -467,9 +466,7 @@ class SawyerNutAssembly(SawyerEnv):
         return di
 
     def _check_contact(self):
-        """
-        Returns True if gripper is in contact with an object.
-        """
+        """Returns True if gripper is in contact with an object."""
         collision = False
         for contact in self.sim.data.contact[:self.sim.data.ncon]:
             if (self.sim.model.geom_id2name(contact.geom1) in self.finger_names
@@ -480,9 +477,7 @@ class SawyerNutAssembly(SawyerEnv):
         return collision
 
     def _check_success(self):
-        """
-        Returns True if task has been completed.
-        """
+        """Returns True if task has been completed."""
 
         # remember objects that are on the correct pegs
         gripper_site_pos = self.sim.data.site_xpos[self.eef_site_id]
@@ -501,8 +496,9 @@ class SawyerNutAssembly(SawyerEnv):
         return np.sum(self.objects_on_pegs) == len(self.ob_inits)
 
     def _gripper_visualization(self):
-        """
-        Do any needed visualization here. Overrides superclass implementations.
+        """Do any needed visualization here.
+
+        Overrides superclass implementations.
         """
         # color the gripper site appropriately based on distance to nearest object
         if self.gripper_visualization:

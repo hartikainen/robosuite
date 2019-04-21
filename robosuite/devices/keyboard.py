@@ -1,6 +1,4 @@
-"""
-Driver class for Keyboard controller.
-"""
+"""Driver class for Keyboard controller."""
 
 import glfw
 import numpy as np
@@ -12,9 +10,7 @@ class Keyboard(Device):
     """A minimalistic driver class for a Keyboard."""
 
     def __init__(self):
-        """
-        Initialize a Keyboard device.
-        """
+        """Initialize a Keyboard device."""
 
         self._display_controls()
         self._reset_internal_state()
@@ -24,9 +20,7 @@ class Keyboard(Device):
         self._pos_step = 0.05
 
     def _display_controls(self):
-        """
-        Method to pretty print controls.
-        """
+        """Method to pretty print controls."""
 
         def print_command(char, info):
             char += " " * (10 - len(char))
@@ -45,25 +39,22 @@ class Keyboard(Device):
         print("")
 
     def _reset_internal_state(self):
-        """
-        Resets internal state of controller, except for the reset signal.
-        """
+        """Resets internal state of controller, except for the reset signal."""
         self.rotation = np.array([[-1., 0., 0.], [0., 1., 0.], [0., 0., -1.]])
         self.pos = np.zeros(3)  # (x, y, z)
         self.last_pos = np.zeros(3)
         self.grasp = False
 
     def start_control(self):
-        """
-        Method that should be called externally before controller can
-        start receiving commands.
-        """
+        """Method that should be called externally before controller can start
+        receiving commands."""
         self._reset_internal_state()
         self._reset_state = 0
         self._enabled = True
 
     def get_controller_state(self):
-        """Returns the current state of the keyboard, a dictionary of pos, orn, grasp, and reset."""
+        """Returns the current state of the keyboard, a dictionary of pos, orn,
+        grasp, and reset."""
         dpos = self.pos - self.last_pos
         self.last_pos = np.array(self.pos)
         return dict(
@@ -74,9 +65,7 @@ class Keyboard(Device):
         )
 
     def on_press(self, window, key, scancode, action, mods):
-        """
-        Key handler for key presses.
-        """
+        """Key handler for key presses."""
 
         # controls for moving position
         if key == glfw.KEY_W:
@@ -113,9 +102,7 @@ class Keyboard(Device):
             self.rotation = self.rotation.dot(drot)  # rotates z
 
     def on_release(self, window, key, scancode, action, mods):
-        """
-        Key handler for key releases.
-        """
+        """Key handler for key releases."""
 
         # controls for grasping
         if key == glfw.KEY_SPACE:

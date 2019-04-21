@@ -19,10 +19,11 @@ from robosuite.controllers import Controller
 
 
 class SawyerIKController(Controller):
-    """
-    Inverse kinematics for the Sawyer robot, using Pybullet and the urdf description
-    files. Loads a sawyer robot into an internal Pybullet simulation, and uses it to
-    do inverse kinematics computations.
+    """Inverse kinematics for the Sawyer robot, using Pybullet and the urdf
+    description files.
+
+    Loads a sawyer robot into an internal Pybullet simulation, and uses
+    it to do inverse kinematics computations.
     """
 
     def __init__(self, bullet_data_path, robot_jpos_getter):
@@ -49,11 +50,10 @@ class SawyerIKController(Controller):
         self.sync_state()
 
     def get_control(self, dpos=None, rotation=None):
-        """
-        Returns joint velocities to control the robot after the target end effector 
-        position and orientation are updated from arguments @dpos and @rotation.
-        If no arguments are provided, joint velocities will be computed based
-        on the previously recorded target.
+        """Returns joint velocities to control the robot after the target end
+        effector position and orientation are updated from arguments @dpos and
+        @rotation. If no arguments are provided, joint velocities will be
+        computed based on the previously recorded target.
 
         Args:
             dpos (numpy array): a 3 dimensional array corresponding to the desired
@@ -86,10 +86,8 @@ class SawyerIKController(Controller):
         return velocities
 
     def sync_state(self):
-        """
-        Syncs the internal Pybullet robot state to the joint positions of the
-        robot being controlled.
-        """
+        """Syncs the internal Pybullet robot state to the joint positions of
+        the robot being controlled."""
 
         # sync IK robot state to the current robot joint positions
         self.sync_ik_robot(self.robot_jpos_getter())
@@ -99,10 +97,11 @@ class SawyerIKController(Controller):
             self.ik_robot_eef_joint_cartesian_pose())
 
     def setup_inverse_kinematics(self):
-        """
-        This function is responsible for doing any setup for inverse kinematics.
-        Inverse Kinematics maps end effector (EEF) poses to joint angles that
-        are necessary to achieve those poses. 
+        """This function is responsible for doing any setup for inverse
+        kinematics.
+
+        Inverse Kinematics maps end effector (EEF) poses to joint angles
+        that are necessary to achieve those poses.
         """
 
         # Set up a connection to the PyBullet simulator.
@@ -121,12 +120,11 @@ class SawyerIKController(Controller):
         p.setRealTimeSimulation(1)
 
     def sync_ik_robot(self, joint_positions, simulate=False, sync_last=True):
-        """
-        Force the internal robot model to match the provided joint angles.
+        """Force the internal robot model to match the provided joint angles.
 
         Args:
             joint_positions (list): a list or flat numpy array of joint positions.
-            simulate (bool): If True, actually use physics simulation, else 
+            simulate (bool): If True, actually use physics simulation, else
                 write to physics state directly.
             sync_last (bool): If False, don't sync the last joint angle. This
                 is useful for directly controlling the roll at the end effector.
@@ -151,10 +149,9 @@ class SawyerIKController(Controller):
                 p.resetJointState(self.ik_robot, i, joint_positions[i], 0)
 
     def ik_robot_eef_joint_cartesian_pose(self):
-        """
-        Returns the current cartesian pose of the last joint of the ik robot with respect to the base frame as
-        a (pos, orn) tuple where orn is a x-y-z-w quaternion
-        """
+        """Returns the current cartesian pose of the last joint of the ik robot
+        with respect to the base frame as a (pos, orn) tuple where orn is a
+        x-y-z-w quaternion."""
         eef_pos_in_world = np.array(p.getLinkState(self.ik_robot, 6)[0])
         eef_orn_in_world = np.array(p.getLinkState(self.ik_robot, 6)[1])
         eef_pose_in_world = T.pose2mat((eef_pos_in_world, eef_orn_in_world))
@@ -175,9 +172,8 @@ class SawyerIKController(Controller):
                            target_position,
                            target_orientation,
                            rest_poses=None):
-        """
-        Helper function to do inverse kinematics for a given target position and 
-        orientation in the PyBullet world frame.
+        """Helper function to do inverse kinematics for a given target position
+        and orientation in the PyBullet world frame.
 
         Args:
             target_position: A tuple, list, or numpy array of size 3 for position.
@@ -217,8 +213,7 @@ class SawyerIKController(Controller):
         return ik_solution
 
     def bullet_base_pose_to_world_pose(self, pose_in_base):
-        """
-        Convert a pose in the base frame to a pose in the world frame.
+        """Convert a pose in the base frame to a pose in the world frame.
 
         Args:
             pose_in_base: a (pos, orn) tuple.
@@ -239,9 +234,8 @@ class SawyerIKController(Controller):
         return T.mat2pose(pose_in_world)
 
     def joint_positions_for_eef_command(self, dpos, rotation):
-        """
-        This function runs inverse kinematics to back out target joint positions
-        from the provided end effector command.
+        """This function runs inverse kinematics to back out target joint
+        positions from the provided end effector command.
 
         Same arguments as @get_control.
 
@@ -277,9 +271,8 @@ class SawyerIKController(Controller):
         return arm_joint_pos
 
     def _get_current_error(self, current, set_point):
-        """
-        Returns an array of differences between the desired joint positions and current
-        joint positions. Useful for PID control.
+        """Returns an array of differences between the desired joint positions
+        and current joint positions. Useful for PID control.
 
         Args:
             current: the current joint positions.
@@ -292,9 +285,7 @@ class SawyerIKController(Controller):
         return error
 
     def clip_joint_velocities(self, velocities):
-        """
-        Clips joint velocities into a valid range.
-        """
+        """Clips joint velocities into a valid range."""
         for i in range(len(velocities)):
             if velocities[i] >= 1.0:
                 velocities[i] = 1.0

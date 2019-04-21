@@ -1,6 +1,4 @@
-"""
-Gripper with 11-DoF controlling three fingers and its open/close variant.
-"""
+"""Gripper with 11-DoF controlling three fingers and its open/close variant."""
 import numpy as np
 
 from robosuite.models.grippers import Gripper
@@ -8,9 +6,7 @@ from robosuite.utils.mjcf_utils import xml_path_completion
 
 
 class RobotiqThreeFingerGripperBase(Gripper):
-    """
-    Gripper with 11 dof controlling three fingers.
-    """
+    """Gripper with 11 dof controlling three fingers."""
 
     def __init__(self):
         super().__init__(xml_path_completion("grippers/robotiq_gripper_s.xml"))
@@ -64,9 +60,7 @@ class RobotiqThreeFingerGripperBase(Gripper):
 
 
 class RobotiqThreeFingerGripper(RobotiqThreeFingerGripperBase):
-    """
-    1-DoF variant of RobotiqThreeFingerGripperBase.
-    """
+    """1-DoF variant of RobotiqThreeFingerGripperBase."""
 
     def format_action(self, action):
         """

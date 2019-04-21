@@ -47,6 +47,6 @@ class TableArena(Arena):
 
     @property
     def table_top_abs(self):
-        """Returns the absolute position of table top"""
+        """Returns the absolute position of table top."""
         table_height = np.array([0, 0, self.table_full_size[2]])
         return string_to_array(self.floor.get("pos")) + table_height

@@ -1,6 +1,4 @@
-"""
-    4 dof gripper with two fingers and its open/close variant
-"""
+"""4 dof gripper with two fingers and its open/close variant."""
 import numpy as np
 
 from robosuite.models.grippers import Gripper
@@ -8,9 +6,7 @@ from robosuite.utils.mjcf_utils import xml_path_completion
 
 
 class PR2GripperBase(Gripper):
-    """
-    A 4 dof gripper with two fingers.
-    """
+    """A 4 dof gripper with two fingers."""
 
     def __init__(self):
         super().__init__(xml_path_completion("grippers/pr2_gripper.xml"))
@@ -57,9 +53,7 @@ class PR2GripperBase(Gripper):
 
 
 class PR2Gripper(PR2GripperBase):
-    """
-    Open/close variant of PR2 gripper.
-    """
+    """Open/close variant of PR2 gripper."""
 
     def format_action(self, action):
         """

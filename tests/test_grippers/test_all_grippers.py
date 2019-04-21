@@ -1,6 +1,4 @@
-"""
-    Tests the basic interface of all grippers
-"""
+"""Tests the basic interface of all grippers."""
 from robosuite.models.grippers import (
     TwoFingerGripper,
     LeftTwoFingerGripper,

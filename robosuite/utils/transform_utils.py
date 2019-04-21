@@ -67,17 +67,16 @@ def quat_multiply(quaternion1, quaternion0):
     >>> np.allclose(q, [-44, -14, 48, 28])
     True
     """
-    x0, y0, z0, w0 = quaternion0
-    x1, y1, z1, w1 = quaternion1
-    return np.array(
-        (
-            x1 * w0 + y1 * z0 - z1 * y0 + w1 * x0,
-            -x1 * z0 + y1 * w0 + z1 * x0 + w1 * y0,
-            x1 * y0 - y1 * x0 + z1 * w0 + w1 * z0,
-            -x1 * x0 - y1 * y0 - z1 * z0 + w1 * w0,
-        ),
-        dtype=np.float32,
-    )
+    x0, y0, z0, w0 = np.split(quaternion0, 4, axis=-1)
+    x1, y1, z1, w1 = np.split(quaternion1, 4, axis=-1)
+    result = np.concatenate((
+        x1 * w0 + y1 * z0 - z1 * y0 + w1 * x0,
+        -x1 * z0 + y1 * w0 + z1 * x0 + w1 * y0,
+        x1 * y0 - y1 * x0 + z1 * w0 + w1 * z0,
+        -x1 * x0 - y1 * y0 - z1 * z0 + w1 * w0,
+    ), axis=-1)
+
+    return result
 
 
 def quat_conjugate(quaternion):
@@ -573,35 +572,36 @@ def unit_vector(data, axis=None, out=None):
         return data
 
 
-def get_orientation_error(target_orn, current_orn):
+def get_orientation_error(target_orientation, current_orientation):
     """Returns the difference between two quaternion orientations as a 3 DOF
     numpy array. For use in an impedance controller / task-space PD controller.
 
     Args:
-        target_orn: 4-dim iterable, desired orientation as a (x, y, z, w) quaternion
-        current_orn: 4-dim iterable, current orientation as a (x, y, z, w) quaternion
+        target_orientation: 4-dim iterable, desired orientation as a (x, y, z, w) quaternion
+        current_orientation: 4-dim iterable, current orientation as a (x, y, z, w) quaternion
 
     Returns:
-        orn_error: 3-dim numpy array for current orientation error, corresponds to
+        orientation_error: 3-dim numpy array for current orientation error, corresponds to
             (target_orn - current_orn)
     """
-    current_orn = np.array(
-        [current_orn[3], current_orn[0], current_orn[1], current_orn[2]])
-    target_orn = np.array(
-        [target_orn[3], target_orn[0], target_orn[1], target_orn[2]])
+    target_orientation = np.concatenate((
+        target_orientation[..., -1:], target_orientation[..., :-1]
+    ), axis=-1)
+    current_orientation = np.concatenate((
+        current_orientation[..., -1:], current_orientation[..., :-1]
+    ), axis=-1)
 
-    pinv = np.zeros((3, 4))
-    pinv[0, :] = [
-        -current_orn[1], current_orn[0], -current_orn[3], current_orn[2]
-    ]
-    pinv[1, :] = [
-        -current_orn[2], current_orn[3], current_orn[0], -current_orn[1]
-    ]
-    pinv[2, :] = [
-        -current_orn[3], -current_orn[2], current_orn[1], current_orn[0]
-    ]
-    orn_error = 2.0 * pinv.dot(np.array(target_orn))
-    return orn_error
+    pinv = np.zeros((*target_orientation.shape[:-1], 3, 4))
+    pinv[..., 0, :] = (
+        np.array((-1, 1, -1, 1)) * current_orientation[..., (1, 0, 3, 2)])
+    pinv[..., 1, :] = (
+        np.array((-1, 1, 1, -1)) * current_orientation[..., (2, 3, 0, 1)])
+    pinv[..., 2, :] = (
+        np.array((-1, -1, 1, 1)) * current_orientation[..., (3, 2, 1, 0)])
+
+    orientation_error = 2.0 * np.einsum('kij,kj->ki', pinv, target_orientation)
+
+    return orientation_error
 
 
 def get_pose_error(target_pose, current_pose):

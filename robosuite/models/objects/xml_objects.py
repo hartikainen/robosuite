@@ -98,7 +98,7 @@ class PlateWithHoleObject(MujocoXMLObject):
 
 
 class ScrewObject(MujocoXMLObject):
-    """Cube with a colored/alphabetized sides."""
+    """Screw with four colored spokes."""
 
     def __init__(self):
         super().__init__(xml_path_completion("objects/screw.xml"))

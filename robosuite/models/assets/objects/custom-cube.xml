@@ -11,7 +11,6 @@
 
       <body name="visual">
         <geom pos="0 0 0" type="box" size="0.025 0.025 0.025" solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" material="material:block" group="1" condim="4"/>
-        <geom pos="0 0 0" type="box" size="0.025 0.025 0.025" solimp="0.998 0.998 0.001" solref="0.001 1" density="100" friction="0.95 0.3 0.1" material="material:block" group="1" condim="4"/>
       </body>
 
       <site rgba="1 1 1 1" size="0.005" pos="0 0 -0.025" name="bottom_site"/>

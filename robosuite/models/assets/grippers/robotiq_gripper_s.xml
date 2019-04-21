@@ -61,7 +61,7 @@
                 <inertial pos="-0.0381134 0.026928 0.0359997" quat="0.0835458 0.702169 -0.0835699 0.702136" mass="0.0494545" diaginertia="1.39633e-05 1.10443e-05 9.98401e-06" />
                 <joint damping="0.1" name="palm_finger_2_joint" pos="0 0 0" axis="0 1 0" limited="true" range="-0.25 0.16" />
                 <geom pos="0.02 0 0" type="mesh" contype="0" conaffinity="0" group="1" rgba="0 1 0 1" mesh="link_0" />
-                <geom name="f2_l0" pos="0.02 0 0" type="mesh" rgba="0 1 0 1" group="0" mesh="link_0" /> 
+                <geom name="f2_l0" pos="0.02 0 0" type="mesh" rgba="0 1 0 1" group="0" mesh="link_0" />
                 <!-- pos="-0.0455 0.0414 0.036" quat="-2.59838e-06 0.706825 0.707388 2.59631e-06" type="mesh"  -->
                 <body name="finger_2_link_1" pos="0.02 0 0">
                     <inertial pos="0.0184407 -0.0219985 -5.83379e-12" quat="0.170512 0.68624 -0.170512 0.68624" mass="0.0859984" diaginertia="6.46024e-05 5.9524e-05 1.50124e-05" />

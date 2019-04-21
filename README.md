@@ -43,7 +43,7 @@ First download MuJoCo 1.5.0 ([Linux](https://www.roboti.us/download/mjpro150_lin
 
 ### Install from source
 1. Clone the robosuite repository
-```sh 
+```sh
     $ git clone https://github.com/StanfordVL/robosuite.git
     $ cd robosuite
 ```

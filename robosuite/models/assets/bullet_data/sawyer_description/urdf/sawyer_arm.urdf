@@ -19,7 +19,7 @@
   <material name="sawyer_gray">
     <color rgba="0.75294 0.75294 0.75294 1"/>
   </material>
-  
+
   <link name="right_arm_base_link">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0006241 -2.8025E-05 0.065404"/>
@@ -67,7 +67,7 @@
     <axis xyz="0 0 1"/>
     <limit effort="80.0" lower="-3.0503" upper="3.0503" velocity="1.74"/>
   </joint>
-  
+
   <link name="right_l1">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.0030849 -0.026811 0.092521"/>
@@ -176,7 +176,7 @@
     <axis xyz="0 0 1"/>
     <limit effort="9.0" lower="-2.9842" upper="2.9842" velocity="3.485"/>
   </joint>
- 
+
   <link name="right_l5">
     <inertial>
       <origin rpy="0 0 0" xyz="0.0062067 -0.024291 0.075564"/>

@@ -32,7 +32,7 @@ class SawyerIKController(Controller):
             bullet_data_path (str): base path to bullet data.
 
             robot_jpos_getter (function): function that returns the joint positions of
-                the robot to be controlled as a numpy array. 
+                the robot to be controlled as a numpy array.
         """
 
         # path to data folder of bullet repository

@@ -10,7 +10,7 @@
         <position ctrllimited="true" ctrlrange="-0.020833 0.0115" joint="l_gripper_l_finger_joint" kp="10000" name="gripper_l_gripper_l_finger_joint" forcelimited="true" forcerange="-20 20"/>
 
     </actuator>
-    
+
     <worldbody>
         <inertial pos="1e-08 1e-08 1e-08" quat="0.820473 0.339851 -0.17592 0.424708" mass="1e-08" diaginertia="1e-08 1e-08 1e-08" />
         <geom size="1e-08 5e-09" type="cylinder" />

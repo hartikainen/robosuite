@@ -160,7 +160,7 @@
                         <geom margin="0.001" class="viz" rgba="0.1 0.1 0.1 1" mesh="W2" />
                         <geom margin="0.001" type="cylinder" size="0.06 0.0825" rgba="0.1 0.1 0.1 1" pos="0 0 0" />
                         <body name="left_hand" pos="0 0 0.11355">
-       				<!-- left gripper gets added here --> 
+       				<!-- left gripper gets added here -->
                         </body>
                       </body>
                     </body>

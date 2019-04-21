@@ -19,7 +19,7 @@ class MujocoObject:
         pass
 ```
 
-Additionally, objects are usually placed relatively. For example, we want to put an object on a table or place a cube on top of another. Instance methods `get_bottom_offset`, `get_top_offset`, `get_horizontal_radius` provide the necessary information to place objects properly. 
+Additionally, objects are usually placed relatively. For example, we want to put an object on a table or place a cube on top of another. Instance methods `get_bottom_offset`, `get_top_offset`, `get_horizontal_radius` provide the necessary information to place objects properly.
 ```python
     def get_bottom_offset(self):
         pass
@@ -70,7 +70,7 @@ So all the important definitions are in the [bread.xml](../robosuite/models/asse
   </worldbody>
 </mujoco>
 ```
-* `get_collision` of `MujocoXmlObject` would look for the `<body>` tag with name `collision`. 
+* `get_collision` of `MujocoXmlObject` would look for the `<body>` tag with name `collision`.
 * `get_visual` of `MujocoXmlObject` would look for the `<body>` tag with name `visual`.
 * `bottom_site` should be the bottom of the object, i.e. contact point with the surface it is placed on.
 * `top_site` should be the top of the object, i.e. contact point if something is placed on it.

@@ -65,7 +65,7 @@ model = world.get_model(mode="mujoco_py")
 ```
 This is a mujoco_py `MjModel` instance than can then be used for simulation.
 
-For example, 
+For example,
 ```python
 from mujoco_py import MjSim, MjViewer
 

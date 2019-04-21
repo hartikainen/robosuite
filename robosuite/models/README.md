@@ -3,7 +3,7 @@ Models
 
 Models provide a toolkit of composing modularized elements into a scene. The central goal of models is to provide a set of modularized APIs that procedurally generate combinations of robots, arenas, and parameterized 3D objects, such that it enables us to learn control policies with better robustness and generalization.
 
-In MuJoCo, these scene elements are specified in [MJCF](http://mujoco.org/book/modeling.html#Summary) format and compiled into mjModel to instantiate the physical simulation. Each MJCF model can consist of multiple XML files as well as meshes and textures referenced from the XML file. These MJCF files are stored in the [assets](assets) folder. 
+In MuJoCo, these scene elements are specified in [MJCF](http://mujoco.org/book/modeling.html#Summary) format and compiled into mjModel to instantiate the physical simulation. Each MJCF model can consist of multiple XML files as well as meshes and textures referenced from the XML file. These MJCF files are stored in the [assets](assets) folder.
 
 Below we describe the types of scene elements that we support:
 

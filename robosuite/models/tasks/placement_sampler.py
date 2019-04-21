@@ -53,7 +53,7 @@ class UniformRandomSampler(ObjectPositionSampler):
             ensure_object_boundary_in_range:
                 True: The center of object is at position:
                      [uniform(min x_range + radius, max x_range - radius)], [uniform(min x_range + radius, max x_range - radius)]
-                False: 
+                False:
                     [uniform(min x_range, max x_range)], [uniform(min x_range, max x_range)]
             z_rotation:
                 None: Add uniform random random z-rotation
@@ -160,7 +160,7 @@ class UniformRandomPegsSampler(ObjectPositionSampler):
             ensure_object_boundary_in_range:
                 True: The center of object is at position:
                      [uniform(min x_range + radius, max x_range - radius)], [uniform(min x_range + radius, max x_range - radius)]
-                False: 
+                False:
                     [uniform(min x_range, max x_range)], [uniform(min x_range, max x_range)]
             z_rotation:
                 Add random z-rotation

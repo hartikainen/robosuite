@@ -1203,7 +1203,7 @@
   </transmission>
   <transmission name="left_tran2">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="left_s1">      
+    <joint name="left_s1">
       <hardwareInterface>EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="left_motor2">

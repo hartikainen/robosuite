@@ -28,32 +28,32 @@ class BaxterEnv(MujocoEnv):
             gripper_visualization (bool): True if using gripper visualization.
                 Useful for teleoperation.
 
-            use_indicator_object (bool): if True, sets up an indicator object that 
+            use_indicator_object (bool): if True, sets up an indicator object that
                 is useful for debugging.
 
-            has_renderer (bool): If true, render the simulation state in 
+            has_renderer (bool): If true, render the simulation state in
                 a viewer instead of headless mode.
 
             has_offscreen_renderer (bool): True if using off-screen rendering.
 
-            render_collision_mesh (bool): True if rendering collision meshes 
+            render_collision_mesh (bool): True if rendering collision meshes
                 in camera. False otherwise.
 
-            render_visual_mesh (bool): True if rendering visual meshes 
+            render_visual_mesh (bool): True if rendering visual meshes
                 in camera. False otherwise.
 
-            control_freq (float): how many control signals to receive 
-                in every second. This sets the amount of simulation time 
+            control_freq (float): how many control signals to receive
+                in every second. This sets the amount of simulation time
                 that passes between every action input.
 
             horizon (int): Every episode lasts for exactly @horizon timesteps.
 
             ignore_done (bool): True if never terminating the environment (ignore @horizon).
 
-            use_camera_obs (bool): if True, every observation includes a 
+            use_camera_obs (bool): if True, every observation includes a
                 rendered image.
 
-            camera_name (str): name of camera to be rendered. Must be 
+            camera_name (str): name of camera to be rendered. Must be
                 set if @use_camera_obs is True.
 
             camera_height (int): height of camera frame.

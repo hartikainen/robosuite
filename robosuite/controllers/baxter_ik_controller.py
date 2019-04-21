@@ -28,7 +28,7 @@ class BaxterIKController(Controller):
             bullet_data_path (str): base path to bullet data.
 
             robot_jpos_getter (function): function that returns the joint positions of
-                the robot to be controlled as a numpy array. 
+                the robot to be controlled as a numpy array.
         """
         # Set up inverse kinematics
         self.robot_jpos_getter = robot_jpos_getter

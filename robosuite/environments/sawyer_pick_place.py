@@ -92,7 +92,7 @@ class SawyerPickPlace(SawyerEnv):
             gripper_visualization (bool): True if using gripper visualization.
                 Useful for teleoperation.
 
-            use_indicator_object (bool): if True, sets up an indicator object that 
+            use_indicator_object (bool): if True, sets up an indicator object that
                 is useful for debugging.
 
             has_renderer (bool): If true, render the simulation state in
@@ -100,7 +100,7 @@ class SawyerPickPlace(SawyerEnv):
 
             has_offscreen_renderer (bool): True if using off-screen rendering.
 
-            render_collision_mesh (bool): True if rendering collision meshes 
+            render_collision_mesh (bool): True if rendering collision meshes
                 in camera. False otherwise.
 
             render_visual_mesh (bool): True if rendering visual meshes

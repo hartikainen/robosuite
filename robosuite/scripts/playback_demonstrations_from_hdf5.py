@@ -25,12 +25,11 @@ if __name__ == "__main__":
     parser.add_argument(
         "--folder",
         type=str,
-        default=os.path.join(
-            robosuite.models.assets_root, "demonstrations/SawyerNutAssembly"
-        ),
+        default=os.path.join(robosuite.models.assets_root,
+                             "demonstrations/SawyerNutAssembly"),
     )
     parser.add_argument(
-        "--use-actions", 
+        "--use-actions",
         action='store_true',
     )
     args = parser.parse_args()
@@ -93,7 +92,7 @@ if __name__ == "__main__":
                 if j < num_actions - 1:
                     # ensure that the actions deterministically lead to the same recorded states
                     state_playback = env.sim.get_state().flatten()
-                    assert(np.all(np.equal(states[j + 1], state_playback)))
+                    assert (np.all(np.equal(states[j + 1], state_playback)))
 
         else:
 

@@ -16,27 +16,27 @@ class SawyerLift(SawyerEnv):
     """
 
     def __init__(
-        self,
-        gripper_type="TwoFingerGripper",
-        table_full_size=(0.8, 0.8, 0.8),
-        table_friction=(1., 5e-3, 1e-4),
-        use_camera_obs=True,
-        use_object_obs=True,
-        reward_shaping=False,
-        placement_initializer=None,
-        gripper_visualization=False,
-        use_indicator_object=False,
-        has_renderer=False,
-        has_offscreen_renderer=True,
-        render_collision_mesh=False,
-        render_visual_mesh=True,
-        control_freq=10,
-        horizon=1000,
-        ignore_done=False,
-        camera_name="frontview",
-        camera_height=256,
-        camera_width=256,
-        camera_depth=False,
+            self,
+            gripper_type="TwoFingerGripper",
+            table_full_size=(0.8, 0.8, 0.8),
+            table_friction=(1., 5e-3, 1e-4),
+            use_camera_obs=True,
+            use_object_obs=True,
+            reward_shaping=False,
+            placement_initializer=None,
+            gripper_visualization=False,
+            use_indicator_object=False,
+            has_renderer=False,
+            has_offscreen_renderer=True,
+            render_collision_mesh=False,
+            render_visual_mesh=True,
+            control_freq=10,
+            horizon=1000,
+            ignore_done=False,
+            camera_name="frontview",
+            camera_height=256,
+            camera_width=256,
+            camera_depth=False,
     ):
         """
         Args:
@@ -143,9 +143,8 @@ class SawyerLift(SawyerEnv):
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
         # load model for table top workspace
-        self.mujoco_arena = TableArena(
-            table_full_size=self.table_full_size, table_friction=self.table_friction
-        )
+        self.mujoco_arena = TableArena(table_full_size=self.table_full_size,
+                                       table_friction=self.table_friction)
         if self.use_indicator_object:
             self.mujoco_arena.add_pos_indicator()
 
@@ -178,10 +177,12 @@ class SawyerLift(SawyerEnv):
         super()._get_reference()
         self.cube_body_id = self.sim.model.body_name2id("cube")
         self.l_finger_geom_ids = [
-            self.sim.model.geom_name2id(x) for x in self.gripper.left_finger_geoms
+            self.sim.model.geom_name2id(x)
+            for x in self.gripper.left_finger_geoms
         ]
         self.r_finger_geom_ids = [
-            self.sim.model.geom_name2id(x) for x in self.gripper.right_finger_geoms
+            self.sim.model.geom_name2id(x)
+            for x in self.gripper.right_finger_geoms
         ]
         self.cube_geom_id = self.sim.model.geom_name2id("cube")
 
@@ -195,7 +196,8 @@ class SawyerLift(SawyerEnv):
         self.model.place_objects()
 
         # reset joint positions
-        init_pos = np.array([-0.5538, -0.8208, 0.4155, 1.8409, -0.4955, 0.6482, 1.9628])
+        init_pos = np.array(
+            [-0.5538, -0.8208, 0.4155, 1.8409, -0.4955, 0.6482, 1.9628])
         init_pos += np.random.randn(init_pos.shape[0]) * 0.02
         self.sim.data.qpos[self._ref_joint_pos_indexes] = np.array(init_pos)
 
@@ -282,18 +284,18 @@ class SawyerLift(SawyerEnv):
         if self.use_object_obs:
             # position and rotation of object
             cube_pos = np.array(self.sim.data.body_xpos[self.cube_body_id])
-            cube_quat = convert_quat(
-                np.array(self.sim.data.body_xquat[self.cube_body_id]), to="xyzw"
-            )
+            cube_quat = convert_quat(np.array(
+                self.sim.data.body_xquat[self.cube_body_id]),
+                                     to="xyzw")
             di["cube_pos"] = cube_pos
             di["cube_quat"] = cube_quat
 
-            gripper_site_pos = np.array(self.sim.data.site_xpos[self.eef_site_id])
+            gripper_site_pos = np.array(
+                self.sim.data.site_xpos[self.eef_site_id])
             di["gripper_to_cube"] = gripper_site_pos - cube_pos
 
             di["object-state"] = np.concatenate(
-                [cube_pos, cube_quat, di["gripper_to_cube"]]
-            )
+                [cube_pos, cube_quat, di["gripper_to_cube"]])
 
         return di
 
@@ -302,13 +304,11 @@ class SawyerLift(SawyerEnv):
         Returns True if gripper is in contact with an object.
         """
         collision = False
-        for contact in self.sim.data.contact[: self.sim.data.ncon]:
-            if (
-                self.sim.model.geom_id2name(contact.geom1)
-                in self.gripper.contact_geoms()
-                or self.sim.model.geom_id2name(contact.geom2)
-                in self.gripper.contact_geoms()
-            ):
+        for contact in self.sim.data.contact[:self.sim.data.ncon]:
+            if (self.sim.model.geom_id2name(
+                    contact.geom1) in self.gripper.contact_geoms() or
+                    self.sim.model.geom_id2name(
+                        contact.geom2) in self.gripper.contact_geoms()):
                 collision = True
                 break
         return collision
@@ -333,15 +333,12 @@ class SawyerLift(SawyerEnv):
             # get distance to cube
             cube_site_id = self.sim.model.site_name2id("cube")
             dist = np.sum(
-                np.square(
-                    self.sim.data.site_xpos[cube_site_id]
-                    - self.sim.data.get_site_xpos("grip_site")
-                )
-            )
+                np.square(self.sim.data.site_xpos[cube_site_id] -
+                          self.sim.data.get_site_xpos("grip_site")))
 
             # set RGBA for the EEF site here
             max_dist = 0.1
-            scaled = (1.0 - min(dist / max_dist, 1.)) ** 15
+            scaled = (1.0 - min(dist / max_dist, 1.))**15
             rgba = np.zeros(4)
             rgba[0] = 1 - scaled
             rgba[1] = scaled

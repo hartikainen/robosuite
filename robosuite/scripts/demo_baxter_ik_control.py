@@ -10,7 +10,6 @@ import numpy as np
 import robosuite
 from robosuite.wrappers import IKWrapper
 
-
 if __name__ == "__main__":
 
     # initialize a Baxter environment
@@ -27,8 +26,20 @@ if __name__ == "__main__":
 
     # rotate the gripper so we can see it easily
     env.set_robot_joint_positions([
-        0.00, -0.55, 0.00, 1.28, 0.00, 0.26, 0.00,
-        0.00, -0.55, 0.00, 1.28, 0.00, 0.26, 0.00,
+        0.00,
+        -0.55,
+        0.00,
+        1.28,
+        0.00,
+        0.26,
+        0.00,
+        0.00,
+        -0.55,
+        0.00,
+        1.28,
+        0.00,
+        0.26,
+        0.00,
     ])
 
     bullet_data_path = os.path.join(robosuite.models.assets_root, "bullet_data")
@@ -43,7 +54,8 @@ if __name__ == "__main__":
         dpos_left = np.array([A * np.sin(omega * t), A * np.cos(omega * t), 0])
         dquat = np.array([0, 0, 0, 1])
         grasp = 0.
-        action = np.concatenate([dpos_right, dquat, dpos_left, dquat, [grasp, grasp]])
+        action = np.concatenate(
+            [dpos_right, dquat, dpos_left, dquat, [grasp, grasp]])
 
         obs, reward, done, info = env.step(action)
         env.render()

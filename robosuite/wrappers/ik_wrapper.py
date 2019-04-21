@@ -32,21 +32,22 @@ class IKWrapper(Wrapper):
             from robosuite.controllers import SawyerIKController
 
             self.controller = SawyerIKController(
-                bullet_data_path=os.path.join(robosuite.models.assets_root, "bullet_data"),
+                bullet_data_path=os.path.join(robosuite.models.assets_root,
+                                              "bullet_data"),
                 robot_jpos_getter=self._robot_jpos_getter,
             )
         elif self.env.mujoco_robot.name == "baxter":
             from robosuite.controllers import BaxterIKController
 
             self.controller = BaxterIKController(
-                bullet_data_path=os.path.join(robosuite.models.assets_root, "bullet_data"),
+                bullet_data_path=os.path.join(robosuite.models.assets_root,
+                                              "bullet_data"),
                 robot_jpos_getter=self._robot_jpos_getter,
             )
         else:
             raise Exception(
                 "Only Sawyer and Baxter robot environments are supported for IK "
-                "control currently."
-            )
+                "control currently.")
 
         self.action_repeat = action_repeat
 
@@ -99,8 +100,7 @@ class IKWrapper(Wrapper):
         else:
             raise Exception(
                 "Only Sawyer and Baxter robot environments are supported for IK "
-                "control currently."
-            )
+                "control currently.")
 
         # keep trying to reach the target in a closed-loop
         for i in range(self.action_repeat):

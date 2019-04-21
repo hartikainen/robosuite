@@ -43,7 +43,6 @@ import robosuite
 import robosuite.utils.transform_utils as T
 from robosuite.wrappers import IKWrapper
 
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
@@ -78,8 +77,7 @@ if __name__ == "__main__":
         device = SpaceMouse()
     else:
         raise Exception(
-            "Invalid device choice: choose either 'keyboard' or 'spacemouse'."
-        )
+            "Invalid device choice: choose either 'keyboard' or 'spacemouse'.")
 
     while True:
         obs = env.reset()
@@ -87,7 +85,8 @@ if __name__ == "__main__":
         env.render()
 
         # rotate the gripper so we can see it easily
-        env.set_robot_joint_positions([0, -1.18, 0.00, 2.18, 0.00, 0.57, 1.5708])
+        env.set_robot_joint_positions(
+            [0, -1.18, 0.00, 2.18, 0.00, 0.57, 1.5708])
 
         device.start_control()
         while True:

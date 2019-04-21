@@ -12,6 +12,7 @@ from robosuite.wrappers import IKWrapper
 
 
 class DataCollectionWrapper(Wrapper):
+
     def __init__(self, env, directory, collect_freq=1, flush_freq=100):
         """
         Initializes the data collection wrapper.
@@ -38,7 +39,8 @@ class DataCollectionWrapper(Wrapper):
         self.flush_freq = flush_freq
 
         if not os.path.exists(directory):
-            print("DataCollectionWrapper: making new directory at {}".format(directory))
+            print("DataCollectionWrapper: making new directory at {}".format(
+                directory))
             os.makedirs(directory)
 
         # store logging directory for current episode
@@ -72,9 +74,11 @@ class DataCollectionWrapper(Wrapper):
 
         # create a directory with a timestamp
         t1, t2 = str(time.time()).split(".")
-        self.ep_directory = os.path.join(self.directory, "ep_{}_{}".format(t1, t2))
+        self.ep_directory = os.path.join(self.directory,
+                                         "ep_{}_{}".format(t1, t2))
         assert not os.path.exists(self.ep_directory)
-        print("DataCollectionWrapper: making folder at {}".format(self.ep_directory))
+        print("DataCollectionWrapper: making folder at {}".format(
+            self.ep_directory))
         os.makedirs(self.ep_directory)
 
         # save the model xml
@@ -86,7 +90,8 @@ class DataCollectionWrapper(Wrapper):
         Method to flush internal state to disk.
         """
         t1, t2 = str(time.time()).split(".")
-        state_path = os.path.join(self.ep_directory, "state_{}_{}.npz".format(t1, t2))
+        state_path = os.path.join(self.ep_directory,
+                                  "state_{}_{}.npz".format(t1, t2))
         if hasattr(self.env, "unwrapped"):
             env_name = self.env.unwrapped.__class__.__name__
         else:
@@ -122,22 +127,22 @@ class DataCollectionWrapper(Wrapper):
                 # add end effector actions in addition to the low-level joint actions
                 info = {}
                 info["joint_velocities"] = np.array(
-                    self.controller.commanded_joint_velocities
-                )
+                    self.controller.commanded_joint_velocities)
                 info["right_dpos"] = np.array(action[:3])
                 info["right_dquat"] = np.array(action[3:7])
                 if self.env.mujoco_robot.name == "sawyer":
                     info["gripper_actuation"] = np.array(action[7:])
                 elif self.env.mujoco_robot.name == "baxter":
                     info["gripper_actuation"] = np.array(action[14:])
-                    info["left_dpos"] = np.array(action[7:10])  # add in second arm info
+                    info["left_dpos"] = np.array(
+                        action[7:10])  # add in second arm info
                     info["left_dquat"] = np.array(action[10:14])
             else:
                 info = {}
-                info["joint_velocities"] = np.array(action[: self.env.mujoco_robot.dof])
+                info["joint_velocities"] = np.array(
+                    action[:self.env.mujoco_robot.dof])
                 info["gripper_actuation"] = np.array(
-                    action[self.env.mujoco_robot.dof :]
-                )
+                    action[self.env.mujoco_robot.dof:])
             self.action_infos.append(info)
 
         # flush collected data to disk if necessary

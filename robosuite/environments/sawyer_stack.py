@@ -16,27 +16,27 @@ class SawyerStack(SawyerEnv):
     """
 
     def __init__(
-        self,
-        gripper_type="TwoFingerGripper",
-        table_full_size=(0.8, 0.8, 0.8),
-        table_friction=(1., 5e-3, 1e-4),
-        use_camera_obs=True,
-        use_object_obs=True,
-        reward_shaping=False,
-        placement_initializer=None,
-        gripper_visualization=False,
-        use_indicator_object=False,
-        has_renderer=False,
-        has_offscreen_renderer=True,
-        render_collision_mesh=False,
-        render_visual_mesh=True,
-        control_freq=10,
-        horizon=1000,
-        ignore_done=False,
-        camera_name="frontview",
-        camera_height=256,
-        camera_width=256,
-        camera_depth=False,
+            self,
+            gripper_type="TwoFingerGripper",
+            table_full_size=(0.8, 0.8, 0.8),
+            table_friction=(1., 5e-3, 1e-4),
+            use_camera_obs=True,
+            use_object_obs=True,
+            reward_shaping=False,
+            placement_initializer=None,
+            gripper_visualization=False,
+            use_indicator_object=False,
+            has_renderer=False,
+            has_offscreen_renderer=True,
+            render_collision_mesh=False,
+            render_visual_mesh=True,
+            control_freq=10,
+            horizon=1000,
+            ignore_done=False,
+            camera_name="frontview",
+            camera_height=256,
+            camera_width=256,
+            camera_depth=False,
     ):
         """
         Args:
@@ -142,7 +142,8 @@ class SawyerStack(SawyerEnv):
         # self.object_names = [o['object_name'] for o in self.object_metadata]
         self.object_names = list(self.mujoco_objects.keys())
         self.object_site_ids = [
-            self.sim.model.site_name2id(ob_name) for ob_name in self.object_names
+            self.sim.model.site_name2id(ob_name)
+            for ob_name in self.object_names
         ]
 
         # id of grippers for contact checking
@@ -151,7 +152,8 @@ class SawyerStack(SawyerEnv):
         # self.sim.data.contact # list, geom1, geom2
         self.collision_check_geom_names = self.sim.model._geom_name2id.keys()
         self.collision_check_geom_ids = [
-            self.sim.model._geom_name2id[k] for k in self.collision_check_geom_names
+            self.sim.model._geom_name2id[k]
+            for k in self.collision_check_geom_names
         ]
 
     def _load_model(self):
@@ -162,9 +164,8 @@ class SawyerStack(SawyerEnv):
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
         # load model for table top workspace
-        self.mujoco_arena = TableArena(
-            table_full_size=self.table_full_size, table_friction=self.table_friction
-        )
+        self.mujoco_arena = TableArena(table_full_size=self.table_full_size,
+                                       table_friction=self.table_friction)
         if self.use_indicator_object:
             self.mujoco_arena.add_pos_indicator()
 
@@ -172,9 +173,9 @@ class SawyerStack(SawyerEnv):
         self.mujoco_arena.set_origin([0.16 + self.table_full_size[0] / 2, 0, 0])
 
         # initialize objects of interest
-        cubeA = BoxObject(
-            size_min=[0.02, 0.02, 0.02], size_max=[0.02, 0.02, 0.02], rgba=[1, 0, 0, 1]
-        )
+        cubeA = BoxObject(size_min=[0.02, 0.02, 0.02],
+                          size_max=[0.02, 0.02, 0.02],
+                          rgba=[1, 0, 0, 1])
         cubeB = BoxObject(
             size_min=[0.025, 0.025, 0.025],
             size_max=[0.025, 0.025, 0.025],
@@ -202,10 +203,12 @@ class SawyerStack(SawyerEnv):
         self.cubeA_body_id = self.sim.model.body_name2id("cubeA")
         self.cubeB_body_id = self.sim.model.body_name2id("cubeB")
         self.l_finger_geom_ids = [
-            self.sim.model.geom_name2id(x) for x in self.gripper.left_finger_geoms
+            self.sim.model.geom_name2id(x)
+            for x in self.gripper.left_finger_geoms
         ]
         self.r_finger_geom_ids = [
-            self.sim.model.geom_name2id(x) for x in self.gripper.right_finger_geoms
+            self.sim.model.geom_name2id(x)
+            for x in self.gripper.right_finger_geoms
         ]
         self.cubeA_geom_id = self.sim.model.geom_name2id("cubeA")
         self.cubeB_geom_id = self.sim.model.geom_name2id("cubeB")
@@ -220,7 +223,8 @@ class SawyerStack(SawyerEnv):
         self.model.place_objects()
 
         # reset joint positions
-        init_pos = np.array([-0.5538, -0.8208, 0.4155, 1.8409, -0.4955, 0.6482, 1.9628])
+        init_pos = np.array(
+            [-0.5538, -0.8208, 0.4155, 1.8409, -0.4955, 0.6482, 1.9628])
         init_pos += np.random.randn(init_pos.shape[0]) * 0.02
         self.sim.data.qpos[self._ref_joint_pos_indexes] = np.array(init_pos)
 
@@ -304,8 +308,7 @@ class SawyerStack(SawyerEnv):
         # Aligning is successful when cubeA is right above cubeB
         if cubeA_lifted:
             horiz_dist = np.linalg.norm(
-                np.array(cubeA_pos[:2]) - np.array(cubeB_pos[:2])
-            )
+                np.array(cubeA_pos[:2]) - np.array(cubeB_pos[:2]))
             r_lift += 0.5 * (1 - np.tanh(horiz_dist))
 
         # stacking is successful when the block is lifted and
@@ -347,37 +350,36 @@ class SawyerStack(SawyerEnv):
         if self.use_object_obs:
             # position and rotation of the first cube
             cubeA_pos = np.array(self.sim.data.body_xpos[self.cubeA_body_id])
-            cubeA_quat = convert_quat(
-                np.array(self.sim.data.body_xquat[self.cubeA_body_id]), to="xyzw"
-            )
+            cubeA_quat = convert_quat(np.array(
+                self.sim.data.body_xquat[self.cubeA_body_id]),
+                                      to="xyzw")
             di["cubeA_pos"] = cubeA_pos
             di["cubeA_quat"] = cubeA_quat
 
             # position and rotation of the second cube
             cubeB_pos = np.array(self.sim.data.body_xpos[self.cubeB_body_id])
-            cubeB_quat = convert_quat(
-                np.array(self.sim.data.body_xquat[self.cubeB_body_id]), to="xyzw"
-            )
+            cubeB_quat = convert_quat(np.array(
+                self.sim.data.body_xquat[self.cubeB_body_id]),
+                                      to="xyzw")
             di["cubeB_pos"] = cubeB_pos
             di["cubeB_quat"] = cubeB_quat
 
             # relative positions between gripper and cubes
-            gripper_site_pos = np.array(self.sim.data.site_xpos[self.eef_site_id])
+            gripper_site_pos = np.array(
+                self.sim.data.site_xpos[self.eef_site_id])
             di["gripper_to_cubeA"] = gripper_site_pos - cubeA_pos
             di["gripper_to_cubeB"] = gripper_site_pos - cubeB_pos
             di["cubeA_to_cubeB"] = cubeA_pos - cubeB_pos
 
-            di["object-state"] = np.concatenate(
-                [
-                    cubeA_pos,
-                    cubeA_quat,
-                    cubeB_pos,
-                    cubeB_quat,
-                    di["gripper_to_cubeA"],
-                    di["gripper_to_cubeB"],
-                    di["cubeA_to_cubeB"],
-                ]
-            )
+            di["object-state"] = np.concatenate([
+                cubeA_pos,
+                cubeA_quat,
+                cubeB_pos,
+                cubeB_quat,
+                di["gripper_to_cubeA"],
+                di["gripper_to_cubeB"],
+                di["cubeA_to_cubeB"],
+            ])
 
         return di
 
@@ -386,11 +388,10 @@ class SawyerStack(SawyerEnv):
         Returns True if gripper is in contact with an object.
         """
         collision = False
-        for contact in self.sim.data.contact[: self.sim.data.ncon]:
-            if (
-                self.sim.model.geom_id2name(contact.geom1) in self.finger_names
-                or self.sim.model.geom_id2name(contact.geom2) in self.finger_names
-            ):
+        for contact in self.sim.data.contact[:self.sim.data.ncon]:
+            if (self.sim.model.geom_id2name(contact.geom1) in self.finger_names
+                    or self.sim.model.geom_id2name(
+                        contact.geom2) in self.finger_names):
                 collision = True
                 break
         return collision
@@ -411,19 +412,18 @@ class SawyerStack(SawyerEnv):
         if self.gripper_visualization:
             # find closest object
             square_dist = lambda x: np.sum(
-                np.square(x - self.sim.data.get_site_xpos("grip_site"))
-            )
+                np.square(x - self.sim.data.get_site_xpos("grip_site")))
             dists = np.array(list(map(square_dist, self.sim.data.site_xpos)))
-            dists[self.eef_site_id] = np.inf  # make sure we don't pick the same site
+            dists[self.
+                  eef_site_id] = np.inf  # make sure we don't pick the same site
             dists[self.eef_cylinder_id] = np.inf
             ob_dists = dists[
-                self.object_site_ids
-            ]  # filter out object sites we care about
+                self.object_site_ids]  # filter out object sites we care about
             min_dist = np.min(ob_dists)
 
             # set RGBA for the EEF site here
             max_dist = 0.1
-            scaled = (1.0 - min(min_dist / max_dist, 1.)) ** 15
+            scaled = (1.0 - min(min_dist / max_dist, 1.))**15
             rgba = np.zeros(4)
             rgba[0] = 1 - scaled
             rgba[1] = scaled

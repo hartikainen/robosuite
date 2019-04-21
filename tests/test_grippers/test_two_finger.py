@@ -12,9 +12,7 @@ def test_two_finger():
     two_finger_tester(False)
 
 
-def two_finger_tester(render,
-                      total_iters=1,
-                      test_y=True):
+def two_finger_tester(render, total_iters=1, test_y=True):
     gripper = TwoFingerGripper()
     tester = GripperTester(
         gripper=gripper,
@@ -25,17 +23,14 @@ def two_finger_tester(render,
         render=render,
     )
     tester.start_simulation()
-    tester.loop(total_iters=total_iters,
-                test_y=test_y)
+    tester.loop(total_iters=total_iters, test_y=test_y)
 
 
 def test_left_two_finger():
     left_two_finger_tester(False)
 
 
-def left_two_finger_tester(render,
-                           total_iters=1,
-                           test_y=True):
+def left_two_finger_tester(render, total_iters=1, test_y=True):
     gripper = LeftTwoFingerGripper()
     tester = GripperTester(
         gripper=gripper,
@@ -46,8 +41,7 @@ def left_two_finger_tester(render,
         render=render,
     )
     tester.start_simulation()
-    tester.loop(total_iters=total_iters,
-                test_y=test_y)
+    tester.loop(total_iters=total_iters, test_y=test_y)
 
 
 if __name__ == "__main__":

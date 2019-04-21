@@ -5,7 +5,6 @@ This is controlled by gripper_type keyword argument
 import robosuite as suite
 from robosuite.wrappers import GymWrapper
 
-
 if __name__ == "__main__":
 
     grippers = ["TwoFingerGripper", "PR2Gripper", "RobotiqGripper"]
@@ -18,12 +17,13 @@ if __name__ == "__main__":
                 "SawyerPickPlace",
                 gripper_type=gripper,
                 use_camera_obs=False,  # do not use pixel observations
-                has_offscreen_renderer=False,  # not needed since not using pixel obs
+                has_offscreen_renderer=
+                False,  # not needed since not using pixel obs
                 has_renderer=True,  # make sure we can render to the screen
                 reward_shaping=True,  # use dense rewards
-                control_freq=100,  # control should happen fast enough so that simulation looks smooth
-            )
-        )
+                control_freq=
+                100,  # control should happen fast enough so that simulation looks smooth
+            ))
 
         # run a random policy
         observation = env.reset()

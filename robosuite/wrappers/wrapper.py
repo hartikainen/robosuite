@@ -21,9 +21,7 @@ class Wrapper:
                 if env.class_name() == self.class_name():
                     raise Exception(
                         "Attempted to double wrap with Wrapper: {}".format(
-                            self.__class__.__name__
-                        )
-                    )
+                            self.__class__.__name__))
                 env = env.env
             else:
                 break

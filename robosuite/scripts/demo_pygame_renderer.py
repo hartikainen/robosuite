@@ -14,7 +14,6 @@ import numpy as np
 
 import robosuite
 
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()

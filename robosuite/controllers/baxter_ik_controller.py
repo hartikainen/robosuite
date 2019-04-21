@@ -35,7 +35,8 @@ class BaxterIKController(Controller):
         # Set up inverse kinematics
         self.robot_jpos_getter = robot_jpos_getter
 
-        path = os.path.join(bullet_data_path, "baxter_description/urdf/baxter_mod.urdf")
+        path = os.path.join(bullet_data_path,
+                            "baxter_description/urdf/baxter_mod.urdf")
         self.setup_inverse_kinematics(path)
 
         self.rest_joints = np.zeros(14)
@@ -79,14 +80,12 @@ class BaxterIKController(Controller):
         # Compute new target joint positions if arguments are provided
         if (right is not None) and (left is not None):
             self.commanded_joint_positions = self.joint_positions_for_eef_command(
-                right, left
-            )
+                right, left)
 
         # P controller from joint positions (from IK) to velocities
         velocities = np.zeros(14)
-        deltas = self._get_current_error(
-            self.robot_jpos_getter(), self.commanded_joint_positions
-        )
+        deltas = self._get_current_error(self.robot_jpos_getter(),
+                                         self.commanded_joint_positions)
 
         for i, delta in enumerate(deltas):
             velocities[i] = -2 * delta
@@ -184,7 +183,8 @@ class BaxterIKController(Controller):
                 )
             else:
                 # Note that we use self.actual[i], and not i
-                p.resetJointState(self.ik_robot, self.actual[i], joint_positions[i])
+                p.resetJointState(self.ik_robot, self.actual[i],
+                                  joint_positions[i])
 
     def ik_robot_eef_joint_cartesian_pose(self):
         """
@@ -198,28 +198,26 @@ class BaxterIKController(Controller):
             eef_pose_in_world = T.pose2mat((eef_pos_in_world, eef_orn_in_world))
 
             base_pos_in_world = np.array(
-                p.getBasePositionAndOrientation(self.ik_robot)[0]
-            )
+                p.getBasePositionAndOrientation(self.ik_robot)[0])
             base_orn_in_world = np.array(
-                p.getBasePositionAndOrientation(self.ik_robot)[1]
-            )
-            base_pose_in_world = T.pose2mat((base_pos_in_world, base_orn_in_world))
+                p.getBasePositionAndOrientation(self.ik_robot)[1])
+            base_pose_in_world = T.pose2mat(
+                (base_pos_in_world, base_orn_in_world))
             world_pose_in_base = T.pose_inv(base_pose_in_world)
 
             eef_pose_in_base = T.pose_in_A_to_pose_in_B(
-                pose_A=eef_pose_in_world, pose_A_in_B=world_pose_in_base
-            )
+                pose_A=eef_pose_in_world, pose_A_in_B=world_pose_in_base)
             out.extend(T.mat2pose(eef_pose_in_base))
 
         return out
 
     def inverse_kinematics(
-        self,
-        target_position_right,
-        target_orientation_right,
-        target_position_left,
-        target_orientation_left,
-        rest_poses,
+            self,
+            target_position_right,
+            target_orientation_right,
+            target_position_left,
+            target_orientation_left,
+            rest_poses,
     ):
         """
         Helper function to do inverse kinematics for a given target position and
@@ -248,8 +246,7 @@ class BaxterIKController(Controller):
                 upperLimits=self.upper,
                 jointRanges=self.ranges,
                 jointDamping=[0.7] * ndof,
-            )
-        )
+            ))
         ik_solution2 = list(
             p.calculateInverseKinematics(
                 self.ik_robot,
@@ -261,8 +258,7 @@ class BaxterIKController(Controller):
                 upperLimits=self.upper,
                 jointRanges=self.ranges,
                 jointDamping=[0.7] * ndof,
-            )
-        )
+            ))
         for i in range(8, 15):
             ik_solution[i] = ik_solution2[i]
 
@@ -280,13 +276,14 @@ class BaxterIKController(Controller):
         """
         pose_in_base = T.pose2mat(pose_in_base)
 
-        base_pos_in_world = np.array(p.getBasePositionAndOrientation(self.ik_robot)[0])
-        base_orn_in_world = np.array(p.getBasePositionAndOrientation(self.ik_robot)[1])
+        base_pos_in_world = np.array(
+            p.getBasePositionAndOrientation(self.ik_robot)[0])
+        base_orn_in_world = np.array(
+            p.getBasePositionAndOrientation(self.ik_robot)[1])
         base_pose_in_world = T.pose2mat((base_pos_in_world, base_orn_in_world))
 
-        pose_in_world = T.pose_in_A_to_pose_in_B(
-            pose_A=pose_in_base, pose_A_in_B=base_pose_in_world
-        )
+        pose_in_world = T.pose_in_A_to_pose_in_B(pose_A=pose_in_base,
+                                                 pose_A_in_B=base_pose_in_world)
         return T.mat2pose(pose_in_world)
 
     def joint_positions_for_eef_command(self, right, left):
@@ -302,8 +299,10 @@ class BaxterIKController(Controller):
 
         dpos_right = right["dpos"]
         dpos_left = left["dpos"]
-        self.target_pos_right = self.ik_robot_target_pos_right + np.array([0, 0, 0.913])
-        self.target_pos_left = self.ik_robot_target_pos_left + np.array([0, 0, 0.913])
+        self.target_pos_right = self.ik_robot_target_pos_right + np.array(
+            [0, 0, 0.913])
+        self.target_pos_left = self.ik_robot_target_pos_left + np.array(
+            [0, 0, 0.913])
         self.ik_robot_target_pos_right += dpos_right
         self.ik_robot_target_pos_left += dpos_left
 
@@ -314,11 +313,9 @@ class BaxterIKController(Controller):
 
         # convert from target pose in base frame to target pose in bullet world frame
         world_targets_right = self.bullet_base_pose_to_world_pose(
-            (self.ik_robot_target_pos_right, self.ik_robot_target_orn_right)
-        )
+            (self.ik_robot_target_pos_right, self.ik_robot_target_orn_right))
         world_targets_left = self.bullet_base_pose_to_world_pose(
-            (self.ik_robot_target_pos_left, self.ik_robot_target_orn_left)
-        )
+            (self.ik_robot_target_pos_left, self.ik_robot_target_orn_left))
 
         # Empirically, more iterations aren't needed, and it's faster
         for _ in range(5):

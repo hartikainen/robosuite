@@ -11,7 +11,11 @@ class NutAssemblyTask(Task):
     the robot, the arena with pegs, and the nut objetcts into a single MJCF model.
     """
 
-    def __init__(self, mujoco_arena, mujoco_robot, mujoco_objects, initializer=None):
+    def __init__(self,
+                 mujoco_arena,
+                 mujoco_robot,
+                 mujoco_objects,
+                 initializer=None):
         """
         Args:
             mujoco_arena: MJCF model of robot workspace
@@ -29,7 +33,8 @@ class NutAssemblyTask(Task):
         if initializer is None:
             initializer = UniformRandomPegsSampler()
         self.initializer = initializer
-        self.initializer.setup(self.mujoco_objects, self.table_offset, self.table_size)
+        self.initializer.setup(self.mujoco_objects, self.table_offset,
+                               self.table_size)
 
     def merge_robot(self, mujoco_robot):
         """Adds robot model to the MJCF model."""
@@ -59,9 +64,8 @@ class NutAssemblyTask(Task):
             self.objects[obj_name] = obj
             self.worldbody.append(obj)
 
-            self.max_horizontal_radius = max(
-                self.max_horizontal_radius, obj_mjcf.get_horizontal_radius()
-            )
+            self.max_horizontal_radius = max(self.max_horizontal_radius,
+                                             obj_mjcf.get_horizontal_radius())
 
     def place_objects(self):
         """Places objects randomly until no collisions or max iterations hit."""

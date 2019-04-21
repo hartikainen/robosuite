@@ -23,9 +23,10 @@ import numpy as np
 try:
     import hid
 except ModuleNotFoundError as exc:
-    raise ImportError("Unable to load module hid, required to interface with SpaceMouse. "
-                      "Only Mac OS X is officially supported. Install the additional "
-                      "requirements with `pip install -r requirements-ik.txt`") from exc
+    raise ImportError(
+        "Unable to load module hid, required to interface with SpaceMouse. "
+        "Only Mac OS X is officially supported. Install the additional "
+        "requirements with `pip install -r requirements-ik.txt`") from exc
 
 from robosuite.utils.transform_utils import rotation_matrix
 from robosuite.devices import Device
@@ -112,11 +113,11 @@ class SpaceMouse(Device):
         print_command("Control", "Command")
         print_command("Right button", "reset simulation")
         print_command("Left button (hold)", "close gripper")
-        print_command("Move mouse laterally", "move arm horizontally in x-y plane")
+        print_command("Move mouse laterally",
+                      "move arm horizontally in x-y plane")
         print_command("Move mouse vertically", "move arm vertically")
-        print_command(
-            "Twist mouse about an axis", "rotate arm about a corresponding axis"
-        )
+        print_command("Twist mouse about an axis",
+                      "rotate arm about a corresponding axis")
         print_command("ESC", "quit")
         print("")
 
@@ -142,15 +143,19 @@ class SpaceMouse(Device):
         self.grasp = self.control_gripper
 
         # convert RPY to an absolute orientation
-        drot1 = rotation_matrix(angle=-pitch, direction=[1., 0, 0], point=None)[:3, :3]
-        drot2 = rotation_matrix(angle=roll, direction=[0, 1., 0], point=None)[:3, :3]
-        drot3 = rotation_matrix(angle=yaw, direction=[0, 0, 1.], point=None)[:3, :3]
+        drot1 = rotation_matrix(angle=-pitch, direction=[1., 0, 0],
+                                point=None)[:3, :3]
+        drot2 = rotation_matrix(angle=roll, direction=[0, 1., 0],
+                                point=None)[:3, :3]
+        drot3 = rotation_matrix(angle=yaw, direction=[0, 0, 1.],
+                                point=None)[:3, :3]
 
         self.rotation = self.rotation.dot(drot1.dot(drot2.dot(drot3)))
 
-        return dict(
-            dpos=dpos, rotation=self.rotation, grasp=self.grasp, reset=self._reset_state
-        )
+        return dict(dpos=dpos,
+                    rotation=self.rotation,
+                    grasp=self.grasp,
+                    reset=self._reset_state)
 
     def run(self):
         """Listener method that keeps pulling new messages."""

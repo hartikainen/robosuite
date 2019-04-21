@@ -27,7 +27,6 @@ class Arena(MujocoXML):
                 group=1,
                 contype="0",
                 conaffinity="0",
-            )
-        )
+            ))
         body.append(new_joint(type="free", name="pos_indicator"))
         self.worldbody.append(body)

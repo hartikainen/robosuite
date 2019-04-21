@@ -6,4 +6,6 @@ from robosuite.wrappers.demo_sampler_wrapper import DemoSamplerWrapper
 try:
     from robosuite.wrappers.gym_wrapper import GymWrapper
 except:
-    print("Warning: make sure gym is installed if you want to use the GymWrapper.")
+    print(
+        "Warning: make sure gym is installed if you want to use the GymWrapper."
+    )

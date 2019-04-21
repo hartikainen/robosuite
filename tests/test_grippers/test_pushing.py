@@ -5,9 +5,7 @@ def test_pushing():
     pushing_tester(False)
 
 
-def pushing_tester(render,
-                   total_iters=1,
-                   test_y=False):
+def pushing_tester(render, total_iters=1, test_y=False):
     gripper = PushingGripper()
     tester = GripperTester(
         gripper=gripper,

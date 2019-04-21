@@ -37,11 +37,11 @@ class UniformRandomSampler(ObjectPositionSampler):
     """Places all objects within the table uniformly random."""
 
     def __init__(
-        self,
-        x_range=None,
-        y_range=None,
-        ensure_object_boundary_in_range=True,
-        z_rotation="random",
+            self,
+            x_range=None,
+            y_range=None,
+            ensure_object_boundary_in_range=True,
+            z_rotation="random",
     ):
         """
         Args:
@@ -91,9 +91,8 @@ class UniformRandomSampler(ObjectPositionSampler):
         if self.z_rotation is None:
             rot_angle = np.random.uniform(high=2 * np.pi, low=0)
         elif isinstance(self.z_rotation, collections.Iterable):
-            rot_angle = np.random.uniform(
-                high=max(self.z_rotation), low=min(self.z_rotation)
-            )
+            rot_angle = np.random.uniform(high=max(self.z_rotation),
+                                          low=min(self.z_rotation))
         else:
             rot_angle = self.z_rotation
 
@@ -114,20 +113,16 @@ class UniformRandomSampler(ObjectPositionSampler):
                 # objects cannot overlap
                 location_valid = True
                 for x, y, r in placed_objects:
-                    if (
-                        np.linalg.norm([object_x - x, object_y - y], 2)
-                        <= r + horizontal_radius
-                    ):
+                    if (np.linalg.norm([object_x - x, object_y - y], 2) <=
+                            r + horizontal_radius):
                         location_valid = False
                         break
                 if location_valid:
                     # location is valid, put the object down
-                    pos = (
-                        self.table_top_offset
-                        - bottom_offset
-                        + np.array([object_x, object_y, 0])
-                    )
-                    placed_objects.append((object_x, object_y, horizontal_radius))
+                    pos = (self.table_top_offset - bottom_offset +
+                           np.array([object_x, object_y, 0]))
+                    placed_objects.append(
+                        (object_x, object_y, horizontal_radius))
                     # random z-rotation
 
                     quat = self.sample_quat()
@@ -148,12 +143,12 @@ class UniformRandomPegsSampler(ObjectPositionSampler):
     """Places all objects on top of the table uniformly random."""
 
     def __init__(
-        self,
-        x_range=None,
-        y_range=None,
-        z_range=None,
-        ensure_object_boundary_in_range=True,
-        z_rotation=True,
+            self,
+            x_range=None,
+            y_range=None,
+            z_range=None,
+            ensure_object_boundary_in_range=True,
+            z_rotation=True,
     ):
         """
         Args:
@@ -246,17 +241,12 @@ class UniformRandomPegsSampler(ObjectPositionSampler):
                 object_z = self.sample_z(0.01)
                 # objects cannot overlap
                 location_valid = True
-                pos = (
-                    self.table_top_offset
-                    - bottom_offset
-                    + np.array([object_x, object_y, object_z])
-                )
+                pos = (self.table_top_offset - bottom_offset +
+                       np.array([object_x, object_y, object_z]))
 
                 for pos2, r in placed_objects:
-                    if (
-                        np.linalg.norm(pos - pos2, 2) <= r + horizontal_radius
-                        and abs(pos[2] - pos2[2]) < 0.021
-                    ):
+                    if (np.linalg.norm(pos - pos2, 2) <= r + horizontal_radius
+                            and abs(pos[2] - pos2[2]) < 0.021):
                         location_valid = False
                         break
                 if location_valid:

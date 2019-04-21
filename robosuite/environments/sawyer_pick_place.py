@@ -24,30 +24,31 @@ from robosuite.models.tasks import PickPlaceTask, UniformRandomSampler
 
 
 class SawyerPickPlace(SawyerEnv):
+
     def __init__(
-        self,
-        gripper_type="TwoFingerGripper",
-        table_full_size=(0.39, 0.49, 0.82),
-        table_friction=(1, 0.005, 0.0001),
-        use_camera_obs=True,
-        use_object_obs=True,
-        reward_shaping=False,
-        placement_initializer=None,
-        single_object_mode=0,
-        object_type=None,
-        gripper_visualization=False,
-        use_indicator_object=False,
-        has_renderer=False,
-        has_offscreen_renderer=True,
-        render_collision_mesh=False,
-        render_visual_mesh=True,
-        control_freq=10,
-        horizon=1000,
-        ignore_done=False,
-        camera_name="frontview",
-        camera_height=256,
-        camera_width=256,
-        camera_depth=False,
+            self,
+            gripper_type="TwoFingerGripper",
+            table_full_size=(0.39, 0.49, 0.82),
+            table_friction=(1, 0.005, 0.0001),
+            use_camera_obs=True,
+            use_object_obs=True,
+            reward_shaping=False,
+            placement_initializer=None,
+            single_object_mode=0,
+            object_type=None,
+            gripper_visualization=False,
+            use_indicator_object=False,
+            has_renderer=False,
+            has_offscreen_renderer=True,
+            render_collision_mesh=False,
+            render_visual_mesh=True,
+            control_freq=10,
+            horizon=1000,
+            ignore_done=False,
+            camera_name="frontview",
+            camera_height=256,
+            camera_width=256,
+            camera_depth=False,
     ):
         """
         Args:
@@ -127,14 +128,11 @@ class SawyerPickPlace(SawyerEnv):
         self.single_object_mode = single_object_mode
         self.object_to_id = {"milk": 0, "bread": 1, "cereal": 2, "can": 3}
         if object_type is not None:
-            assert (
-                object_type in self.object_to_id.keys()
-            ), "invalid @object_type argument - choose one of {}".format(
-                list(self.object_to_id.keys())
-            )
+            assert (object_type in self.object_to_id.keys()
+                   ), "invalid @object_type argument - choose one of {}".format(
+                       list(self.object_to_id.keys()))
             self.object_id = self.object_to_id[
-                object_type
-            ]  # use for convenient indexing
+                object_type]  # use for convenient indexing
         self.obj_to_use = None
 
         # settings for table top
@@ -171,7 +169,8 @@ class SawyerPickPlace(SawyerEnv):
         # information of objects
         self.object_names = list(self.mujoco_objects.keys())
         self.object_site_ids = [
-            self.sim.model.site_name2id(ob_name) for ob_name in self.object_names
+            self.sim.model.site_name2id(ob_name)
+            for ob_name in self.object_names
         ]
 
         # id of grippers for contact checking
@@ -180,7 +179,8 @@ class SawyerPickPlace(SawyerEnv):
         # self.sim.data.contact # list, geom1, geom2
         self.collision_check_geom_names = self.sim.model._geom_name2id.keys()
         self.collision_check_geom_ids = [
-            self.sim.model._geom_name2id[k] for k in self.collision_check_geom_names
+            self.sim.model._geom_name2id[k]
+            for k in self.collision_check_geom_names
         ]
 
     def _load_model(self):
@@ -188,9 +188,8 @@ class SawyerPickPlace(SawyerEnv):
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
         # load model for table top workspace
-        self.mujoco_arena = BinsArena(
-            table_full_size=self.table_full_size, table_friction=self.table_friction
-        )
+        self.mujoco_arena = BinsArena(table_full_size=self.table_full_size,
+                                      table_friction=self.table_friction)
 
         if self.use_indicator_object:
             self.mujoco_arena.add_pos_indicator()
@@ -245,7 +244,8 @@ class SawyerPickPlace(SawyerEnv):
                 continue
             else:
                 sim_state = self.sim.get_state()
-                sim_state.qpos[self.sim.model.get_joint_qpos_addr(obj_name)[0]] = 10
+                sim_state.qpos[self.sim.model.get_joint_qpos_addr(obj_name)
+                               [0]] = 10
                 self.sim.set_state(sim_state)
                 self.sim.forward()
 
@@ -255,10 +255,12 @@ class SawyerPickPlace(SawyerEnv):
         self.obj_geom_id = {}
 
         self.l_finger_geom_ids = [
-            self.sim.model.geom_name2id(x) for x in self.gripper.left_finger_geoms
+            self.sim.model.geom_name2id(x)
+            for x in self.gripper.left_finger_geoms
         ]
         self.r_finger_geom_ids = [
-            self.sim.model.geom_name2id(x) for x in self.gripper.right_finger_geoms
+            self.sim.model.geom_name2id(x)
+            for x in self.gripper.right_finger_geoms
         ]
 
         for i in range(len(self.ob_inits)):
@@ -268,7 +270,8 @@ class SawyerPickPlace(SawyerEnv):
 
         # for checking distance to / contact with objects we want to pick up
         self.target_object_body_ids = list(map(int, self.obj_body_id.values()))
-        self.contact_with_object_geom_ids = list(map(int, self.obj_geom_id.values()))
+        self.contact_with_object_geom_ids = list(
+            map(int, self.obj_geom_id.values()))
 
         # keep track of which objects are in their corresponding bins
         self.objects_in_bins = np.zeros(len(self.ob_inits))
@@ -285,7 +288,9 @@ class SawyerPickPlace(SawyerEnv):
                 bin_y_low -= self.bin_size[1] / 2.
             bin_x_low += self.bin_size[0] / 4.
             bin_y_low += self.bin_size[1] / 4.
-            self.target_bin_placements[j, :] = [bin_x_low, bin_y_low, self.bin_pos[2]]
+            self.target_bin_placements[j, :] = [
+                bin_x_low, bin_y_low, self.bin_pos[2]
+            ]
 
     def _reset_internal(self):
         super()._reset_internal()
@@ -340,9 +345,9 @@ class SawyerPickPlace(SawyerEnv):
             # get reaching reward via minimum distance to a target object
             target_object_pos = self.sim.data.body_xpos[objs_to_reach]
             gripper_site_pos = self.sim.data.site_xpos[self.eef_site_id]
-            dists = np.linalg.norm(
-                target_object_pos - gripper_site_pos.reshape(1, -1), axis=1
-            )
+            dists = np.linalg.norm(target_object_pos -
+                                   gripper_site_pos.reshape(1, -1),
+                                   axis=1)
             r_reach = (1 - np.tanh(10.0 * min(dists))) * reach_mult
 
         ### grasping reward for touching any objects of interest ###
@@ -372,8 +377,7 @@ class SawyerPickPlace(SawyerEnv):
             object_z_locs = self.sim.data.body_xpos[objs_to_reach][:, 2]
             z_dists = np.maximum(z_target - object_z_locs, 0.)
             r_lift = grasp_mult + (1 - np.tanh(15.0 * min(z_dists))) * (
-                lift_mult - grasp_mult
-            )
+                lift_mult - grasp_mult)
 
         ### hover reward for getting object above bin ###
         r_hover = 0.
@@ -381,26 +385,23 @@ class SawyerPickPlace(SawyerEnv):
             # segment objects into left of the bins and above the bins
             object_xy_locs = self.sim.data.body_xpos[objs_to_reach][:, :2]
             y_check = (
-                np.abs(object_xy_locs[:, 1] - target_bin_placements[:, 1])
-                < self.bin_size[1] / 4.
-            )
+                np.abs(object_xy_locs[:, 1] - target_bin_placements[:, 1]) <
+                self.bin_size[1] / 4.)
             x_check = (
-                np.abs(object_xy_locs[:, 0] - target_bin_placements[:, 0])
-                < self.bin_size[0] / 4.
-            )
+                np.abs(object_xy_locs[:, 0] - target_bin_placements[:, 0]) <
+                self.bin_size[0] / 4.)
             objects_above_bins = np.logical_and(x_check, y_check)
             objects_not_above_bins = np.logical_not(objects_above_bins)
-            dists = np.linalg.norm(
-                target_bin_placements[:, :2] - object_xy_locs, axis=1
-            )
+            dists = np.linalg.norm(target_bin_placements[:, :2] -
+                                   object_xy_locs,
+                                   axis=1)
             # objects to the left get r_lift added to hover reward, those on the right get max(r_lift) added (to encourage dropping)
             r_hover_all = np.zeros(len(objs_to_reach))
-            r_hover_all[objects_above_bins] = lift_mult + (
-                1 - np.tanh(10.0 * dists[objects_above_bins])
-            ) * (hover_mult - lift_mult)
-            r_hover_all[objects_not_above_bins] = r_lift + (
-                1 - np.tanh(10.0 * dists[objects_not_above_bins])
-            ) * (hover_mult - lift_mult)
+            r_hover_all[objects_above_bins] = lift_mult + (1 - np.tanh(
+                10.0 * dists[objects_above_bins])) * (hover_mult - lift_mult)
+            r_hover_all[objects_not_above_bins] = r_lift + (1 - np.tanh(
+                10.0 * dists[objects_not_above_bins])) * (hover_mult -
+                                                          lift_mult)
             r_hover = np.max(r_hover_all)
 
         return r_reach, r_grasp, r_lift, r_hover
@@ -418,14 +419,9 @@ class SawyerPickPlace(SawyerEnv):
         bin_y_high = bin_y_low + self.bin_size[1] / 2
 
         res = True
-        if (
-            obj_pos[2] > self.bin_pos[2]
-            and obj_pos[0] < bin_x_high
-            and obj_pos[0] > bin_x_low
-            and obj_pos[1] < bin_y_high
-            and obj_pos[1] > bin_y_low
-            and obj_pos[2] < self.bin_pos[2] + 0.1
-        ):
+        if (obj_pos[2] > self.bin_pos[2] and obj_pos[0] < bin_x_high and
+                obj_pos[0] > bin_x_low and obj_pos[1] < bin_y_high and
+                obj_pos[1] > bin_y_low and obj_pos[2] < self.bin_pos[2] + 0.1):
             res = False
         return res
 
@@ -474,14 +470,15 @@ class SawyerPickPlace(SawyerEnv):
                 obj_str = str(self.item_names_org[i]) + "0"
                 obj_pos = self.sim.data.body_xpos[self.obj_body_id[obj_str]]
                 obj_quat = T.convert_quat(
-                    self.sim.data.body_xquat[self.obj_body_id[obj_str]], to="xyzw"
-                )
+                    self.sim.data.body_xquat[self.obj_body_id[obj_str]],
+                    to="xyzw")
                 di["{}_pos".format(obj_str)] = obj_pos
                 di["{}_quat".format(obj_str)] = obj_quat
 
                 # get relative pose of object in gripper frame
                 object_pose = T.pose2mat((obj_pos, obj_quat))
-                rel_pose = T.pose_in_A_to_pose_in_B(object_pose, world_pose_in_gripper)
+                rel_pose = T.pose_in_A_to_pose_in_B(object_pose,
+                                                    world_pose_in_gripper)
                 rel_pos, rel_quat = T.mat2pose(rel_pose)
                 di["{}_to_eef_pos".format(obj_str)] = rel_pos
                 di["{}_to_eef_quat".format(obj_str)] = rel_quat
@@ -502,7 +499,8 @@ class SawyerPickPlace(SawyerEnv):
                         di["{}_to_eef_pos".format(obj_str)] *= 0.0
                         di["{}_to_eef_quat".format(obj_str)] *= 0.0
 
-            di["object-state"] = np.concatenate([di[k] for k in object_state_keys])
+            di["object-state"] = np.concatenate(
+                [di[k] for k in object_state_keys])
 
         return di
 
@@ -511,11 +509,10 @@ class SawyerPickPlace(SawyerEnv):
         Returns True if gripper is in contact with an object.
         """
         collision = False
-        for contact in self.sim.data.contact[: self.sim.data.ncon]:
-            if (
-                self.sim.model.geom_id2name(contact.geom1) in self.finger_names
-                or self.sim.model.geom_id2name(contact.geom2) in self.finger_names
-            ):
+        for contact in self.sim.data.contact[:self.sim.data.ncon]:
+            if (self.sim.model.geom_id2name(contact.geom1) in self.finger_names
+                    or self.sim.model.geom_id2name(
+                        contact.geom2) in self.finger_names):
                 collision = True
                 break
         return collision
@@ -532,9 +529,8 @@ class SawyerPickPlace(SawyerEnv):
             obj_pos = self.sim.data.body_xpos[self.obj_body_id[obj_str]]
             dist = np.linalg.norm(gripper_site_pos - obj_pos)
             r_reach = 1 - np.tanh(10.0 * dist)
-            self.objects_in_bins[i] = int(
-                (not self.not_in_bin(obj_pos, i)) and r_reach < 0.6
-            )
+            self.objects_in_bins[i] = int((not self.not_in_bin(obj_pos, i)) and
+                                          r_reach < 0.6)
 
         # returns True if a single object is in the correct bin
         if self.single_object_mode == 1 or self.single_object_mode == 2:
@@ -551,21 +547,20 @@ class SawyerPickPlace(SawyerEnv):
         if self.gripper_visualization:
             # find closest object
             square_dist = lambda x: np.sum(
-                np.square(x - self.sim.data.get_site_xpos("grip_site"))
-            )
+                np.square(x - self.sim.data.get_site_xpos("grip_site")))
             dists = np.array(list(map(square_dist, self.sim.data.site_xpos)))
-            dists[self.eef_site_id] = np.inf  # make sure we don't pick the same site
+            dists[self.
+                  eef_site_id] = np.inf  # make sure we don't pick the same site
             dists[self.eef_cylinder_id] = np.inf
             ob_dists = dists[
-                self.object_site_ids
-            ]  # filter out object sites we care about
+                self.object_site_ids]  # filter out object sites we care about
             min_dist = np.min(ob_dists)
             ob_id = np.argmin(ob_dists)
             ob_name = self.object_names[ob_id]
 
             # set RGBA for the EEF site here
             max_dist = 0.1
-            scaled = (1.0 - min(min_dist / max_dist, 1.)) ** 15
+            scaled = (1.0 - min(min_dist / max_dist, 1.))**15
             rgba = np.zeros(4)
             rgba[0] = 1 - scaled
             rgba[1] = scaled
@@ -591,9 +586,8 @@ class SawyerPickPlaceMilk(SawyerPickPlace):
     """
 
     def __init__(self, **kwargs):
-        assert (
-            "single_object_mode" not in kwargs and "object_type" not in kwargs
-        ), "invalid set of arguments"
+        assert ("single_object_mode" not in kwargs and
+                "object_type" not in kwargs), "invalid set of arguments"
         super().__init__(single_object_mode=2, object_type="milk", **kwargs)
 
 
@@ -603,9 +597,8 @@ class SawyerPickPlaceBread(SawyerPickPlace):
     """
 
     def __init__(self, **kwargs):
-        assert (
-            "single_object_mode" not in kwargs and "object_type" not in kwargs
-        ), "invalid set of arguments"
+        assert ("single_object_mode" not in kwargs and
+                "object_type" not in kwargs), "invalid set of arguments"
         super().__init__(single_object_mode=2, object_type="bread", **kwargs)
 
 
@@ -615,9 +608,8 @@ class SawyerPickPlaceCereal(SawyerPickPlace):
     """
 
     def __init__(self, **kwargs):
-        assert (
-            "single_object_mode" not in kwargs and "object_type" not in kwargs
-        ), "invalid set of arguments"
+        assert ("single_object_mode" not in kwargs and
+                "object_type" not in kwargs), "invalid set of arguments"
         super().__init__(single_object_mode=2, object_type="cereal", **kwargs)
 
 
@@ -627,7 +619,6 @@ class SawyerPickPlaceCan(SawyerPickPlace):
     """
 
     def __init__(self, **kwargs):
-        assert (
-            "single_object_mode" not in kwargs and "object_type" not in kwargs
-        ), "invalid set of arguments"
+        assert ("single_object_mode" not in kwargs and
+                "object_type" not in kwargs), "invalid set of arguments"
         super().__init__(single_object_mode=2, object_type="can", **kwargs)

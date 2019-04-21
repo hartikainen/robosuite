@@ -68,7 +68,8 @@ class MujocoXML(object):
             merge_body: True if merging child bodies of @other. Defaults to True.
         """
         if not isinstance(other, MujocoXML):
-            raise XMLError("{} is not a MujocoXML instance.".format(type(other)))
+            raise XMLError("{} is not a MujocoXML instance.".format(
+                type(other)))
         if merge_body:
             for body in other.worldbody:
                 self.worldbody.append(body)
@@ -98,9 +99,7 @@ class MujocoXML(object):
                 return model
             raise ValueError(
                 "Unkown model mode: {}. Available options are: {}".format(
-                    mode, ",".join(available_modes)
-                )
-            )
+                    mode, ",".join(available_modes)))
 
     def get_xml(self):
         """

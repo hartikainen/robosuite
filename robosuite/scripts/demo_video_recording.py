@@ -12,7 +12,6 @@ import numpy as np
 
 from robosuite import make
 
-
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()

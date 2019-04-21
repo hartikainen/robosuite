@@ -1,7 +1,6 @@
 import numpy as np
 import robosuite as suite
 
-
 if __name__ == "__main__":
 
     # get the list of all environments
@@ -16,10 +15,8 @@ if __name__ == "__main__":
         print("[{}] {}".format(k, env))
     print()
     try:
-        s = input(
-            "Choose an environment to run "
-            + "(enter a number from 0 to {}): ".format(len(envs) - 1)
-        )
+        s = input("Choose an environment to run " +
+                  "(enter a number from 0 to {}): ".format(len(envs) - 1))
         # parse input into a number within range
         k = min(max(int(s), 0), len(envs))
     except:

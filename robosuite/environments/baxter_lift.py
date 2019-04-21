@@ -15,16 +15,14 @@ class BaxterLift(BaxterEnv):
     This class corresponds to the bimanual lifting task for the Baxter robot.
     """
 
-    def __init__(
-        self,
-        gripper_type_right="TwoFingerGripper",
-        gripper_type_left="LeftTwoFingerGripper",
-        table_full_size=(0.8, 0.8, 0.8),
-        table_friction=(1., 5e-3, 1e-4),
-        use_object_obs=True,
-        reward_shaping=True,
-        **kwargs
-    ):
+    def __init__(self,
+                 gripper_type_right="TwoFingerGripper",
+                 gripper_type_left="LeftTwoFingerGripper",
+                 table_full_size=(0.8, 0.8, 0.8),
+                 table_friction=(1., 5e-3, 1e-4),
+                 use_object_obs=True,
+                 reward_shaping=True,
+                 **kwargs):
         """
         Args:
 
@@ -66,9 +64,9 @@ class BaxterLift(BaxterEnv):
             ensure_object_boundary_in_range=False,
         )
 
-        super().__init__(
-            gripper_left=gripper_type_left, gripper_right=gripper_type_right, **kwargs
-        )
+        super().__init__(gripper_left=gripper_type_left,
+                         gripper_right=gripper_type_right,
+                         **kwargs)
 
     def _load_model(self):
         """
@@ -78,9 +76,8 @@ class BaxterLift(BaxterEnv):
         self.mujoco_robot.set_base_xpos([0, 0, 0])
 
         # load model for table top workspace
-        self.mujoco_arena = TableArena(
-            table_full_size=self.table_full_size, table_friction=self.table_friction
-        )
+        self.mujoco_arena = TableArena(table_full_size=self.table_full_size,
+                                       table_friction=self.table_friction)
         if self.use_indicator_object:
             self.mujoco_arena.add_pos_indicator()
 
@@ -131,7 +128,8 @@ class BaxterLift(BaxterEnv):
         """
         reward = 0
 
-        cube_height = self.sim.data.site_xpos[self.pot_center_id][2] - self.pot.get_top_offset()[2]
+        cube_height = self.sim.data.site_xpos[
+            self.pot_center_id][2] - self.pot.get_top_offset()[2]
         table_height = self.sim.data.site_xpos[self.table_top_id][2]
 
         # check if the pot is tilted more than 30 degrees
@@ -161,15 +159,11 @@ class BaxterLift(BaxterEnv):
             # gh stands for gripper-handle
             # When grippers are far away, tell them to be closer
             l_contacts = list(
-                self.find_contacts(
-                    self.gripper_left.contact_geoms(), self.pot.handle_1_geoms()
-                )
-            )
+                self.find_contacts(self.gripper_left.contact_geoms(),
+                                   self.pot.handle_1_geoms()))
             r_contacts = list(
-                self.find_contacts(
-                    self.gripper_right.contact_geoms(), self.pot.handle_2_geoms()
-                )
-            )
+                self.find_contacts(self.gripper_right.contact_geoms(),
+                                   self.pot.handle_2_geoms()))
             l_gh_dist = np.linalg.norm(l_gripper_to_handle)
             r_gh_dist = np.linalg.norm(r_gripper_to_handle)
 
@@ -198,7 +192,8 @@ class BaxterLift(BaxterEnv):
     @property
     def _pot_quat(self):
         """Returns the orientation of the pot."""
-        return T.convert_quat(self.sim.data.body_xquat[self.cube_body_id], to="xyzw")
+        return T.convert_quat(self.sim.data.body_xquat[self.cube_body_id],
+                              to="xyzw")
 
     @property
     def _world_quat(self):
@@ -247,8 +242,7 @@ class BaxterLift(BaxterEnv):
             # position and rotation of object
             cube_pos = self.sim.data.body_xpos[self.cube_body_id]
             cube_quat = T.convert_quat(
-                self.sim.data.body_xquat[self.cube_body_id], to="xyzw"
-            )
+                self.sim.data.body_xquat[self.cube_body_id], to="xyzw")
             di["cube_pos"] = cube_pos
             di["cube_quat"] = cube_quat
 
@@ -259,18 +253,16 @@ class BaxterLift(BaxterEnv):
             di["l_gripper_to_handle"] = self._l_gripper_to_handle
             di["r_gripper_to_handle"] = self._r_gripper_to_handle
 
-            di["object-state"] = np.concatenate(
-                [
-                    di["cube_pos"],
-                    di["cube_quat"],
-                    di["l_eef_xpos"],
-                    di["r_eef_xpos"],
-                    di["handle_1_xpos"],
-                    di["handle_2_xpos"],
-                    di["l_gripper_to_handle"],
-                    di["r_gripper_to_handle"],
-                ]
-            )
+            di["object-state"] = np.concatenate([
+                di["cube_pos"],
+                di["cube_quat"],
+                di["l_eef_xpos"],
+                di["r_eef_xpos"],
+                di["handle_1_xpos"],
+                di["handle_2_xpos"],
+                di["l_gripper_to_handle"],
+                di["r_gripper_to_handle"],
+            ])
 
         return di
 
@@ -279,14 +271,12 @@ class BaxterLift(BaxterEnv):
         Returns True if gripper is in contact with an object.
         """
         collision = False
-        contact_geoms = (
-            self.gripper_right.contact_geoms() + self.gripper_left.contact_geoms()
-        )
-        for contact in self.sim.data.contact[: self.sim.data.ncon]:
-            if (
-                self.sim.model.geom_id2name(contact.geom1) in contact_geoms
-                or self.sim.model.geom_id2name(contact.geom2) in contact_geoms
-            ):
+        contact_geoms = (self.gripper_right.contact_geoms() +
+                         self.gripper_left.contact_geoms())
+        for contact in self.sim.data.contact[:self.sim.data.ncon]:
+            if (self.sim.model.geom_id2name(contact.geom1) in contact_geoms or
+                    self.sim.model.geom_id2name(
+                        contact.geom2) in contact_geoms):
                 collision = True
                 break
         return collision

@@ -7,9 +7,9 @@ from robosuite.utils.mjcf_utils import array_to_string, string_to_array
 class BinsArena(Arena):
     """Workspace that contains two bins placed side by side."""
 
-    def __init__(
-        self, table_full_size=(0.39, 0.49, 0.82), table_friction=(1, 0.005, 0.0001)
-    ):
+    def __init__(self,
+                 table_full_size=(0.39, 0.49, 0.82),
+                 table_friction=(1, 0.005, 0.0001)):
         """
         Args:
             table_full_size: full dimensions of the table

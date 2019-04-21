@@ -15,7 +15,8 @@ class PickPlaceTask(Task):
     arena, and the objects into a single MJCF model of the task.
     """
 
-    def __init__(self, mujoco_arena, mujoco_robot, mujoco_objects, visual_objects):
+    def __init__(self, mujoco_arena, mujoco_robot, mujoco_objects,
+                 visual_objects):
         """
         Args:
             mujoco_arena: MJCF model of robot workspace
@@ -64,9 +65,8 @@ class PickPlaceTask(Task):
             self.objects.append(obj)
             self.worldbody.append(obj)
 
-            self.max_horizontal_radius = max(
-                self.max_horizontal_radius, obj_mjcf.get_horizontal_radius()
-            )
+            self.max_horizontal_radius = max(self.max_horizontal_radius,
+                                             obj_mjcf.get_horizontal_radius())
 
     def merge_visual(self, mujoco_objects):
         """Adds visual objects to the MJCF model."""
@@ -146,7 +146,9 @@ class PickPlaceTask(Task):
             bin_y_high = bin_y_low + bin_size[1] / 2
             bottom_offset = obj_mjcf.get_bottom_offset()
 
-            bin_range = [bin_x_low + bin_x_high, bin_y_low + bin_y_high, 2 * bin_pos[2]]
+            bin_range = [
+                bin_x_low + bin_x_high, bin_y_low + bin_y_high, 2 * bin_pos[2]
+            ]
             bin_center = np.array(bin_range) / 2.0
 
             pos = bin_center - bottom_offset

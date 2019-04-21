@@ -11,15 +11,13 @@ from robosuite.models.robots import Baxter
 class BaxterEnv(MujocoEnv):
     """Initializes a Baxter robot environment."""
 
-    def __init__(
-        self,
-        gripper_right=None,
-        gripper_left=None,
-        gripper_visualization=False,
-        use_indicator_object=False,
-        rescale_actions=True,
-        **kwargs
-    ):
+    def __init__(self,
+                 gripper_right=None,
+                 gripper_left=None,
+                 gripper_visualization=False,
+                 use_indicator_object=False,
+                 rescale_actions=True,
+                 **kwargs):
         """
         Args:
             gripper_right (str): type of gripper used on the right hand, used to
@@ -92,17 +90,18 @@ class BaxterEnv(MujocoEnv):
     def _reset_internal(self):
         """Resets the pose of the arm and grippers."""
         super()._reset_internal()
-        self.sim.data.qpos[self._ref_joint_pos_indexes] = self.mujoco_robot.init_qpos
+        self.sim.data.qpos[
+            self._ref_joint_pos_indexes] = self.mujoco_robot.init_qpos
 
         if self.has_gripper_right:
             self.sim.data.qpos[
-                self._ref_joint_gripper_right_actuator_indexes
-            ] = self.gripper_right.init_qpos
+                self.
+                _ref_joint_gripper_right_actuator_indexes] = self.gripper_right.init_qpos
 
         if self.has_gripper_left:
             self.sim.data.qpos[
-                self._ref_joint_gripper_left_actuator_indexes
-            ] = self.gripper_left.init_qpos
+                self.
+                _ref_joint_gripper_left_actuator_indexes] = self.gripper_left.init_qpos
 
     def _get_reference(self):
         """Sets up references for robots, grippers, and objects."""
@@ -129,20 +128,24 @@ class BaxterEnv(MujocoEnv):
         if self.has_gripper_left:
             self.gripper_left_joints = list(self.gripper_left.joints)
             self._ref_gripper_left_joint_pos_indexes = [
-                self.sim.model.get_joint_qpos_addr(x) for x in self.gripper_left_joints
+                self.sim.model.get_joint_qpos_addr(x)
+                for x in self.gripper_left_joints
             ]
             self._ref_gripper_left_joint_vel_indexes = [
-                self.sim.model.get_joint_qvel_addr(x) for x in self.gripper_left_joints
+                self.sim.model.get_joint_qvel_addr(x)
+                for x in self.gripper_left_joints
             ]
             self.left_eef_site_id = self.sim.model.site_name2id("l_g_grip_site")
 
         if self.has_gripper_right:
             self.gripper_right_joints = list(self.gripper_right.joints)
             self._ref_gripper_right_joint_pos_indexes = [
-                self.sim.model.get_joint_qpos_addr(x) for x in self.gripper_right_joints
+                self.sim.model.get_joint_qpos_addr(x)
+                for x in self.gripper_right_joints
             ]
             self._ref_gripper_right_joint_vel_indexes = [
-                self.sim.model.get_joint_qvel_addr(x) for x in self.gripper_right_joints
+                self.sim.model.get_joint_qvel_addr(x)
+                for x in self.gripper_right_joints
             ]
             self.right_eef_site_id = self.sim.model.site_name2id("grip_site")
 
@@ -176,14 +179,14 @@ class BaxterEnv(MujocoEnv):
         if self.has_gripper_right:
             # IDs of sites for gripper visualization
             self.eef_site_id = self.sim.model.site_name2id("grip_site")
-            self.eef_cylinder_id = self.sim.model.site_name2id("grip_site_cylinder")
+            self.eef_cylinder_id = self.sim.model.site_name2id(
+                "grip_site_cylinder")
 
     def move_indicator(self, pos):
         """Moves the position of the indicator object to @pos."""
         if self.use_indicator_object:
-            self.sim.data.qpos[
-                self._ref_indicator_pos_low : self._ref_indicator_pos_low + 3
-            ] = pos
+            self.sim.data.qpos[self._ref_indicator_pos_low:self.
+                               _ref_indicator_pos_low + 3] = pos
 
     # Note: Overrides super
     def _pre_action(self, action):
@@ -199,20 +202,20 @@ class BaxterEnv(MujocoEnv):
 
         # Right gripper
         if self.has_gripper_right:
-            gripper_right_action_in = action[last : last + self.gripper_right.dof]
+            gripper_right_action_in = action[last:last + self.gripper_right.dof]
             gripper_right_action_actual = self.gripper_right.format_action(
-                gripper_right_action_in
-            )
-            arm_action = np.concatenate([arm_action, gripper_right_action_actual])
+                gripper_right_action_in)
+            arm_action = np.concatenate(
+                [arm_action, gripper_right_action_actual])
             last = last + self.gripper_right.dof
 
         # Left gripper
         if self.has_gripper_left:
-            gripper_left_action_in = action[last : last + self.gripper_left.dof]
+            gripper_left_action_in = action[last:last + self.gripper_left.dof]
             gripper_left_action_actual = self.gripper_left.format_action(
-                gripper_left_action_in
-            )
-            arm_action = np.concatenate([arm_action, gripper_left_action_actual])
+                gripper_left_action_in)
+            arm_action = np.concatenate(
+                [arm_action, gripper_left_action_actual])
 
         action = arm_action
 
@@ -229,15 +232,14 @@ class BaxterEnv(MujocoEnv):
 
         # gravity compensation
         self.sim.data.qfrc_applied[
-            self._ref_joint_vel_indexes
-        ] = self.sim.data.qfrc_bias[self._ref_joint_vel_indexes]
+            self._ref_joint_vel_indexes] = self.sim.data.qfrc_bias[
+                self._ref_joint_vel_indexes]
 
         if self.use_indicator_object:
             self.sim.data.qfrc_applied[
-                self._ref_indicator_vel_low : self._ref_indicator_vel_high
-            ] = self.sim.data.qfrc_bias[
-                self._ref_indicator_vel_low : self._ref_indicator_vel_high
-            ]
+                self._ref_indicator_vel_low:self.
+                _ref_indicator_vel_high] = self.sim.data.qfrc_bias[
+                    self._ref_indicator_vel_low:self._ref_indicator_vel_high]
 
     def _post_action(self, action):
         """Optionally performs gripper visualization after the actions."""
@@ -255,11 +257,9 @@ class BaxterEnv(MujocoEnv):
         di = super()._get_observation()
         # proprioceptive features
         di["joint_pos"] = np.array(
-            [self.sim.data.qpos[x] for x in self._ref_joint_pos_indexes]
-        )
+            [self.sim.data.qpos[x] for x in self._ref_joint_pos_indexes])
         di["joint_vel"] = np.array(
-            [self.sim.data.qvel[x] for x in self._ref_joint_vel_indexes]
-        )
+            [self.sim.data.qvel[x] for x in self._ref_joint_vel_indexes])
         robot_states = [
             np.sin(di["joint_pos"]),
             np.cos(di["joint_pos"]),
@@ -267,46 +267,38 @@ class BaxterEnv(MujocoEnv):
         ]
 
         if self.has_gripper_right:
-            di["right_gripper_qpos"] = np.array(
-                [
-                    self.sim.data.qpos[x]
-                    for x in self._ref_gripper_right_joint_pos_indexes
-                ]
-            )
-            di["right_gripper_qvel"] = np.array(
-                [
-                    self.sim.data.qvel[x]
-                    for x in self._ref_gripper_right_joint_vel_indexes
-                ]
-            )
-            di["right_eef_pos"] = self.sim.data.site_xpos[self.right_eef_site_id]
+            di["right_gripper_qpos"] = np.array([
+                self.sim.data.qpos[x]
+                for x in self._ref_gripper_right_joint_pos_indexes
+            ])
+            di["right_gripper_qvel"] = np.array([
+                self.sim.data.qvel[x]
+                for x in self._ref_gripper_right_joint_vel_indexes
+            ])
+            di["right_eef_pos"] = self.sim.data.site_xpos[
+                self.right_eef_site_id]
             di["right_eef_quat"] = T.convert_quat(
-                self.sim.data.get_body_xquat("right_hand"), to="xyzw"
-            )
-            robot_states.extend(
-                [di["right_gripper_qpos"], di["right_eef_pos"], di["right_eef_quat"]]
-            )
+                self.sim.data.get_body_xquat("right_hand"), to="xyzw")
+            robot_states.extend([
+                di["right_gripper_qpos"], di["right_eef_pos"],
+                di["right_eef_quat"]
+            ])
 
         if self.has_gripper_left:
-            di["left_gripper_qpos"] = np.array(
-                [
-                    self.sim.data.qpos[x]
-                    for x in self._ref_gripper_left_joint_pos_indexes
-                ]
-            )
-            di["left_gripper_qvel"] = np.array(
-                [
-                    self.sim.data.qvel[x]
-                    for x in self._ref_gripper_left_joint_vel_indexes
-                ]
-            )
+            di["left_gripper_qpos"] = np.array([
+                self.sim.data.qpos[x]
+                for x in self._ref_gripper_left_joint_pos_indexes
+            ])
+            di["left_gripper_qvel"] = np.array([
+                self.sim.data.qvel[x]
+                for x in self._ref_gripper_left_joint_vel_indexes
+            ])
             di["left_eef_pos"] = self.sim.data.site_xpos[self.left_eef_site_id]
             di["left_eef_quat"] = T.convert_quat(
-                self.sim.data.get_body_xquat("left_hand"), to="xyzw"
-            )
-            robot_states.extend(
-                [di["left_gripper_qpos"], di["left_eef_pos"], di["left_eef_quat"]]
-            )
+                self.sim.data.get_body_xquat("left_hand"), to="xyzw")
+            robot_states.extend([
+                di["left_gripper_qpos"], di["left_eef_pos"], di["left_eef_quat"]
+            ])
 
         di["robot-state"] = np.concatenate(robot_states)
         return di
@@ -336,7 +328,8 @@ class BaxterEnv(MujocoEnv):
         base_pose_in_world = T.make_pose(base_pos_in_world, base_rot_in_world)
         world_pose_in_base = T.pose_inv(base_pose_in_world)
 
-        pose_in_base = T.pose_in_A_to_pose_in_B(pose_in_world, world_pose_in_base)
+        pose_in_base = T.pose_in_A_to_pose_in_B(pose_in_world,
+                                                world_pose_in_base)
         return pose_in_base
 
     def set_robot_joint_positions(self, jpos):

@@ -7,10 +7,8 @@ from mujoco_py import MjSim, MjViewer
 
 from robosuite.models.world import MujocoWorldBase
 from robosuite.models.arenas.table_arena import TableArena
-from robosuite.utils.mjcf_utils import (
-    new_actuator,
-    new_joint,
-    array_to_string)
+from robosuite.utils.mjcf_utils import (new_actuator, new_joint,
+                                        array_to_string)
 from robosuite.models.objects.generated_objects import BoxObject
 
 
@@ -19,17 +17,15 @@ class GripperTester:
     A class that is used to test gripper
     """
 
-    def __init__(
-        self,
-        gripper,
-        pos,
-        quat,
-        gripper_low_pos,
-        gripper_high_pos,
-        box_size=None,
-        box_density=10000,
-        render=True
-    ):
+    def __init__(self,
+                 gripper,
+                 pos,
+                 quat,
+                 gripper_low_pos,
+                 gripper_high_pos,
+                 box_size=None,
+                 box_density=10000,
+                 render=True):
         """
         Initializes world and gripper positioning
 
@@ -66,18 +62,14 @@ class GripperTester:
             new_joint(name="gripper_z_joint",
                       type="slide",
                       axis="0 0 -1",
-                      damping="50")
-        )
+                      damping="50"))
         world.merge(gripper, merge_body=False)
         world.worldbody.append(gripper_body)
         world.actuator.append(
-            new_actuator(
-                joint="gripper_z_joint",
-                act_type="position",
-                name="gripper_z",
-                kp="500"
-            )
-        )
+            new_actuator(joint="gripper_z_joint",
+                         act_type="position",
+                         name="gripper_z",
+                         kp="500"))
 
         # Add an object for grasping
         # density is in units kg / m3
@@ -100,12 +92,12 @@ class GripperTester:
         world.worldbody.append(mujoco_object)
 
         # Adding reference object for x and y axis
-        x_ref = BoxObject(size=[0.01, 0.01, 0.01],
-                          rgba=[0, 1, 0, 1]).get_visual()
+        x_ref = BoxObject(size=[0.01, 0.01, 0.01], rgba=[0, 1, 0,
+                                                         1]).get_visual()
         x_ref.set('pos', '0.2 0 0.105')
         world.worldbody.append(x_ref)
-        y_ref = BoxObject(size=[0.01, 0.01, 0.01],
-                          rgba=[0, 0, 1, 1]).get_visual()
+        y_ref = BoxObject(size=[0.01, 0.01, 0.01], rgba=[0, 0, 1,
+                                                         1]).get_visual()
         y_ref.set('pos', '0 0.2 0.105')
         world.worldbody.append(y_ref)
 
@@ -114,11 +106,9 @@ class GripperTester:
         self.simulation_ready = False
         self.cur_step = 0
         if gripper_low_pos > gripper_high_pos:
-            raise ValueError(
-                "gripper_low_pos {} is larger "
-                "than gripper_high_pos {}"
-                .format(gripper_low_pos, gripper_high_pos)
-            )
+            raise ValueError("gripper_low_pos {} is larger "
+                             "than gripper_high_pos {}".format(
+                                 gripper_low_pos, gripper_high_pos))
         self.gripper_low_pos = gripper_low_pos
         self.gripper_high_pos = gripper_high_pos
 
@@ -147,15 +137,12 @@ class GripperTester:
             for x in self.gripper.joints
         ]
         self.gripper_open_action = self.gripper.format_action([1])
-        self.gripper_closed_action = self.gripper.format_action(
-            [-1]
-        )
+        self.gripper_closed_action = self.gripper.format_action([-1])
         self.gripper_is_closed = True
 
         self.object_id = self.sim.model.body_name2id("object")
         object_default_pos = self.sim.data.body_xpos[self.object_id]
-        self.object_default_pos = np.array(object_default_pos,
-                                           copy=True)
+        self.object_default_pos = np.array(object_default_pos, copy=True)
 
         self.reset()
         self.simulation_ready = True
@@ -181,9 +168,11 @@ class GripperTester:
         else:
             self.sim.data.ctrl[self.gripper_z_id] = self.gripper_high_pos
         if self.gripper_is_closed:
-            self.sim.data.ctrl[self.gripper_joint_ids] = self.gripper_closed_action
+            self.sim.data.ctrl[
+                self.gripper_joint_ids] = self.gripper_closed_action
         else:
-            self.sim.data.ctrl[self.gripper_joint_ids] = self.gripper_open_action
+            self.sim.data.ctrl[
+                self.gripper_joint_ids] = self.gripper_open_action
         self._apply_gravity_compensation()
         self.sim.step()
         if self.render:
@@ -192,14 +181,10 @@ class GripperTester:
 
     def _apply_gravity_compensation(self):
         self.sim.data.qfrc_applied[
-            self._gravity_corrected_qvels
-        ] = self.sim.data.qfrc_bias[self._gravity_corrected_qvels]
+            self._gravity_corrected_qvels] = self.sim.data.qfrc_bias[
+                self._gravity_corrected_qvels]
 
-    def loop(self,
-             T=300,
-             total_iters=1,
-             test_y=False,
-             y_baseline=0.01):
+    def loop(self, T=300, total_iters=1, test_y=False, y_baseline=0.01):
         """
         Performs lower, grip, raise and release actions of a gripper,
                 each separated with T timesteps
@@ -219,10 +204,9 @@ class GripperTester:
                     self.step()
             if test_y:
                 if not self.object_height > y_baseline:
-                    raise ValueError('object is lifed by {}, '
-                                     .format(self.object_height) +
-                                     'not reaching the requirement {}'
-                                     .format(y_baseline))
+                    raise ValueError(
+                        'object is lifed by {}, '.format(self.object_height) +
+                        'not reaching the requirement {}'.format(y_baseline))
 
     @property
     def object_height(self):

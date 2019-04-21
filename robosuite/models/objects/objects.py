@@ -147,13 +147,13 @@ class MujocoXMLObject(MujocoXML, MujocoObject):
 
     def get_horizontal_radius(self):
         horizontal_radius_site = self.worldbody.find(
-            "./body/site[@name='horizontal_radius_site']"
-        )
+            "./body/site[@name='horizontal_radius_site']")
         return string_to_array(horizontal_radius_site.get("pos"))[0]
 
     def get_collision(self, name=None, site=False):
 
-        collision = copy.deepcopy(self.worldbody.find("./body/body[@name='collision']"))
+        collision = copy.deepcopy(
+            self.worldbody.find("./body/body[@name='collision']"))
         collision.attrib.pop("name")
         if name is not None:
             collision.attrib["name"] = name
@@ -174,7 +174,8 @@ class MujocoXMLObject(MujocoXML, MujocoObject):
 
     def get_visual(self, name=None, site=False):
 
-        visual = copy.deepcopy(self.worldbody.find("./body/body[@name='visual']"))
+        visual = copy.deepcopy(
+            self.worldbody.find("./body/body[@name='visual']"))
         visual.attrib.pop("name")
         if name is not None:
             visual.attrib["name"] = name
@@ -195,13 +196,13 @@ class MujocoGeneratedObject(MujocoObject):
     """
 
     def __init__(
-        self,
-        size=None,
-        rgba=None,
-        density=None,
-        friction=None,
-        density_range=None,
-        friction_range=None,
+            self,
+            size=None,
+            rgba=None,
+            density=None,
+            friction=None,
+            density_range=None,
+            friction_range=None,
     ):
         """
         Provides default initialization of physical attributes:
@@ -231,7 +232,8 @@ class MujocoGeneratedObject(MujocoObject):
         if rgba is None:
             self.rgba = [1, 0, 0, 1]
         elif rgba == "random":
-            self.rgba = np.array([np.random.uniform(0, 1) for i in range(3)] + [1])
+            self.rgba = np.array([np.random.uniform(0, 1) for i in range(3)] +
+                                 [1])
         else:
             assert len(rgba) == 4, "rgba must be a length 4 array"
             self.rgba = rgba
@@ -246,11 +248,14 @@ class MujocoGeneratedObject(MujocoObject):
 
         if friction is None:
             if friction_range is not None:
-                self.friction = [np.random.choice(friction_range), 0.005, 0.0001]
+                self.friction = [
+                    np.random.choice(friction_range), 0.005, 0.0001
+                ]
             else:
                 self.friction = [1, 0.005, 0.0001]  # MuJoCo default
         elif hasattr(type(friction), "__len__"):
-            assert len(friction) == 3, "friction must be a length 3 array or a float"
+            assert len(
+                friction) == 3, "friction must be a length 3 array or a float"
             self.friction = friction
         else:
             self.friction = [friction, 0.005, 0.0001]

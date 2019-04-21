@@ -26,7 +26,8 @@ class Robot(MujocoXML):
         if arm_name in self.grippers:
             raise ValueError("Attempts to add multiple grippers to one body")
 
-        arm_subtree = self.worldbody.find(".//body[@name='{}']".format(arm_name))
+        arm_subtree = self.worldbody.find(
+            ".//body[@name='{}']".format(arm_name))
 
         for actuator in gripper.actuator:
 
@@ -36,9 +37,7 @@ class Robot(MujocoXML):
             if not actuator.get("name").startswith("gripper"):
                 raise XMLError(
                     "Actuator name {} does not have prefix 'gripper'".format(
-                        actuator.get("name")
-                    )
-                )
+                        actuator.get("name")))
 
         for body in gripper.worldbody:
             arm_subtree.append(body)

@@ -72,14 +72,12 @@ class SawyerIKController(Controller):
         # Compute new target joint positions if arguments are provided
         if (dpos is not None) and (rotation is not None):
             self.commanded_joint_positions = self.joint_positions_for_eef_command(
-                dpos, rotation
-            )
+                dpos, rotation)
 
         # P controller from joint positions (from IK) to velocities
         velocities = np.zeros(7)
-        deltas = self._get_current_error(
-            self.robot_jpos_getter(), self.commanded_joint_positions
-        )
+        deltas = self._get_current_error(self.robot_jpos_getter(),
+                                         self.commanded_joint_positions)
         for i, delta in enumerate(deltas):
             velocities[i] = -2. * delta  # -2. * delta
         velocities = self.clip_joint_velocities(velocities)
@@ -98,8 +96,7 @@ class SawyerIKController(Controller):
 
         # make sure target pose is up to date
         self.ik_robot_target_pos, self.ik_robot_target_orn = (
-            self.ik_robot_eef_joint_cartesian_pose()
-        )
+            self.ik_robot_eef_joint_cartesian_pose())
 
     def setup_inverse_kinematics(self):
         """
@@ -113,9 +110,8 @@ class SawyerIKController(Controller):
         p.resetSimulation()
 
         # get paths to urdfs
-        self.robot_urdf = pjoin(
-            self.bullet_data_path, "sawyer_description/urdf/sawyer_arm.urdf"
-        )
+        self.robot_urdf = pjoin(self.bullet_data_path,
+                                "sawyer_description/urdf/sawyer_arm.urdf")
 
         # load the urdfs
         self.ik_robot = p.loadURDF(self.robot_urdf, (0, 0, 0.9), useFixedBase=1)
@@ -163,18 +159,22 @@ class SawyerIKController(Controller):
         eef_orn_in_world = np.array(p.getLinkState(self.ik_robot, 6)[1])
         eef_pose_in_world = T.pose2mat((eef_pos_in_world, eef_orn_in_world))
 
-        base_pos_in_world = np.array(p.getBasePositionAndOrientation(self.ik_robot)[0])
-        base_orn_in_world = np.array(p.getBasePositionAndOrientation(self.ik_robot)[1])
+        base_pos_in_world = np.array(
+            p.getBasePositionAndOrientation(self.ik_robot)[0])
+        base_orn_in_world = np.array(
+            p.getBasePositionAndOrientation(self.ik_robot)[1])
         base_pose_in_world = T.pose2mat((base_pos_in_world, base_orn_in_world))
         world_pose_in_base = T.pose_inv(base_pose_in_world)
 
         eef_pose_in_base = T.pose_in_A_to_pose_in_B(
-            pose_A=eef_pose_in_world, pose_A_in_B=world_pose_in_base
-        )
+            pose_A=eef_pose_in_world, pose_A_in_B=world_pose_in_base)
 
         return T.mat2pose(eef_pose_in_base)
 
-    def inverse_kinematics(self, target_position, target_orientation, rest_poses=None):
+    def inverse_kinematics(self,
+                           target_position,
+                           target_orientation,
+                           rest_poses=None):
         """
         Helper function to do inverse kinematics for a given target position and 
         orientation in the PyBullet world frame.
@@ -198,8 +198,7 @@ class SawyerIKController(Controller):
                     targetOrientation=target_orientation,
                     restPoses=[0, -1.18, 0.00, 2.18, 0.00, 0.57, 3.3161],
                     jointDamping=[0.1] * 7,
-                )
-            )
+                ))
         else:
             ik_solution = list(
                 p.calculateInverseKinematics(
@@ -207,13 +206,14 @@ class SawyerIKController(Controller):
                     6,
                     target_position,
                     targetOrientation=target_orientation,
-                    lowerLimits=[-3.05, -3.82, -3.05, -3.05, -2.98, -2.98, -4.71],
+                    lowerLimits=[
+                        -3.05, -3.82, -3.05, -3.05, -2.98, -2.98, -4.71
+                    ],
                     upperLimits=[3.05, 2.28, 3.05, 3.05, 2.98, 2.98, 4.71],
                     jointRanges=[6.1, 6.1, 6.1, 6.1, 5.96, 5.96, 9.4],
                     restPoses=rest_poses,
                     jointDamping=[0.1] * 7,
-                )
-            )
+                ))
         return ik_solution
 
     def bullet_base_pose_to_world_pose(self, pose_in_base):
@@ -228,13 +228,14 @@ class SawyerIKController(Controller):
         """
         pose_in_base = T.pose2mat(pose_in_base)
 
-        base_pos_in_world = np.array(p.getBasePositionAndOrientation(self.ik_robot)[0])
-        base_orn_in_world = np.array(p.getBasePositionAndOrientation(self.ik_robot)[1])
+        base_pos_in_world = np.array(
+            p.getBasePositionAndOrientation(self.ik_robot)[0])
+        base_orn_in_world = np.array(
+            p.getBasePositionAndOrientation(self.ik_robot)[1])
         base_pose_in_world = T.pose2mat((base_pos_in_world, base_orn_in_world))
 
-        pose_in_world = T.pose_in_A_to_pose_in_B(
-            pose_A=pose_in_base, pose_A_in_B=base_pose_in_world
-        )
+        pose_in_world = T.pose_in_A_to_pose_in_B(pose_A=pose_in_base,
+                                                 pose_A_in_B=base_pose_in_world)
         return T.mat2pose(pose_in_world)
 
     def joint_positions_for_eef_command(self, dpos, rotation):
@@ -255,24 +256,22 @@ class SawyerIKController(Controller):
         # scripts is:
         #   `env.set_robot_joint_positions([0, -1.18, 0.00, 2.18, 0.00, 0.57, 1.5708])`
         rotation = rotation.dot(
-            T.rotation_matrix(angle=-np.pi / 2, direction=[0., 0., 1.], point=None)[
-                :3, :3
-            ]
-        )
+            T.rotation_matrix(angle=-np.pi / 2,
+                              direction=[0., 0., 1.],
+                              point=None)[:3, :3])
 
         self.ik_robot_target_orn = T.mat2quat(rotation)
 
         # convert from target pose in base frame to target pose in bullet world frame
         world_targets = self.bullet_base_pose_to_world_pose(
-            (self.ik_robot_target_pos, self.ik_robot_target_orn)
-        )
+            (self.ik_robot_target_pos, self.ik_robot_target_orn))
 
         rest_poses = [0, -1.18, 0.00, 2.18, 0.00, 0.57, 3.3161]
 
         for bullet_i in range(100):
-            arm_joint_pos = self.inverse_kinematics(
-                world_targets[0], world_targets[1], rest_poses=rest_poses
-            )
+            arm_joint_pos = self.inverse_kinematics(world_targets[0],
+                                                    world_targets[1],
+                                                    rest_poses=rest_poses)
             self.sync_ik_robot(arm_joint_pos, sync_last=True)
 
         return arm_joint_pos

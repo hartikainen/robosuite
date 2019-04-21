@@ -15,10 +15,8 @@ def make(env_name, *args, **kwargs):
     """Try to get the equivalent functionality of gym.make in a sloppy way."""
     if env_name not in REGISTERED_ENVS:
         raise Exception(
-            "Environment {} not found. Make sure it is a registered environment among: {}".format(
-                env_name, ", ".join(REGISTERED_ENVS)
-            )
-        )
+            "Environment {} not found. Make sure it is a registered environment among: {}"
+            .format(env_name, ", ".join(REGISTERED_ENVS)))
     return REGISTERED_ENVS[env_name](*args, **kwargs)
 
 
@@ -40,19 +38,19 @@ class MujocoEnv(metaclass=EnvMeta):
     """Initializes a Mujoco Environment."""
 
     def __init__(
-        self,
-        has_renderer=False,
-        has_offscreen_renderer=True,
-        render_collision_mesh=False,
-        render_visual_mesh=True,
-        control_freq=10,
-        horizon=1000,
-        ignore_done=False,
-        use_camera_obs=False,
-        camera_name="frontview",
-        camera_height=256,
-        camera_width=256,
-        camera_depth=False,
+            self,
+            has_renderer=False,
+            has_offscreen_renderer=True,
+            render_collision_mesh=False,
+            render_visual_mesh=True,
+            control_freq=10,
+            horizon=1000,
+            ignore_done=False,
+            use_camera_obs=False,
+            camera_name="frontview",
+            camera_height=256,
+            camera_width=256,
+            camera_depth=False,
     ):
         """
         Args:
@@ -102,7 +100,8 @@ class MujocoEnv(metaclass=EnvMeta):
         # settings for camera observations
         self.use_camera_obs = use_camera_obs
         if self.use_camera_obs and not self.has_offscreen_renderer:
-            raise ValueError("Camera observations require an offscreen renderer.")
+            raise ValueError(
+                "Camera observations require an offscreen renderer.")
         self.camera_name = camera_name
         if self.use_camera_obs and self.camera_name is None:
             raise ValueError("Must specify camera name when using camera obs")
@@ -123,8 +122,7 @@ class MujocoEnv(metaclass=EnvMeta):
         self.control_freq = control_freq
         if control_freq <= 0:
             raise SimulationError(
-                "control frequency {} is invalid".format(control_freq)
-            )
+                "control frequency {} is invalid".format(control_freq))
         self.control_timestep = 1. / control_freq
 
     def _load_model(self):
@@ -160,9 +158,9 @@ class MujocoEnv(metaclass=EnvMeta):
         if self.has_renderer and self.viewer is None:
             self.viewer = MujocoPyRenderer(self.sim)
             self.viewer.viewer.vopt.geomgroup[0] = (
-                1 if self.render_collision_mesh else 0
-            )
-            self.viewer.viewer.vopt.geomgroup[1] = 1 if self.render_visual_mesh else 0
+                1 if self.render_collision_mesh else 0)
+            self.viewer.viewer.vopt.geomgroup[
+                1] = 1 if self.render_visual_mesh else 0
 
             # hiding the overlay speeds up rendering significantly
             self.viewer.viewer._hide_overlay = True
@@ -172,11 +170,9 @@ class MujocoEnv(metaclass=EnvMeta):
                 render_context = MjRenderContextOffscreen(self.sim)
                 self.sim.add_render_context(render_context)
             self.sim._render_context_offscreen.vopt.geomgroup[0] = (
-                1 if self.render_collision_mesh else 0
-            )
+                1 if self.render_collision_mesh else 0)
             self.sim._render_context_offscreen.vopt.geomgroup[1] = (
-                1 if self.render_visual_mesh else 0
-            )
+                1 if self.render_visual_mesh else 0)
 
         # additional housekeeping
         self.sim_state_initial = self.sim.get_state()
@@ -265,17 +261,19 @@ class MujocoEnv(metaclass=EnvMeta):
         if self.has_renderer and self.viewer is None:
             self.viewer = MujocoPyRenderer(self.sim)
             self.viewer.viewer.vopt.geomgroup[0] = (
-                1 if self.render_collision_mesh else 0
-            )
-            self.viewer.viewer.vopt.geomgroup[1] = 1 if self.render_visual_mesh else 0
+                1 if self.render_collision_mesh else 0)
+            self.viewer.viewer.vopt.geomgroup[
+                1] = 1 if self.render_visual_mesh else 0
 
             # hiding the overlay speeds up rendering significantly
             self.viewer.viewer._hide_overlay = True
 
         elif self.has_offscreen_renderer:
             render_context = MjRenderContextOffscreen(self.sim)
-            render_context.vopt.geomgroup[0] = 1 if self.render_collision_mesh else 0
-            render_context.vopt.geomgroup[1] = 1 if self.render_visual_mesh else 0
+            render_context.vopt.geomgroup[
+                0] = 1 if self.render_collision_mesh else 0
+            render_context.vopt.geomgroup[
+                1] = 1 if self.render_visual_mesh else 0
             self.sim.add_render_context(render_context)
 
         self.sim_state_initial = self.sim.get_state()
@@ -298,7 +296,7 @@ class MujocoEnv(metaclass=EnvMeta):
         Returns:
             iterator of all contacts between @geoms_1 and @geoms_2
         """
-        for contact in self.sim.data.contact[0 : self.sim.data.ncon]:
+        for contact in self.sim.data.contact[0:self.sim.data.ncon]:
             # check contact geom in geoms
             c1_in_g1 = self.sim.model.geom_id2name(contact.geom1) in geoms_1
             c2_in_g2 = self.sim.model.geom_id2name(contact.geom2) in geoms_2

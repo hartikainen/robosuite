@@ -16,7 +16,8 @@ def test_all_environments():
         env = suite.make(
             env_name,
             has_renderer=False,  # no on-screen renderer
-            has_offscreen_renderer=True,  # off-screen renderer is required for camera observations
+            has_offscreen_renderer=
+            True,  # off-screen renderer is required for camera observations
             ignore_done=True,  # (optional) never terminates episode
             use_camera_obs=True,  # use camera observations
             camera_height=84,  # set camera height

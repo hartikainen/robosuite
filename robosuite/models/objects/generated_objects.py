@@ -11,16 +11,16 @@ class PotWithHandlesObject(MujocoGeneratedObject):
     """
 
     def __init__(
-        self,
-        body_half_size=None,
-        handle_radius=0.01,
-        handle_length=0.09,
-        handle_width=0.09,
-        rgba_body=None,
-        rgba_handle_1=None,
-        rgba_handle_2=None,
-        solid_handle=False,
-        thickness=0.025,  # For body
+            self,
+            body_half_size=None,
+            handle_radius=0.01,
+            handle_length=0.09,
+            handle_width=0.09,
+            rgba_body=None,
+            rgba_handle_1=None,
+            rgba_handle_2=None,
+            solid_handle=False,
+            thickness=0.025,  # For body
     ):
         super().__init__()
         if body_half_size:
@@ -63,12 +63,13 @@ class PotWithHandlesObject(MujocoGeneratedObject):
         if name is not None:
             main_body.set("name", name)
 
-        for geom in five_sided_box(
-            self.body_half_size, self.rgba_body, 1, self.thickness
-        ):
+        for geom in five_sided_box(self.body_half_size, self.rgba_body, 1,
+                                   self.thickness):
             main_body.append(geom)
         handle_z = self.body_half_size[2] - self.handle_radius
-        handle_1_center = [0, self.body_half_size[1] + self.handle_length, handle_z]
+        handle_1_center = [
+            0, self.body_half_size[1] + self.handle_length, handle_z
+        ]
         handle_2_center = [
             0,
             -1 * (self.body_half_size[1] + self.handle_length),
@@ -80,14 +81,19 @@ class PotWithHandlesObject(MujocoGeneratedObject):
             self.handle_radius,
             self.handle_radius,
         ]
-        side_bar_size = [self.handle_radius, self.handle_length / 2, self.handle_radius]
+        side_bar_size = [
+            self.handle_radius, self.handle_length / 2, self.handle_radius
+        ]
         handle_1 = new_body(name="handle_1")
         if self.solid_handle:
             handle_1.append(
                 new_geom(
                     geom_type="box",
                     name="handle_1",
-                    pos=[0, self.body_half_size[1] + self.handle_length / 2, handle_z],
+                    pos=[
+                        0, self.body_half_size[1] + self.handle_length / 2,
+                        handle_z
+                    ],
                     size=[
                         self.handle_width / 2,
                         self.handle_length / 2,
@@ -95,8 +101,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     ],
                     rgba=self.rgba_handle_1,
                     group=1,
-                )
-            )
+                ))
         else:
             handle_1.append(
                 new_geom(
@@ -106,8 +111,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     size=main_bar_size,
                     rgba=self.rgba_handle_1,
                     group=1,
-                )
-            )
+                ))
             handle_1.append(
                 new_geom(
                     geom_type="box",
@@ -120,8 +124,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     size=side_bar_size,
                     rgba=self.rgba_handle_1,
                     group=1,
-                )
-            )
+                ))
             handle_1.append(
                 new_geom(
                     geom_type="box",
@@ -134,8 +137,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     size=side_bar_size,
                     rgba=self.rgba_handle_1,
                     group=1,
-                )
-            )
+                ))
 
         handle_2 = new_body(name="handle_2")
         if self.solid_handle:
@@ -143,7 +145,10 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                 new_geom(
                     geom_type="box",
                     name="handle_2",
-                    pos=[0, -self.body_half_size[1] - self.handle_length / 2, handle_z],
+                    pos=[
+                        0, -self.body_half_size[1] - self.handle_length / 2,
+                        handle_z
+                    ],
                     size=[
                         self.handle_width / 2,
                         self.handle_length / 2,
@@ -151,8 +156,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     ],
                     rgba=self.rgba_handle_2,
                     group=1,
-                )
-            )
+                ))
         else:
             handle_2.append(
                 new_geom(
@@ -162,8 +166,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     size=main_bar_size,
                     rgba=self.rgba_handle_2,
                     group=1,
-                )
-            )
+                ))
             handle_2.append(
                 new_geom(
                     geom_type="box",
@@ -176,8 +179,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     size=side_bar_size,
                     rgba=self.rgba_handle_2,
                     group=1,
-                )
-            )
+                ))
             handle_2.append(
                 new_geom(
                     geom_type="box",
@@ -190,8 +192,7 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                     size=side_bar_size,
                     rgba=self.rgba_handle_2,
                     group=1,
-                )
-            )
+                ))
 
         main_body.append(handle_1)
         main_body.append(handle_2)
@@ -201,17 +202,16 @@ class PotWithHandlesObject(MujocoGeneratedObject):
                 rgba=self.rgba_handle_1,
                 pos=handle_1_center - np.array([0, 0.005, 0]),
                 size=[0.005],
-            )
-        )
+            ))
         main_body.append(
             new_site(
                 name="pot_handle_2",
                 rgba=self.rgba_handle_2,
                 pos=handle_2_center + np.array([0, 0.005, 0]),
                 size=[0.005],
-            )
-        )
-        main_body.append(new_site(name="pot_center", pos=[0, 0, 0], rgba=[1, 0, 0, 0]))
+            ))
+        main_body.append(
+            new_site(name="pot_center", pos=[0, 0, 0], rgba=[1, 0, 0, 0]))
 
         return main_body
 
@@ -248,30 +248,35 @@ def five_sided_box(size, rgba, group, thickness):
     x, y, z = size
     r = thickness / 2
     geoms.append(
-        new_geom(
-            geom_type="box", size=[x, y, r], pos=[0, 0, -z + r], rgba=rgba, group=group
-        )
-    )
+        new_geom(geom_type="box",
+                 size=[x, y, r],
+                 pos=[0, 0, -z + r],
+                 rgba=rgba,
+                 group=group))
     geoms.append(
-        new_geom(
-            geom_type="box", size=[x, r, z], pos=[0, -y + r, 0], rgba=rgba, group=group
-        )
-    )
+        new_geom(geom_type="box",
+                 size=[x, r, z],
+                 pos=[0, -y + r, 0],
+                 rgba=rgba,
+                 group=group))
     geoms.append(
-        new_geom(
-            geom_type="box", size=[x, r, z], pos=[0, y - r, 0], rgba=rgba, group=group
-        )
-    )
+        new_geom(geom_type="box",
+                 size=[x, r, z],
+                 pos=[0, y - r, 0],
+                 rgba=rgba,
+                 group=group))
     geoms.append(
-        new_geom(
-            geom_type="box", size=[r, y, z], pos=[x - r, 0, 0], rgba=rgba, group=group
-        )
-    )
+        new_geom(geom_type="box",
+                 size=[r, y, z],
+                 pos=[x - r, 0, 0],
+                 rgba=rgba,
+                 group=group))
     geoms.append(
-        new_geom(
-            geom_type="box", size=[r, y, z], pos=[-x + r, 0, 0], rgba=rgba, group=group
-        )
-    )
+        new_geom(geom_type="box",
+                 size=[r, y, z],
+                 pos=[-x + r, 0, 0],
+                 rgba=rgba,
+                 group=group))
     return geoms
 
 
@@ -279,36 +284,32 @@ DEFAULT_DENSITY_RANGE = [200, 500, 1000, 3000, 5000]
 DEFAULT_FRICTION_RANGE = [0.25, 0.5, 1, 1.5, 2]
 
 
-def _get_size(size,
-              size_max,
-              size_min,
-              default_max,
-              default_min):
+def _get_size(size, size_max, size_min, default_max, default_min):
     """
         Helper method for providing a size,
         or a range to randomize from
     """
     if len(default_max) != len(default_min):
-        raise ValueError('default_max = {} and default_min = {}'
-                         .format(str(default_max), str(default_min)) +
-                         ' have different lengths')
+        raise ValueError('default_max = {} and default_min = {}'.format(
+            str(default_max), str(default_min)) + ' have different lengths')
     if size is not None:
         if (size_max is not None) or (size_min is not None):
-            raise ValueError('size = {} overrides size_max = {}, size_min = {}'
-                             .format(size, size_max, size_min))
+            raise ValueError(
+                'size = {} overrides size_max = {}, size_min = {}'.format(
+                    size, size_max, size_min))
     else:
         if size_max is None:
             size_max = default_max
         if size_min is None:
             size_min = default_min
-        size = np.array([np.random.uniform(size_min[i], size_max[i])
-                         for i in range(len(default_max))])
+        size = np.array([
+            np.random.uniform(size_min[i], size_max[i])
+            for i in range(len(default_max))
+        ])
     return size
 
 
-def _get_randomized_range(val,
-                          provided_range,
-                          default_range):
+def _get_randomized_range(val, provided_range, default_range):
     """
         Helper to initialize by either value or a range
         Returns a range to randomize from
@@ -320,8 +321,8 @@ def _get_randomized_range(val,
             return provided_range
     else:
         if provided_range is not None:
-            raise ValueError('Value {} overrides range {}'
-                             .format(str(val), str(provided_range)))
+            raise ValueError('Value {} overrides range {}'.format(
+                str(val), str(provided_range)))
         return [val]
 
 
@@ -331,26 +332,21 @@ class BoxObject(MujocoGeneratedObject):
     """
 
     def __init__(
-        self,
-        size=None,
-        size_max=None,
-        size_min=None,
-        density=None,
-        density_range=None,
-        friction=None,
-        friction_range=None,
-        rgba="random",
+            self,
+            size=None,
+            size_max=None,
+            size_min=None,
+            density=None,
+            density_range=None,
+            friction=None,
+            friction_range=None,
+            rgba="random",
     ):
-        size = _get_size(size,
-                         size_max,
-                         size_min,
-                         [0.07, 0.07, 0.07],
+        size = _get_size(size, size_max, size_min, [0.07, 0.07, 0.07],
                          [0.03, 0.03, 0.03])
-        density_range = _get_randomized_range(density,
-                                              density_range,
+        density_range = _get_randomized_range(density, density_range,
                                               DEFAULT_DENSITY_RANGE)
-        friction_range = _get_randomized_range(friction,
-                                               friction_range,
+        friction_range = _get_randomized_range(friction, friction_range,
                                                DEFAULT_FRICTION_RANGE)
         super().__init__(
             size=size,
@@ -386,26 +382,20 @@ class CylinderObject(MujocoGeneratedObject):
     """
 
     def __init__(
-        self,
-        size=None,
-        size_max=None,
-        size_min=None,
-        density=None,
-        density_range=None,
-        friction=None,
-        friction_range=None,
-        rgba="random",
+            self,
+            size=None,
+            size_max=None,
+            size_min=None,
+            density=None,
+            density_range=None,
+            friction=None,
+            friction_range=None,
+            rgba="random",
     ):
-        size = _get_size(size,
-                         size_max,
-                         size_min,
-                         [0.07, 0.07],
-                         [0.03, 0.03])
-        density_range = _get_randomized_range(density,
-                                              density_range,
+        size = _get_size(size, size_max, size_min, [0.07, 0.07], [0.03, 0.03])
+        density_range = _get_randomized_range(density, density_range,
                                               DEFAULT_DENSITY_RANGE)
-        friction_range = _get_randomized_range(friction,
-                                               friction_range,
+        friction_range = _get_randomized_range(friction, friction_range,
                                                DEFAULT_FRICTION_RANGE)
         super().__init__(
             size=size,
@@ -441,26 +431,20 @@ class BallObject(MujocoGeneratedObject):
     """
 
     def __init__(
-        self,
-        size=None,
-        size_max=None,
-        size_min=None,
-        density=None,
-        density_range=None,
-        friction=None,
-        friction_range=None,
-        rgba="random",
+            self,
+            size=None,
+            size_max=None,
+            size_min=None,
+            density=None,
+            density_range=None,
+            friction=None,
+            friction_range=None,
+            rgba="random",
     ):
-        size = _get_size(size,
-                         size_max,
-                         size_min,
-                         [0.07],
-                         [0.03])
-        density_range = _get_randomized_range(density,
-                                              density_range,
+        size = _get_size(size, size_max, size_min, [0.07], [0.03])
+        density_range = _get_randomized_range(density, density_range,
                                               DEFAULT_DENSITY_RANGE)
-        friction_range = _get_randomized_range(friction,
-                                               friction_range,
+        friction_range = _get_randomized_range(friction, friction_range,
                                                DEFAULT_FRICTION_RANGE)
         super().__init__(
             size=size,
@@ -496,26 +480,20 @@ class CapsuleObject(MujocoGeneratedObject):
     """
 
     def __init__(
-        self,
-        size=None,
-        size_max=None,
-        size_min=None,
-        density=None,
-        density_range=None,
-        friction=None,
-        friction_range=None,
-        rgba="random",
+            self,
+            size=None,
+            size_max=None,
+            size_min=None,
+            density=None,
+            density_range=None,
+            friction=None,
+            friction_range=None,
+            rgba="random",
     ):
-        size = _get_size(size,
-                         size_max,
-                         size_min,
-                         [0.07, 0.07],
-                         [0.03, 0.03])
-        density_range = _get_randomized_range(density,
-                                              density_range,
+        size = _get_size(size, size_max, size_min, [0.07, 0.07], [0.03, 0.03])
+        density_range = _get_randomized_range(density, density_range,
                                               DEFAULT_DENSITY_RANGE)
-        friction_range = _get_randomized_range(friction,
-                                               friction_range,
+        friction_range = _get_randomized_range(friction, friction_range,
                                                DEFAULT_FRICTION_RANGE)
         super().__init__(
             size=size,

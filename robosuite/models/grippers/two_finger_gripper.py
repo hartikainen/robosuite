@@ -76,7 +76,8 @@ class LeftTwoFingerGripperBase(Gripper):
     """
 
     def __init__(self):
-        super().__init__(xml_path_completion("grippers/left_two_finger_gripper.xml"))
+        super().__init__(
+            xml_path_completion("grippers/left_two_finger_gripper.xml"))
 
     def format_action(self, action):
         return action

@@ -44,7 +44,7 @@ def collect_human_trajectory(env, device):
 
     # episode terminates on a spacenav reset input or if task is completed
     reset = False
-    task_completion_hold_count = -1 # counter to collect 10 timesteps after reaching goal
+    task_completion_hold_count = -1  # counter to collect 10 timesteps after reaching goal
     device.start_control()
     while not reset:
         state = device.get_controller_state()
@@ -57,7 +57,8 @@ def collect_human_trajectory(env, device):
 
         # convert into a suitable end effector action for the environment
         current = env._right_hand_orn
-        drotation = current.T.dot(rotation)  # relative rotation of desired from current
+        drotation = current.T.dot(
+            rotation)  # relative rotation of desired from current
         dquat = T.mat2quat(drotation)
         grasp = grasp - 1.  # map 0 to -1 (open) and 1 to 0 (closed halfway)
         action = np.concatenate([dpos, dquat, [grasp]])
@@ -70,7 +71,7 @@ def collect_human_trajectory(env, device):
             # We grab the initial model xml and state and reload from those so that
             # we can support deterministic playback of actions from our demonstrations.
             # This is necessary due to rounding issues with the model xml and with
-            # env.sim.forward(). We also have to do this after the first action is 
+            # env.sim.forward(). We also have to do this after the first action is
             # applied because the data collector wrapper only starts recording
             # after the first action has been played.
             initial_mjstate = env.sim.get_state().flatten()
@@ -89,11 +90,11 @@ def collect_human_trajectory(env, device):
         # state machine to check for having a success for 10 consecutive timesteps
         if env._check_success():
             if task_completion_hold_count > 0:
-                task_completion_hold_count -= 1 # latched state, decrement count
+                task_completion_hold_count -= 1  # latched state, decrement count
             else:
-                task_completion_hold_count = 10 # reset count on first success timestep
+                task_completion_hold_count = 10  # reset count on first success timestep
         else:
-            task_completion_hold_count = -1 # null the counter if there's no success
+            task_completion_hold_count = -1  # null the counter if there's no success
 
     # cleanup for end of data collection episodes
     env.close()
@@ -174,7 +175,7 @@ def gather_demonstrations_as_hdf5(directory, out_dir):
                 right_dquat.append(ai.get("right_dquat", []))
                 left_dpos.append(ai.get("left_dpos", []))
                 left_dquat.append(ai.get("left_dquat", []))
-                
+
         if len(states) == 0:
             continue
 
@@ -196,10 +197,10 @@ def gather_demonstrations_as_hdf5(directory, out_dir):
 
         # write datasets for states and actions
         ep_data_grp.create_dataset("states", data=np.array(states))
-        ep_data_grp.create_dataset("joint_velocities", data=np.array(joint_velocities))
-        ep_data_grp.create_dataset(
-            "gripper_actuations", data=np.array(gripper_actuations)
-        )
+        ep_data_grp.create_dataset("joint_velocities",
+                                   data=np.array(joint_velocities))
+        ep_data_grp.create_dataset("gripper_actuations",
+                                   data=np.array(gripper_actuations))
         ep_data_grp.create_dataset("right_dpos", data=np.array(right_dpos))
         ep_data_grp.create_dataset("right_dquat", data=np.array(right_dquat))
         ep_data_grp.create_dataset("left_dpos", data=np.array(left_dpos))
@@ -265,8 +266,7 @@ if __name__ == "__main__":
         device = SpaceMouse()
     else:
         raise Exception(
-            "Invalid device choice: choose either 'keyboard' or 'spacemouse'."
-        )
+            "Invalid device choice: choose either 'keyboard' or 'spacemouse'.")
 
     # make a new timestamped directory
     t1, t2 = str(time.time()).split(".")

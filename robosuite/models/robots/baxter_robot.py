@@ -25,20 +25,23 @@ class Baxter(Robot):
     def joints(self):
         out = []
         for s in ["right_", "left_"]:
-            out.extend(s + a for a in ["s0", "s1", "e0", "e1", "w0", "w1", "w2"])
+            out.extend(
+                s + a for a in ["s0", "s1", "e0", "e1", "w0", "w1", "w2"])
         return out
 
     @property
     def init_qpos(self):
         # Arms ready to work on the table
         return np.array([
-            0.535, -0.093, 0.038, 0.166, 0.643, 1.960, -1.297,
-            -0.518, -0.026, -0.076, 0.175, -0.748, 1.641, -0.158])
+            0.535, -0.093, 0.038, 0.166, 0.643, 1.960, -1.297, -0.518, -0.026,
+            -0.076, 0.175, -0.748, 1.641, -0.158
+        ])
 
         # Arms half extended
         return np.array([
-            0.752, -0.038, -0.021, 0.161, 0.348, 2.095, -0.531,
-            -0.585, -0.117, -0.037, 0.164, -0.536, 1.543, 0.204])
+            0.752, -0.038, -0.021, 0.161, 0.348, 2.095, -0.531, -0.585, -0.117,
+            -0.037, 0.164, -0.536, 1.543, 0.204
+        ])
 
         # Arms fully extended
         return np.zeros(14)

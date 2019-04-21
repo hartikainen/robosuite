@@ -33,8 +33,6 @@ The following snippet was used to demo basic functionality.
                 break
 
 """
-
-
 """
 The following snippet was used to show how to list all environments.
     from gym import envs
@@ -54,7 +52,6 @@ print("Here is a list of environments in the suite:\n")
 for k, env in enumerate(envs):
     print("[{}] {}".format(k, env))
 print()
-
 """
 The following snippet was used to demo basic functionality.
 
@@ -86,9 +83,9 @@ if __name__ == "__main__":
             has_offscreen_renderer=False,  # not needed since not using pixel obs
             has_renderer=True,  # make sure we can render to the screen
             reward_shaping=True,  # use dense rewards
-            control_freq=100,  # control should happen fast enough so that simulation looks smooth
-        )
-    )
+            control_freq=
+            100,  # control should happen fast enough so that simulation looks smooth
+        ))
 
     for i_episode in range(20):
         observation = env.reset()

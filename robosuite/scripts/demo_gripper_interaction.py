@@ -18,7 +18,6 @@ from robosuite.models.gripper import TwoFingerGripper
 from robosuite.models.mujoco_object import BoxObject
 from robosuite.utils.mjcf_utils import new_joint, new_actuator
 
-
 if __name__ == "__main__":
 
     # start with an empty world
@@ -36,20 +35,22 @@ if __name__ == "__main__":
     gripper_body.set("pos", "0 0 0.3")
     gripper_body.set("quat", "0 0 1 0")  # flip z
     gripper_body.append(
-        new_joint(name="gripper_z_joint", type="slide", axis="0 0 1", damping="50")
-    )
+        new_joint(name="gripper_z_joint",
+                  type="slide",
+                  axis="0 0 1",
+                  damping="50"))
     world.merge(gripper, merge_body=False)
     world.worldbody.append(gripper_body)
     world.actuator.append(
-        new_actuator(
-            joint="gripper_z_joint", act_type="position", name="gripper_z", kp="500"
-        )
-    )
+        new_actuator(joint="gripper_z_joint",
+                     act_type="position",
+                     name="gripper_z",
+                     kp="500"))
 
     # add an object for grasping
-    mujoco_object = BoxObject(
-        size=[0.02, 0.02, 0.02], rgba=[1, 0, 0, 1], friction=1
-    ).get_collision()
+    mujoco_object = BoxObject(size=[0.02, 0.02, 0.02],
+                              rgba=[1, 0, 0, 1],
+                              friction=1).get_collision()
     mujoco_object.append(new_joint(name="object_free_joint", type="free"))
     mujoco_object.set("pos", "0 0 0.11")
     geoms = mujoco_object.findall("./geom")
@@ -103,7 +104,7 @@ if __name__ == "__main__":
             print("step: {}".format(step))
 
         if step % 100 == 0:
-            for contact in sim.data.contact[0 : sim.data.ncon]:
+            for contact in sim.data.contact[0:sim.data.ncon]:
 
                 geom_name1 = sim.model.geom_id2name(contact.geom1)
                 geom_name2 = sim.model.geom_id2name(contact.geom2)
@@ -118,11 +119,8 @@ if __name__ == "__main__":
         if step % T == 0:
             plan = seq[int(step / T) % len(seq)]
             gripper_z_is_low, gripper_is_closed = plan
-            print(
-                "changing plan: gripper low: {}, gripper closed {}".format(
-                    gripper_z_is_low, gripper_is_closed
-                )
-            )
+            print("changing plan: gripper low: {}, gripper closed {}".format(
+                gripper_z_is_low, gripper_is_closed))
 
         if gripper_z_is_low:
             sim.data.ctrl[gripper_z_id] = gripper_z_low
@@ -135,7 +133,6 @@ if __name__ == "__main__":
 
         sim.step()
         sim.data.qfrc_applied[_ref_joint_vel_indexes] = sim.data.qfrc_bias[
-            _ref_joint_vel_indexes
-        ]
+            _ref_joint_vel_indexes]
         viewer.render()
         step += 1

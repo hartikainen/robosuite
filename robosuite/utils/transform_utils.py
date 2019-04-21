@@ -7,7 +7,6 @@ NOTE: convention for quaternions is (x, y, z, w)
 import math
 import numpy as np
 
-
 PI = np.pi
 EPS = np.finfo(float).eps * 4.
 
@@ -258,14 +257,12 @@ def mat2quat(rmat, precise=False):
         m21 = M[2, 1]
         m22 = M[2, 2]
         # symmetric matrix K
-        K = np.array(
-            [
-                [m00 - m11 - m22, 0.0, 0.0, 0.0],
-                [m01 + m10, m11 - m00 - m22, 0.0, 0.0],
-                [m02 + m20, m12 + m21, m22 - m00 - m11, 0.0],
-                [m21 - m12, m02 - m20, m10 - m01, m00 + m11 + m22],
-            ]
-        )
+        K = np.array([
+            [m00 - m11 - m22, 0.0, 0.0, 0.0],
+            [m01 + m10, m11 - m00 - m22, 0.0, 0.0],
+            [m02 + m20, m12 + m21, m22 - m00 - m11, 0.0],
+            [m21 - m12, m02 - m20, m10 - m01, m00 + m11 + m22],
+        ])
         K /= 3.0
         # quaternion is Eigen vector of K that corresponds to largest eigenvalue
         w, V = np.linalg.eigh(K)
@@ -358,13 +355,11 @@ def quat2mat(quaternion):
         return np.identity(3)
     q *= math.sqrt(2.0 / n)
     q = np.outer(q, q)
-    return np.array(
-        [
-            [1.0 - q[2, 2] - q[3, 3], q[1, 2] - q[3, 0], q[1, 3] + q[2, 0]],
-            [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3], q[2, 3] - q[1, 0]],
-            [q[1, 3] - q[2, 0], q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2]],
-        ]
-    )
+    return np.array([
+        [1.0 - q[2, 2] - q[3, 3], q[1, 2] - q[3, 0], q[1, 3] + q[2, 0]],
+        [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3], q[2, 3] - q[1, 0]],
+        [q[1, 3] - q[2, 0], q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2]],
+    ])
 
 
 def pose_in_A_to_pose_in_B(pose_A, pose_A_in_B):
@@ -422,19 +417,17 @@ def _skew_symmetric_translation(pos_A_in_B):
     Helper function to get a skew symmetric translation matrix for converting quantities
     between frames.
     """
-    return np.array(
-        [
-            0.,
-            -pos_A_in_B[2],
-            pos_A_in_B[1],
-            pos_A_in_B[2],
-            0.,
-            -pos_A_in_B[0],
-            -pos_A_in_B[1],
-            pos_A_in_B[0],
-            0.,
-        ]
-    ).reshape((3, 3))
+    return np.array([
+        0.,
+        -pos_A_in_B[2],
+        pos_A_in_B[1],
+        pos_A_in_B[2],
+        0.,
+        -pos_A_in_B[0],
+        -pos_A_in_B[1],
+        pos_A_in_B[0],
+        0.,
+    ]).reshape((3, 3))
 
 
 def vel_in_A_to_vel_in_B(vel_A, ang_vel_A, pose_A_in_B):
@@ -473,7 +466,8 @@ def force_in_A_to_force_in_B(force_A, torque_A, pose_A_in_B):
     rot_A_in_B = pose_A_in_B[:3, :3]
     skew_symm = _skew_symmetric_translation(pos_A_in_B)
     force_B = rot_A_in_B.T.dot(force_A)
-    torque_B = -rot_A_in_B.T.dot(skew_symm.dot(force_A)) + rot_A_in_B.T.dot(torque_A)
+    torque_B = -rot_A_in_B.T.dot(
+        skew_symm.dot(force_A)) + rot_A_in_B.T.dot(torque_A)
     return force_B, torque_B
 
 
@@ -506,9 +500,8 @@ def rotation_matrix(angle, direction, point=None):
     cosa = math.cos(angle)
     direction = unit_vector(direction[:3])
     # rotation matrix around unit vector
-    R = np.array(
-        ((cosa, 0.0, 0.0), (0.0, cosa, 0.0), (0.0, 0.0, cosa)), dtype=np.float32
-    )
+    R = np.array(((cosa, 0.0, 0.0), (0.0, cosa, 0.0), (0.0, 0.0, cosa)),
+                 dtype=np.float32)
     R += np.outer(direction, direction) * (1.0 - cosa)
     direction *= sina
     R += np.array(
@@ -607,14 +600,20 @@ def get_orientation_error(target_orn, current_orn):
             (target_orn - current_orn)
     """
     current_orn = np.array(
-        [current_orn[3], current_orn[0], current_orn[1], current_orn[2]]
-    )
-    target_orn = np.array([target_orn[3], target_orn[0], target_orn[1], target_orn[2]])
+        [current_orn[3], current_orn[0], current_orn[1], current_orn[2]])
+    target_orn = np.array(
+        [target_orn[3], target_orn[0], target_orn[1], target_orn[2]])
 
     pinv = np.zeros((3, 4))
-    pinv[0, :] = [-current_orn[1], current_orn[0], -current_orn[3], current_orn[2]]
-    pinv[1, :] = [-current_orn[2], current_orn[3], current_orn[0], -current_orn[1]]
-    pinv[2, :] = [-current_orn[3], -current_orn[2], current_orn[1], current_orn[0]]
+    pinv[0, :] = [
+        -current_orn[1], current_orn[0], -current_orn[3], current_orn[2]
+    ]
+    pinv[1, :] = [
+        -current_orn[2], current_orn[3], current_orn[0], -current_orn[1]
+    ]
+    pinv[2, :] = [
+        -current_orn[3], -current_orn[2], current_orn[1], current_orn[0]
+    ]
     orn_error = 2.0 * pinv.dot(np.array(target_orn))
     return orn_error
 

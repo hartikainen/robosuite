@@ -16,14 +16,12 @@ class BaxterPegInHole(BaxterEnv):
     a cylinder attached to one gripper and a hole attached to the other one.
     """
 
-    def __init__(
-        self,
-        cylinder_radius=(0.015, 0.03),
-        cylinder_length=0.13,
-        use_object_obs=True,
-        reward_shaping=True,
-        **kwargs
-    ):
+    def __init__(self,
+                 cylinder_radius=(0.015, 0.03),
+                 cylinder_length=0.13,
+                 use_object_obs=True,
+                 reward_shaping=True,
+                 **kwargs):
         """
         Args:
             cylinder_radius (2-tuple): low and high limits of the (uniformly sampled)
@@ -77,14 +75,17 @@ class BaxterPegInHole(BaxterEnv):
         self.hole_obj.set("quat", "0 0 0.707 0.707")
         self.hole_obj.set("pos", "0.11 0 0.18")
         self.model.merge_asset(self.hole)
-        self.model.worldbody.find(".//body[@name='left_hand']").append(self.hole_obj)
+        self.model.worldbody.find(".//body[@name='left_hand']").append(
+            self.hole_obj)
 
         # Load cylinder object
         self.cyl_obj = self.cylinder.get_collision(name="cylinder", site=True)
         self.cyl_obj.set("pos", "0 0 0.15")
         self.model.merge_asset(self.cylinder)
-        self.model.worldbody.find(".//body[@name='right_hand']").append(self.cyl_obj)
-        self.model.worldbody.find(".//geom[@name='cylinder']").set("rgba", "0 1 0 1")
+        self.model.worldbody.find(".//body[@name='right_hand']").append(
+            self.cyl_obj)
+        self.model.worldbody.find(".//geom[@name='cylinder']").set(
+            "rgba", "0 1 0 1")
 
     def _get_reference(self):
         """
@@ -121,7 +122,7 @@ class BaxterPegInHole(BaxterEnv):
         v = v / np.linalg.norm(v)
         center = hole_pos + hole_mat @ np.array([0.1, 0, 0])
 
-        t = (center - cyl_pos) @ v / (np.linalg.norm(v) ** 2)
+        t = (center - cyl_pos) @ v / (np.linalg.norm(v)**2)
         d = np.linalg.norm(np.cross(v, cyl_pos - center)) / np.linalg.norm(v)
 
         hole_normal = hole_mat @ np.array([0, 0, 1])
@@ -129,8 +130,8 @@ class BaxterPegInHole(BaxterEnv):
             t,
             d,
             abs(
-                np.dot(hole_normal, v) / np.linalg.norm(hole_normal) / np.linalg.norm(v)
-            ),
+                np.dot(hole_normal, v) / np.linalg.norm(hole_normal) /
+                np.linalg.norm(v)),
         )
 
     def reward(self, action):
@@ -177,7 +178,8 @@ class BaxterPegInHole(BaxterEnv):
         """
         # World frame
         peg_pos_in_world = self.sim.data.get_body_xpos("cylinder")
-        peg_rot_in_world = self.sim.data.get_body_xmat("cylinder").reshape((3, 3))
+        peg_rot_in_world = self.sim.data.get_body_xmat("cylinder").reshape(
+            (3, 3))
         peg_pose_in_world = T.make_pose(peg_pos_in_world, peg_rot_in_world)
 
         # World frame
@@ -187,9 +189,8 @@ class BaxterPegInHole(BaxterEnv):
 
         world_pose_in_hole = T.pose_inv(hole_pose_in_world)
 
-        peg_pose_in_hole = T.pose_in_A_to_pose_in_B(
-            peg_pose_in_world, world_pose_in_hole
-        )
+        peg_pose_in_hole = T.pose_in_A_to_pose_in_B(peg_pose_in_world,
+                                                    world_pose_in_hole)
         return peg_pose_in_hole
 
     def _get_observation(self):
@@ -225,15 +226,13 @@ class BaxterPegInHole(BaxterEnv):
             # position and rotation of cylinder and hole
             hole_pos = self.sim.data.body_xpos[self.hole_body_id]
             hole_quat = T.convert_quat(
-                self.sim.data.body_xquat[self.hole_body_id], to="xyzw"
-            )
+                self.sim.data.body_xquat[self.hole_body_id], to="xyzw")
             di["hole_pos"] = hole_pos
             di["hole_quat"] = hole_quat
 
             cyl_pos = self.sim.data.body_xpos[self.cyl_body_id]
             cyl_quat = T.convert_quat(
-                self.sim.data.body_xquat[self.cyl_body_id], to="xyzw"
-            )
+                self.sim.data.body_xquat[self.cyl_body_id], to="xyzw")
             di["cyl_to_hole"] = cyl_pos - hole_pos
             di["cyl_quat"] = cyl_quat
 
@@ -243,17 +242,15 @@ class BaxterPegInHole(BaxterEnv):
             di["t"] = t
             di["d"] = d
 
-            di["object-state"] = np.concatenate(
-                [
-                    di["hole_pos"],
-                    di["hole_quat"],
-                    di["cyl_to_hole"],
-                    di["cyl_quat"],
-                    [di["angle"]],
-                    [di["t"]],
-                    [di["d"]],
-                ]
-            )
+            di["object-state"] = np.concatenate([
+                di["hole_pos"],
+                di["hole_quat"],
+                di["cyl_to_hole"],
+                di["cyl_quat"],
+                [di["angle"]],
+                [di["t"]],
+                [di["d"]],
+            ])
 
         return di
 
@@ -262,14 +259,12 @@ class BaxterPegInHole(BaxterEnv):
         Returns True if gripper is in contact with an object.
         """
         collision = False
-        contact_geoms = (
-            self.gripper_right.contact_geoms() + self.gripper_left.contact_geoms()
-        )
-        for contact in self.sim.data.contact[: self.sim.data.ncon]:
-            if (
-                self.sim.model.geom_id2name(contact.geom1) in contact_geoms
-                or self.sim.model.geom_id2name(contact.geom2) in contact_geoms
-            ):
+        contact_geoms = (self.gripper_right.contact_geoms() +
+                         self.gripper_left.contact_geoms())
+        for contact in self.sim.data.contact[:self.sim.data.ncon]:
+            if (self.sim.model.geom_id2name(contact.geom1) in contact_geoms or
+                    self.sim.model.geom_id2name(
+                        contact.geom2) in contact_geoms):
                 collision = True
                 break
         return collision

@@ -35,7 +35,6 @@ import robosuite
 from robosuite import make
 from robosuite.wrappers import DemoSamplerWrapper
 
-
 if __name__ == "__main__":
 
     env = make(
@@ -50,9 +49,8 @@ if __name__ == "__main__":
 
     env = DemoSamplerWrapper(
         env,
-        demo_path=os.path.join(
-            robosuite.models.assets_root, "demonstrations/SawyerPickPlace"
-        ),
+        demo_path=os.path.join(robosuite.models.assets_root,
+                               "demonstrations/SawyerPickPlace"),
         need_xml=True,
         num_traj=-1,
         sampling_schemes=["uniform", "random"],

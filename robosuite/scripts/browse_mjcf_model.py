@@ -16,10 +16,10 @@ from mujoco_py import MjSim, MjViewer
 
 import robosuite
 
-
 if __name__ == "__main__":
 
-    arena_file = os.path.join(robosuite.models.assets_root, "arenas/pegs_arena.xml")
+    arena_file = os.path.join(robosuite.models.assets_root,
+                              "arenas/pegs_arena.xml")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--filepath", type=str, default=arena_file)

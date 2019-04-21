@@ -19,16 +19,16 @@ class DemoSamplerWrapper(Wrapper):
     env = None
 
     def __init__(
-        self,
-        env,
-        demo_path,
-        need_xml=False,
-        num_traj=-1,
-        sampling_schemes=["uniform", "random"],
-        scheme_ratios=[0.9, 0.1],
-        open_loop_increment_freq=100,
-        open_loop_initial_window_width=25,
-        open_loop_window_increment=25,
+            self,
+            env,
+            demo_path,
+            need_xml=False,
+            num_traj=-1,
+            sampling_schemes=["uniform", "random"],
+            scheme_ratios=[0.9, 0.1],
+            open_loop_increment_freq=100,
+            open_loop_initial_window_width=25,
+            open_loop_window_increment=25,
     ):
         """
         Initializes a wrapper that provides support for resetting the environment
@@ -98,8 +98,7 @@ class DemoSamplerWrapper(Wrapper):
         assert (
             env_name == self.unwrapped.__class__.__name__
         ), "Wrapped env {} does not match env on which demos were collected ({})".format(
-            env.__class__.__name__, env_name
-        )
+            env.__class__.__name__, env_name)
 
         # list of all demonstrations episodes
         self.demo_list = list(self.demo_file["data"].keys())
@@ -178,7 +177,8 @@ class DemoSamplerWrapper(Wrapper):
             if v:
                 break
 
-        sample_method = getattr(self, self.sample_method_dict[self.sampling_schemes[i]])
+        sample_method = getattr(
+            self, self.sample_method_dict[self.sampling_schemes[i]])
         return sample_method()
 
     def _random_sample(self):
@@ -227,7 +227,8 @@ class DemoSamplerWrapper(Wrapper):
         # sample uniformly in a window that grows backwards from the end of the demos
         states = self.demo_file["data/{}/states".format(ep_ind)].value
         eps_len = states.shape[0]
-        index = np.random.randint(max(eps_len - self.open_loop_window_size, 0), eps_len)
+        index = np.random.randint(max(eps_len - self.open_loop_window_size, 0),
+                                  eps_len)
         state = states[index]
 
         # increase window size at a fixed frequency (open loop)
@@ -284,7 +285,8 @@ class DemoSamplerWrapper(Wrapper):
         """
 
         # read the model xml, using the metadata stored in the attribute for this episode
-        model_file = self.demo_file["data/{}".format(ep_ind)].attrs["model_file"]
+        model_file = self.demo_file["data/{}".format(
+            ep_ind)].attrs["model_file"]
         model_path = os.path.join(self.demo_path, "models", model_file)
         with open(model_path, "r") as model_f:
             model_xml = model_f.read()

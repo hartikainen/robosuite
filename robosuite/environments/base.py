@@ -158,8 +158,8 @@ class MujocoEnv(metaclass=EnvMeta):
             self.viewer = MujocoPyRenderer(self.sim)
             self.viewer.viewer.vopt.geomgroup[0] = (
                 1 if self.render_collision_mesh else 0)
-            self.viewer.viewer.vopt.geomgroup[
-                1] = 1 if self.render_visual_mesh else 0
+            self.viewer.viewer.vopt.geomgroup[1] = (
+                1 if self.render_visual_mesh else 0)
 
             # hiding the overlay speeds up rendering significantly
             self.viewer.viewer._hide_overlay = True

@@ -14,6 +14,7 @@ class TableTopTask(Task):
                  mujoco_arena,
                  mujoco_robot,
                  mujoco_objects,
+                 mujoco_visuals,
                  initializer=None):
         """
         Args:
@@ -27,6 +28,7 @@ class TableTopTask(Task):
         self.merge_arena(mujoco_arena)
         self.merge_robot(mujoco_robot)
         self.merge_objects(mujoco_objects)
+        self.merge_visual(mujoco_visuals)
         if initializer is None:
             initializer = UniformRandomSampler()
         mjcfs = [x for _, x in self.mujoco_objects.items()]
@@ -50,7 +52,6 @@ class TableTopTask(Task):
         """Adds physical objects to the MJCF model."""
         self.mujoco_objects = mujoco_objects
         self.objects = []  # xml manifestation
-        self.targets = []  # xml manifestation
         self.max_horizontal_radius = 0
 
         for obj_name, obj_mjcf in mujoco_objects.items():
@@ -64,10 +65,26 @@ class TableTopTask(Task):
             self.max_horizontal_radius = max(self.max_horizontal_radius,
                                              obj_mjcf.get_horizontal_radius())
 
+    def merge_visual(self, mujoco_visuals):
+        """Adds visual objects to the MJCF model."""
+        self.mujoco_visuals = mujoco_visuals
+        self.visuals = []  # xml manifestation
+
+        for visual_name, visual_mjcf in mujoco_visuals.items():
+            self.merge_asset(visual_mjcf)
+            # Load visual
+            visual = visual_mjcf.get_visual(name=visual_name, site=False)
+            self.visuals.append(visual)
+            self.worldbody.append(visual)
+
+    def _place_objects(self, objects):
+        pos_arr, quat_arr = self.initializer.sample()
+        for i in range(len(objects)):
+            objects[i].set("pos", array_to_string(pos_arr[i]))
+            objects[i].set("quat", array_to_string(quat_arr[i]))
+
     def place_objects(self):
         """Places objects randomly until no collisions or max iterations
         hit."""
-        pos_arr, quat_arr = self.initializer.sample()
-        for i in range(len(self.objects)):
-            self.objects[i].set("pos", array_to_string(pos_arr[i]))
-            self.objects[i].set("quat", array_to_string(quat_arr[i]))
+        self._place_objects(self.objects)
+        self._place_objects(self.visuals)

@@ -104,8 +104,22 @@ class ScrewObject(MujocoXMLObject):
         super().__init__(xml_path_completion("objects/screw.xml"))
 
 
+class ScrewVisualObject(MujocoXMLObject):
+    """Screw with four colored spokes."""
+
+    def __init__(self):
+        super().__init__(xml_path_completion("objects/screw-visual.xml"))
+
+
 class CustomCubeObject(MujocoXMLObject):
     """Cube with a colored/alphabetized sides."""
 
     def __init__(self):
         super().__init__(xml_path_completion("objects/custom-cube.xml"))
+
+
+class CustomCubeVisualObject(MujocoXMLObject):
+    """Cube with a colored/alphabetized sides."""
+
+    def __init__(self):
+        super().__init__(xml_path_completion("objects/custom-cube-visual.xml"))

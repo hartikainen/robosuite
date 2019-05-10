@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="screw">
+  <worldbody>
+    <body>
+      <body name="visual">
+        <geom type="capsule" pos="0.040625 0 0" size="0.02 0.026875" condim="4" conaffinity="0" contype="0" group="1" rgba="0.23529412 0.72941176 0.32941176 0.25" mass="0.0000001" euler="0 1.57 0" />
+        <geom type="capsule" pos="-0.040625 0 0" size="0.02 0.026875" condim="4" conaffinity="0" contype="0" group="1" rgba="0.95686275 0.76078431 0.05098039 0.25" mass="0.0000001" euler="0 1.57 0" />
+
+        <geom type="capsule" pos="0 0.040625 0" size="0.02 0.026875" condim="4" conaffinity="0" contype="0" group="1" rgba="0.85882353 0.19607843 0.21176471 0.25" mass="0.0000001" euler="1.57 0 0" />
+        <geom type="capsule" pos="0 -0.040625 0" size="0.02 0.026875" condim="4" conaffinity="0" contype="0" group="1" rgba="0.28235294 0.52156863 0.92941176 0.25" mass="0.0000001" euler="1.57 0 0" />
+
+        <geom type="cylinder" pos="0 0 -0.01" size="0.028 0.014" condim="4" conaffinity="0" contype="0" group="1" rgba="0 0 0 0.05" mass="0.0000001" euler="0 0 0" />
+      </body>
+
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.024" name="bottom_site"/>
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 0.02" name="top_site"/>
+      <site rgba="0 0 0 0" size="0.005" pos="0.0675 0.0675 0" name="horizontal_radius_site"/>
+    </body>
+  </worldbody>
+</mujoco>

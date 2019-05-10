@@ -7,8 +7,13 @@ from robosuite.environments.sawyer import SawyerEnv
 
 from robosuite.models.arenas.table_arena import TableArena
 from robosuite.models.objects import BoxObject
-from robosuite.models.objects.xml_objects import CustomCubeObject, ScrewObject
-from robosuite.models.tasks import TableTopTask, UniformRandomSampler
+from robosuite.models.objects.xml_objects import (
+    CustomCubeObject, ScrewObject,
+    CustomCubeVisualObject, ScrewVisualObject)
+from robosuite.models.tasks import (
+    FreeFloatOrientationTask,
+    TableTopTask,
+    UniformRandomSampler)
 
 
 class SawyerFreeFloatManipulation(SawyerEnv):
@@ -20,6 +25,7 @@ class SawyerFreeFloatManipulation(SawyerEnv):
         self,
         gripper_type="DynamixelClawThreeFingerGripper",
         objects=None,
+        visual_objects=None,
         table_full_size=(0.8, 0.8, 0.65),
         table_friction=(1., 5e-3, 1e-4),
         use_camera_obs=True,
@@ -99,10 +105,22 @@ class SawyerFreeFloatManipulation(SawyerEnv):
         """
         # initialize objects of interest
         if objects is None:
-            self.mujoco_objects = OrderedDict((
-                ('custom-cube', CustomCubeObject()),
+            mujoco_objects = OrderedDict((
+                # ('custom-cube', CustomCubeObject()),
                 ('screw', ScrewObject()),
             ))
+
+        if visual_objects is None:
+            visual_objects = OrderedDict((
+                # ('custom-cube-visual', CustomCubeVisualObject()),
+                ('screw-visual', ScrewVisualObject()),
+            ))
+
+        self.mujoco_objects = mujoco_objects
+        self.visual_objects = visual_objects
+
+        assert len(self.mujoco_objects) == len(self.visual_objects), (
+            self.mujoco_objects, self.visual_objects)
 
         self.n_objects = len(self.mujoco_objects)
 
@@ -184,6 +202,7 @@ class SawyerFreeFloatManipulation(SawyerEnv):
             self.mujoco_arena,
             self.mujoco_robot,
             self.mujoco_objects,
+            self.visual_objects,
             initializer=self.placement_initializer,
         )
         self.model.place_objects()
@@ -205,6 +224,7 @@ class SawyerFreeFloatManipulation(SawyerEnv):
         #     (key, self.sim.model.geom_name2id(mujoco_object.name))
         #     for key, mujoco_object in self.mujoco_objects.items()
         # ])
+
         self.target_body_ids = OrderedDict([
             (key + "-visual", self.sim.model.body_name2id(mujoco_object.name + "-visual"))
             for key, mujoco_object in self.mujoco_objects.items()
@@ -257,10 +277,6 @@ class SawyerFreeFloatManipulation(SawyerEnv):
             rotation_distances = np.linalg.norm(
                 rotation_coordinate_distances, ord=2, axis=-1)
 
-            position_distances2, rotation_distances2 = transform_utils.get_orientation_error2(
-                np.concatenate((target_positions, target_quaternions), axis=-1),
-                np.concatenate((object_positions, object_quaternions), axis=-1))
-
             object_orientation_rewards -= rotation_distances
             object_position_rewards -= position_distances
 
@@ -295,8 +311,7 @@ class SawyerFreeFloatManipulation(SawyerEnv):
         position_reward, orientation_reward = [
             rewards[0] for rewards in self.rewards(observations, actions)]
         reward = position_reward + orientation_reward
-        print(np.min(position_reward), np.max(position_reward))
-        print(np.min(orientation_reward), np.max(orientation_reward))
+        print(position_reward, orientation_reward)
         return reward
 
     def _get_observation(self):

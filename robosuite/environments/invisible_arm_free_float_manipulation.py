@@ -311,6 +311,23 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         reward = position_reward + orientation_reward
         return reward
 
+    def _post_action(self, action):
+        """Do any housekeeping after taking an action."""
+        reward, done, info = super(
+            InvisibleArmFreeFloatManipulation, self)._post_action(action)
+        observations = OrderedDict((
+            (key, value[None])
+            for key, value in self._get_observation().items()
+        ))
+        actions = action[None]
+        position_reward, orientation_reward = [
+            rewards[0] for rewards in self.rewards(observations, actions)]
+        info.update({
+            'position_reward': position_reward,
+            'orientation_reward': orientation_reward,
+        })
+        return reward, done, info
+
     def _get_observation(self):
         """
         Returns an OrderedDict containing observations [(name_string, np.array), ...].

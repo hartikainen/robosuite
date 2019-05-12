@@ -30,7 +30,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         table_friction=(1., 5e-3, 1e-4),
         use_camera_obs=True,
         use_object_obs=True,
-        position_reward_weight=1.0,
+        position_reward_weight=10.0,
         orientation_reward_weight=1.0,
         placement_initializer=None,
         gripper_visualization=False,

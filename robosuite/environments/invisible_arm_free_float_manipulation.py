@@ -11,7 +11,6 @@ from robosuite.models.objects.xml_objects import (
     CustomCubeObject, ScrewObject,
     CustomCubeVisualObject, ScrewVisualObject)
 from robosuite.models.tasks import (
-    FreeFloatOrientationTask,
     TableTopTask,
     UniformRandomSampler)
 

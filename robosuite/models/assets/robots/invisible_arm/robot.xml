@@ -3,16 +3,16 @@
   <size nconmax="100" njmax="500"/> -->
   <actuator>
     <!-- Mujoco does not have velocity limit in actuator :( -->
-    <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_x_joint" name="arm_x_joint" />
-    <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_y_joint" name="arm_y_joint" />
-    <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_z_joint" name="arm_z_joint" />
+    <!-- <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_x_joint" name="arm_x_joint" /> -->
+    <!-- <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_y_joint" name="arm_y_joint" /> -->
+    <!-- <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_z_joint" name="arm_z_joint" /> -->
   </actuator>
   <worldbody>
     <body name="base" pos="0 0 0">
       <inertial pos="0 0 0" mass="0" diaginertia="0 0 0"/>
-      <joint axis="1 0 0" limited="true" range="-0.2 0.2" pos="0 0 0" damping="50" name="arm_x_joint" type="slide" />
-      <joint axis="0 1 0" limited="true" range="-0.2 0.2" pos="0 0 0" damping="50" name="arm_y_joint" type="slide" />
-      <joint axis="0 0 1" limited="true" range="0 0.1" pos="0 0 0" damping="50" name="arm_z_joint" type="slide" />
+      <!-- <joint axis="1 0 0" limited="true" range="-0.2 0.2" pos="0 0 0" damping="50" name="arm_x_joint" type="slide" /> -->
+      <!-- <joint axis="0 1 0" limited="true" range="-0.2 0.2" pos="0 0 0" damping="50" name="arm_y_joint" type="slide" /> -->
+      <!-- <joint axis="0 0 1" limited="true" range="0 0.1" pos="0 0 0" damping="50" name="arm_z_joint" type="slide" /> -->
       <body name="right_hand" pos="0 0 0" euler="0 -3.14 0">
         <!-- To add gripper -->
       </body>

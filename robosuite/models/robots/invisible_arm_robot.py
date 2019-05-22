@@ -8,8 +8,7 @@ class InvisibleArm(Robot):
 
     def __init__(self):
         super().__init__(xml_path_completion("robots/invisible_arm/robot.xml"))
-
-        self.bottom_offset = np.array([0, 0, 0])
+        self.bottom_offset = np.array((0, 0, 0))
 
     def set_base_xpos(self, pos):
         """Places the robot on position @pos."""
@@ -18,12 +17,15 @@ class InvisibleArm(Robot):
 
     @property
     def dof(self):
-        return 3
+        # return 3
+        return 0
 
     @property
     def joints(self):
-        return ("arm_x_joint", "arm_y_joint", "arm_z_joint")
+        # return ("arm_x_joint", "arm_y_joint", "arm_z_joint")
+        return ()
 
     @property
     def init_qpos(self):
-        return np.array((0.0, 0.0, 0.0))
+        # return np.array((0.0, 0.0, 0.0))
+        return np.array(())

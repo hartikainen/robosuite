@@ -31,7 +31,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         use_object_obs=True,
         position_reward_weight=10.0,
         orientation_reward_weight=1.0,
-        placement_initializer=None,
+        object_initializer=None,
+        visual_initializer=None,
         gripper_visualization=False,
         use_indicator_object=False,
         has_renderer=False,
@@ -65,7 +66,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
             reward_shaping (bool): if True, use dense rewards.
 
-            placement_initializer (ObjectPositionSampler instance): if provided, will
+            {object,visual}_initializer (ObjectPositionSampler instance): if provided, will
                 be used to place objects on every reset, else a UniformRandomSampler
                 is used by default.
 
@@ -137,15 +138,23 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         self.use_object_obs = use_object_obs
 
         # object placement initializer
-        if placement_initializer:
-            self.placement_initializer = placement_initializer
+        if object_initializer:
+            self.object_initializer = object_initializer
         else:
-            self.placement_initializer = UniformRandomSampler(
-                x_range=[-0.3, 0.3],
-                y_range=[-0.3, 0.3],
+            self.object_initializer = UniformRandomSampler(
+                x_range=[-0.0, 0.0],
+                y_range=[-0.0, 0.0],
                 ensure_object_boundary_in_range=False,
-                z_rotation=None,
-            )
+                z_rotation=None)
+
+        if visual_initializer:
+            self.visual_initializer = visual_initializer
+        else:
+            self.visual_initializer = UniformRandomSampler(
+                x_range=[-0.0, 0.0],
+                y_range=[-0.0, 0.0],
+                ensure_object_boundary_in_range=False,
+                z_rotation=np.pi)
 
         super().__init__(
             gripper_type=gripper_type,
@@ -192,9 +201,6 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         if self.use_indicator_object:
             self.mujoco_arena.add_pos_indicator()
 
-        # The InvisibleArm robot does not have a pedestal, we don't want to align pedestal with the table
-        # self.mujoco_arena.set_origin([0.16 + self.table_full_size[0] / 2, 0, 0])
-
         self.mujoco_robot.set_base_xpos(
             self.mujoco_arena.table_top_abs + (0, 0, 0.25))
 
@@ -204,7 +210,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             self.mujoco_robot,
             self.mujoco_objects,
             self.visual_objects,
-            initializer=self.placement_initializer,
+            object_initializer=self.object_initializer,
+            visual_initializer=self.visual_initializer,
         )
         self.model.place_objects()
         self.model.place_visual()

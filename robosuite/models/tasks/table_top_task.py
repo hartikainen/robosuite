@@ -15,7 +15,8 @@ class TableTopTask(Task):
                  mujoco_robot,
                  mujoco_objects,
                  mujoco_visuals,
-                 initializer=None):
+                 object_initializer=None,
+                 visual_initializer=None):
         """
         Args:
             mujoco_arena: MJCF model of robot workspace
@@ -29,12 +30,19 @@ class TableTopTask(Task):
         self.merge_robot(mujoco_robot)
         self.merge_objects(mujoco_objects)
         self.merge_visual(mujoco_visuals)
-        if initializer is None:
-            initializer = UniformRandomSampler()
+        if object_initializer is None:
+            object_initializer = UniformRandomSampler()
+        if visual_initializer is None:
+            visual_initializer = UniformRandomSampler()
+
         mjcfs = [x for _, x in self.mujoco_objects.items()]
 
-        self.initializer = initializer
-        self.initializer.setup(mjcfs, self.table_top_offset, self.table_size)
+        self.object_initializer = object_initializer
+        self.object_initializer.setup(
+            mjcfs, self.table_top_offset, self.table_size)
+        self.visual_initializer = visual_initializer
+        self.visual_initializer.setup(
+            mjcfs, self.table_top_offset, self.table_size)
 
     def merge_robot(self, mujoco_robot):
         """Adds robot model to the MJCF model."""
@@ -59,6 +67,7 @@ class TableTopTask(Task):
             # Load object
             obj = obj_mjcf.get_collision(name=obj_name, site=True)
             obj.append(new_joint(name=obj_name, type="free"))
+            # obj.append(new_joint(name=obj_name + "_hinge", type="hinge", axis="0 0 1"))
             self.objects.append(obj)
             self.worldbody.append(obj)
 
@@ -77,8 +86,8 @@ class TableTopTask(Task):
             self.visuals.append(visual)
             self.worldbody.append(visual)
 
-    def _place_objects(self, objects):
-        pos_arr, quat_arr = self.initializer.sample()
+    def _place_objects(self, objects, initializer):
+        pos_arr, quat_arr = initializer.sample()
         for i in range(len(objects)):
             objects[i].set("pos", array_to_string(pos_arr[i]))
             objects[i].set("quat", array_to_string(quat_arr[i]))
@@ -86,5 +95,5 @@ class TableTopTask(Task):
     def place_objects(self):
         """Places objects randomly until no collisions or max iterations
         hit."""
-        self._place_objects(self.objects)
-        self._place_objects(self.visuals)
+        self._place_objects(self.objects, initializer=self.object_initializer)
+        self._place_objects(self.visuals, initializer=self.visual_initializer)

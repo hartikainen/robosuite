@@ -180,8 +180,6 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
                     z_rotation=target_z_rotation_range,
                 )
 
-
-
         super().__init__(
             gripper_type=gripper_type,
             gripper_visualization=gripper_visualization,

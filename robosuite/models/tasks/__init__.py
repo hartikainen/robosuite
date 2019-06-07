@@ -3,6 +3,7 @@ from .task import Task
 from .placement_sampler import (
     ObjectPositionSampler,
     UniformRandomSampler,
+    DiscreteRandomSampler,
     UniformRandomPegsSampler,
 )
 

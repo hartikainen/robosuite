@@ -349,11 +349,12 @@ def quat2mat(quaternion):
         return np.identity(3)
     q *= math.sqrt(2.0 / n)
     q = np.outer(q, q)
-    return np.array([
+    mat =  np.array([
         [1.0 - q[2, 2] - q[3, 3], q[1, 2] - q[3, 0], q[1, 3] + q[2, 0]],
         [q[1, 2] + q[3, 0], 1.0 - q[1, 1] - q[3, 3], q[2, 3] - q[1, 0]],
         [q[1, 3] - q[2, 0], q[2, 3] + q[1, 0], 1.0 - q[1, 1] - q[2, 2]],
     ])
+    return mat
 
 
 def pose_in_A_to_pose_in_B(pose_A, pose_A_in_B):
@@ -636,3 +637,15 @@ def get_pose_error(target_pose, current_pose):
     error[:3] = pos_err
     error[3:] = rot_err
     return error
+
+
+def quat2euler(quat):
+    """Convert Quaternion to Euler Angles."""
+    return mat2euler(quat2mat(quat))
+
+
+def get_rotation_distance(euler1, euler2):
+    """L2 distance between two euler angle vectors."""
+    abs_diff = np.abs(euler1 - euler2)
+    wrapped_diff = np.minimum(abs_diff, 2*np.pi - abs_diff) # ensures pi and -pi are close to each other
+    return np.linalg.norm(wrapped_diff, ord=2, axis=-1)

@@ -15,7 +15,6 @@ class DynamixelClawThreeFingerGripper(Gripper):
             xml_path_completion("grippers/dynamixel_claw_gripper.xml"))
 
     def format_action(self, action):
-        action *= -1.0 * np.tile((0, 0.3, 3), 3)
         return action
 
     @property

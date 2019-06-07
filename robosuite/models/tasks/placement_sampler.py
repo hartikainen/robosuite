@@ -138,6 +138,52 @@ class UniformRandomSampler(ObjectPositionSampler):
             index += 1
         return pos_arr, quat_arr
 
+class DiscreteRandomSampler(UniformRandomSampler):
+    """Places all objects within the table by sampling from a finite set of arrangements."""
+
+    def __init__(
+            self,
+            x_range=None,
+            y_range=None,
+            ensure_object_boundary_in_range=True,
+            z_rotation="random",
+            num_arrangements=4,
+    ):
+        """
+        Args:
+            x_range(float * 2): override the x_range used to uniformly place objects
+                    if None, default to x-range of table
+            y_range(float * 2): override the y_range used to uniformly place objects
+                    if None default to y-range of table
+            x_range and y_range are both with respect to (0,0) = center of table.
+            ensure_object_boundary_in_range:
+                True: The center of object is at position:
+                     [uniform(min x_range + radius, max x_range - radius)], [uniform(min x_range + radius, max x_range - radius)]
+                False:
+                    [uniform(min x_range, max x_range)], [uniform(min x_range, max x_range)]
+            z_rotation:
+                None: Add uniform random random z-rotation
+                iterable (a,b): Uniformly randomize rotation angle between a and b (in radians)
+                value: Add fixed angle z-rotation
+            num_arrangements(int): number of arrangements to sample from
+        """
+        self.x_range = x_range
+        self.y_range = y_range
+        self.ensure_object_boundary_in_range = ensure_object_boundary_in_range
+        self.z_rotation = z_rotation
+        self.num_arrangements = num_arrangements
+        self.arrangements = []
+
+    def sample(self):
+        if not self.arrangements:
+            for _ in range(self.num_arrangements):
+                self.arrangements.append(super().sample())
+
+        rand_int = np.random.randint(self.num_arrangements)
+        sampled_arrangement = self.arrangements[rand_int]
+        return sampled_arrangement[0], sampled_arrangement[1]
+
+
 
 class UniformRandomPegsSampler(ObjectPositionSampler):
     """Places all objects on top of the table uniformly random."""

@@ -28,6 +28,7 @@ class InvisibleArmEnv(MujocoEnv):
             camera_height=256,
             camera_width=256,
             camera_depth=False,
+            fixed_arm=False,
     ):
         """
         Args:
@@ -76,6 +77,7 @@ class InvisibleArmEnv(MujocoEnv):
         self.gripper_type = gripper_type
         self.gripper_visualization = gripper_visualization
         self.use_indicator_object = use_indicator_object
+        self._fixed_arm = fixed_arm
         super().__init__(
             has_renderer=has_renderer,
             has_offscreen_renderer=has_offscreen_renderer,
@@ -94,7 +96,7 @@ class InvisibleArmEnv(MujocoEnv):
     def _load_model(self):
         """Loads robot and optionally add grippers."""
         super()._load_model()
-        self.mujoco_robot = InvisibleArm()
+        self.mujoco_robot = InvisibleArm(fixed_arm=self._fixed_arm)
         if self.has_gripper:
             self.gripper = gripper_factory(self.gripper_type)
             if not self.gripper_visualization:
@@ -236,7 +238,9 @@ class InvisibleArmEnv(MujocoEnv):
         """
 
         di = super()._get_observation()
-        # proprioceptive features
+        # proprioceptive
+
+        ## arm joint info
         di["joint_pos"] = np.array(
             [self.sim.data.qpos[x] for x in self._ref_joint_pos_indexes])
         di["joint_vel"] = np.array(
@@ -249,6 +253,12 @@ class InvisibleArmEnv(MujocoEnv):
         ]
 
         if self.has_gripper:
+            ## arm end effector pos + quat
+            di["eef_pos"] = self.sim.data.site_xpos[self.eef_site_id]
+            di["eef_quat"] = T.convert_quat(
+                self.sim.data.get_body_xquat("right_hand"), to="xyzw")
+
+            ## gripper joint info
             di["gripper_qpos"] = np.array([
                 self.sim.data.qpos[x]
                 for x in self._ref_gripper_joint_pos_indexes
@@ -258,9 +268,6 @@ class InvisibleArmEnv(MujocoEnv):
                 for x in self._ref_gripper_joint_vel_indexes
             ])
 
-            di["eef_pos"] = self.sim.data.site_xpos[self.eef_site_id]
-            di["eef_quat"] = T.convert_quat(
-                self.sim.data.get_body_xquat("right_hand"), to="xyzw")
 
             # add in gripper information
             robot_states.extend(

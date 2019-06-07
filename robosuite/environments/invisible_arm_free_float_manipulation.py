@@ -2,7 +2,6 @@ from collections import OrderedDict
 import numpy as np
 
 from robosuite.utils import transform_utils
-from robosuite.utils.transform_utils import convert_quat
 from robosuite.environments.invisible_arm import InvisibleArmEnv
 
 from robosuite.models.arenas.table_arena import TableArena
@@ -12,7 +11,8 @@ from robosuite.models.objects.xml_objects import (
     CustomCubeVisualObject, ScrewVisualObject)
 from robosuite.models.tasks import (
     TableTopTask,
-    UniformRandomSampler)
+    UniformRandomSampler,
+    DiscreteRandomSampler,)
 
 
 class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
@@ -31,11 +31,12 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         use_object_obs=True,
         position_reward_weight=10.0,
         orientation_reward_weight=1.0,
-        placement_initializer=None,
+        objects_placement_initializer=None,
+        visuals_placement_initializer=None,
         gripper_visualization=False,
         use_indicator_object=False,
         has_renderer=False,
-        has_offscreen_renderer=True,
+        has_offscreen_renderer=False,
         render_collision_mesh=False,
         render_visual_mesh=True,
         control_freq=10,
@@ -45,6 +46,12 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         camera_height=256,
         camera_width=256,
         camera_depth=False,
+        objects_type="screw",
+        target_x_range=(-0.1, 0.1),
+        target_y_range=(-0.1, 0.1),
+        target_z_rotation_range=(np.pi, np.pi),
+        num_goals=-1,
+        fixed_arm=True,
     ):
         """
         Args:
@@ -107,15 +114,21 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         self._orientation_reward_weight = orientation_reward_weight
         # initialize objects of interest
         if objects is None:
+            mujoco_object = {
+                "screw": ScrewObject(),
+                "custom-cube": CustomCubeObject()
+            }[objects_type]
             mujoco_objects = OrderedDict((
-                # ('custom-cube', CustomCubeObject()),
-                ('screw', ScrewObject()),
+                (objects_type, mujoco_object),
             ))
 
         if visual_objects is None:
+            visual_object = {
+                "screw": ScrewVisualObject(),
+                "custom-cube": CustomCubeVisualObject()
+            }[objects_type]
             visual_objects = OrderedDict((
-                # ('custom-cube-visual', CustomCubeVisualObject()),
-                ('screw-visual', ScrewVisualObject()),
+                (objects_type + '-visual', visual_object),
             ))
 
         self.mujoco_objects = mujoco_objects
@@ -137,15 +150,37 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         self.use_object_obs = use_object_obs
 
         # object placement initializer
-        if placement_initializer:
-            self.placement_initializer = placement_initializer
+        if objects_placement_initializer:
+            self.objects_placement_initializer = objects_placement_initializer
         else:
-            self.placement_initializer = UniformRandomSampler(
-                x_range=[-0.3, 0.3],
-                y_range=[-0.3, 0.3],
+            self.objects_placement_initializer = UniformRandomSampler(
+                x_range=[0, 0],
+                y_range=[0, 0],
                 ensure_object_boundary_in_range=False,
-                z_rotation=None,
+                z_rotation=[0, 0],
             )
+
+        # visual object placement initializer
+        if visuals_placement_initializer:
+            self.visuals_placement_initializer = visuals_placement_initializer
+        else:
+            if num_goals > 0:
+                self.visuals_placement_initializer = DiscreteRandomSampler(
+                    x_range=target_x_range,
+                    y_range=target_y_range,
+                    ensure_object_boundary_in_range=False,
+                    z_rotation=target_z_rotation_range,
+                    num_arrangements=num_goals,
+                )
+            else:
+                self.visuals_placement_initializer = UniformRandomSampler(
+                    x_range=target_x_range,
+                    y_range=target_y_range,
+                    ensure_object_boundary_in_range=False,
+                    z_rotation=target_z_rotation_range,
+                )
+
+
 
         super().__init__(
             gripper_type=gripper_type,
@@ -163,6 +198,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             camera_height=camera_height,
             camera_width=camera_width,
             camera_depth=camera_depth,
+            fixed_arm=fixed_arm,
         )
 
         # information of objects
@@ -204,10 +240,11 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             self.mujoco_robot,
             self.mujoco_objects,
             self.visual_objects,
-            initializer=self.placement_initializer,
+            objects_initializer=self.objects_placement_initializer,
+            visuals_initializer=self.visuals_placement_initializer,
         )
+
         self.model.place_objects()
-        self.model.place_visual()
 
     def _get_reference(self):
         """
@@ -244,40 +281,52 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
         # reset positions of objects
         self.model.place_objects()
-        self.model.place_visual()
 
         # reset joint positions
         init_qpos = self.mujoco_robot.init_qpos.copy()
         self.sim.data.qpos[self._ref_joint_pos_indexes] = np.array(init_qpos)
 
     def rewards(self, observations, actions):
-        object_orientation_rewards = 0.0
-        object_position_rewards = 0.0
+        object_orientation_reward = 0.0
+        object_position_reward = 0.0
 
         for object_name in self.mujoco_objects.keys():
-            object_positions = observations["{}_position".format(object_name)]
-            object_quaternions = observations[
-                "{}_quaternion".format(object_name)]
+            object_position = observations[
+                "{}_position".format(object_name)][0]
+            object_quaternion = observations[
+                "{}_quaternion".format(object_name)][0]
 
             target_name = object_name + "-visual"
-            target_positions = observations[
-                "{}_position".format(target_name)]
-            target_quaternions = observations[
-                "{}_quaternion".format(target_name)]
+            target_position = observations[
+                "{}_position".format(target_name)][0]
+            target_quaternion = observations[
+                "{}_quaternion".format(target_name)][0]
 
-            position_distances = np.linalg.norm(
-                object_positions - target_positions, ord=2, axis=-1)
-            rotation_coordinate_distances = (
-                transform_utils.get_orientation_error(
-                    target_quaternions, object_quaternions))
-            rotation_distances = np.linalg.norm(
-                rotation_coordinate_distances, ord=2, axis=-1)
-            object_orientation_rewards -= rotation_distances
-            object_position_rewards -= position_distances
+            position_distance = np.linalg.norm(
+                object_position - target_position, ord=2, keepdims=True)
 
-        object_position_rewards *= self._position_reward_weight
-        object_orientation_rewards *= self._orientation_reward_weight
-        return object_position_rewards, object_orientation_rewards
+            object_euler_angles = transform_utils.quat2euler(
+                object_quaternion)
+            target_euler_angles = transform_utils.quat2euler(
+                target_quaternion)
+            rotation_distance = transform_utils.get_rotation_distance(
+                object_euler_angles, target_euler_angles)[None, ...]
+
+            object_to_eef_distance = observations[
+                "{}_to_eef_pos".format(object_name)]
+            object_to_eef_distance = np.linalg.norm(
+                object_to_eef_distance, ord=2, axis=1)
+            # eps = 1
+            # object_position_rewards -= np.log(
+            #     self._position_reward_weight * position_distances + eps)
+            # object_orientation_rewards -= np.log(
+            #     self._orientation_reward_weight * rotation_distances + eps)
+            object_orientation_reward -= rotation_distance
+            object_position_reward -= position_distance
+            # object_position_reward -= object_to_eef_distance
+        object_position_reward *= self._position_reward_weight
+        object_orientation_reward *= self._orientation_reward_weight
+        return object_position_reward, object_orientation_reward
 
     def reward(self, action):
         """

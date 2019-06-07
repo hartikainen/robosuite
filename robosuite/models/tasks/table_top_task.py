@@ -15,7 +15,8 @@ class TableTopTask(Task):
                  mujoco_robot,
                  mujoco_objects,
                  mujoco_visuals,
-                 initializer=None):
+                 objects_initializer=None,
+                 visuals_initializer=None):
         """
         Args:
             mujoco_arena: MJCF model of robot workspace
@@ -29,12 +30,20 @@ class TableTopTask(Task):
         self.merge_robot(mujoco_robot)
         self.merge_objects(mujoco_objects)
         self.merge_visual(mujoco_visuals)
-        if initializer is None:
-            initializer = UniformRandomSampler()
+
+        if objects_initializer is None:
+            objects_initializer = UniformRandomSampler()
         mjcfs = [x for _, x in self.mujoco_objects.items()]
 
-        self.initializer = initializer
-        self.initializer.setup(mjcfs, self.table_top_offset, self.table_size)
+        self.objects_initializer = objects_initializer
+        self.objects_initializer.setup(mjcfs, self.table_top_offset, self.table_size)
+
+        if visuals_initializer is None:
+            visuals_initializer = UniformRandomSampler()
+        mjcfs = [x for _, x in self.mujoco_visuals.items()]
+
+        self.visuals_initializer = visuals_initializer
+        self.visuals_initializer.setup(mjcfs, self.table_top_offset, self.table_size)
 
     def merge_robot(self, mujoco_robot):
         """Adds robot model to the MJCF model."""
@@ -58,7 +67,14 @@ class TableTopTask(Task):
             self.merge_asset(obj_mjcf)
             # Load object
             obj = obj_mjcf.get_collision(name=obj_name, site=True)
-            obj.append(new_joint(name=obj_name, type="free"))
+            # obj.append(new_joint(name=obj_name, type="free"))
+            obj.append(new_joint(name=obj_name + "_slide_x", type="slide", axis="1 0 0", range="-0.25 0.25"))
+            obj.append(new_joint(name=obj_name + "_slide_y", type="slide", axis="0 1 0", range="-0.25 0.25"))
+            obj.append(new_joint(name=obj_name + "_slide_z", type="slide", axis="0 0 1"))
+            obj.append(new_joint(name=obj_name + "_hinge_x", type="hinge", axis="1 0 0"))
+            obj.append(new_joint(name=obj_name + "_hinge_y", type="hinge", axis="0 1 0"))
+            obj.append(new_joint(name=obj_name + "_hinge_z", type="hinge", axis="0 0 1"))
+
             self.objects.append(obj)
             self.worldbody.append(obj)
 
@@ -77,8 +93,8 @@ class TableTopTask(Task):
             self.visuals.append(visual)
             self.worldbody.append(visual)
 
-    def _place_objects(self, objects):
-        pos_arr, quat_arr = self.initializer.sample()
+    def _place_objects(self, objects, initializer):
+        pos_arr, quat_arr = initializer.sample()
         for i in range(len(objects)):
             objects[i].set("pos", array_to_string(pos_arr[i]))
             objects[i].set("quat", array_to_string(quat_arr[i]))
@@ -86,5 +102,5 @@ class TableTopTask(Task):
     def place_objects(self):
         """Places objects randomly until no collisions or max iterations
         hit."""
-        self._place_objects(self.objects)
-        self._place_objects(self.visuals)
+        self._place_objects(self.objects, self.objects_initializer)
+        self._place_objects(self.visuals, self.visuals_initializer)

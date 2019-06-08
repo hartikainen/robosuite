@@ -39,7 +39,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         has_offscreen_renderer=False,
         render_collision_mesh=False,
         render_visual_mesh=True,
-        control_freq=10,
+        control_freq=15,
         horizon=1000,
         ignore_done=False,
         camera_name="frontview",
@@ -52,6 +52,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         target_z_rotation_range=(np.pi, np.pi),
         num_goals=-1,
         fixed_arm=True,
+        fixed_claw=False,
     ):
         """
         Args:
@@ -197,6 +198,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             camera_width=camera_width,
             camera_depth=camera_depth,
             fixed_arm=fixed_arm,
+            fixed_claw=fixed_claw,
         )
 
         # information of objects

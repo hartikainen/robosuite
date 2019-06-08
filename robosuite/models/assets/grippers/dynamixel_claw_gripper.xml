@@ -33,17 +33,17 @@
     </default>
   </default>
   <actuator>
-    <position name="gripper_FFJ0" kp="0.3" joint="FFJ0" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
-    <position name="gripper_FFJ1" kp="0.3" joint="FFJ1" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
-    <position name="gripper_FFJ2" kp="0.3" joint="FFJ2" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
+    <position name="gripper_FFJ0" kp="3" joint="FFJ0" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
+    <position name="gripper_FFJ1" kp="3" joint="FFJ1" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
+    <position name="gripper_FFJ2" kp="3" joint="FFJ2" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
 
-    <position name="gripper_MFJ0" kp="0.3" joint="MFJ0" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
-    <position name="gripper_MFJ1" kp="0.3" joint="MFJ1" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
-    <position name="gripper_MFJ2" kp="0.3" joint="MFJ2" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
+    <position name="gripper_MFJ0" kp="3" joint="MFJ0" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
+    <position name="gripper_MFJ1" kp="3" joint="MFJ1" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
+    <position name="gripper_MFJ2" kp="3" joint="MFJ2" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
 
-    <position name="gripper_THJ0" kp="0.3" joint="THJ0" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
-    <position name="gripper_THJ1" kp="0.3" joint="THJ1" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
-    <position name="gripper_THJ2" kp="0.3" joint="THJ2" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.1 0.1"/>
+    <position name="gripper_THJ0" kp="3" joint="THJ0" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
+    <position name="gripper_THJ1" kp="3" joint="THJ1" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
+    <position name="gripper_THJ2" kp="3" joint="THJ2" ctrllimited="true" ctrlrange="-1.57 1.57" forcelimited="true" forcerange="-0.4 0.4"/>
   </actuator>
   <compiler meshdir="./meshes/dynamixel_claw_gripper/"/>
   <worldbody>

@@ -29,6 +29,7 @@ class InvisibleArmEnv(MujocoEnv):
             camera_width=256,
             camera_depth=False,
             fixed_arm=False,
+            fixed_claw=False,
     ):
         """
         Args:
@@ -78,6 +79,7 @@ class InvisibleArmEnv(MujocoEnv):
         self.gripper_visualization = gripper_visualization
         self.use_indicator_object = use_indicator_object
         self._fixed_arm = fixed_arm
+        self._fixed_claw = fixed_claw
         super().__init__(
             has_renderer=has_renderer,
             has_offscreen_renderer=has_offscreen_renderer,
@@ -204,12 +206,14 @@ class InvisibleArmEnv(MujocoEnv):
             gripper_action_actual = self.gripper.format_action(
                 gripper_action_in)
             action = np.concatenate([arm_action, gripper_action_actual])
-
         # rescale normalized action to control ranges
         ctrl_range = self.sim.model.actuator_ctrlrange
         bias = 0.5 * (ctrl_range[:, 1] + ctrl_range[:, 0])
         weight = 0.5 * (ctrl_range[:, 1] - ctrl_range[:, 0])
         applied_action = bias + weight * action
+        if self._fixed_claw:
+            applied_action[-self.gripper.dof:] = self.gripper.init_qpos
+
         self.sim.data.ctrl[:] = applied_action
 
         # gravity compensation

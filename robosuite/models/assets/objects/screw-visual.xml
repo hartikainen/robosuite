@@ -12,7 +12,7 @@
         <!-- <geom type="cylinder" pos="0 0 -0.01" size="0.028 0.014" condim="4" conaffinity="0" contype="0" group="1" rgba="0 0 0 0.05" mass="0.0000001" euler="0 0 0" /> -->
       </body>
 
-      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.024" name="bottom_site"/>
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.02" name="bottom_site"/>
       <site rgba="0 0 0 0" size="0.005" pos="0 0 0.02" name="top_site"/>
       <site rgba="0 0 0 0" size="0.005" pos="0.0675 0.0675 0" name="horizontal_radius_site"/>
     </body>

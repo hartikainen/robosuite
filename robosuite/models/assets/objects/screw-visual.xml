@@ -9,7 +9,7 @@
         <geom type="capsule" pos="0 0.040625 0" size="0.02 0.026875" condim="4" conaffinity="0" contype="0" group="1" rgba="0.85882353 0.19607843 0.21176471 0.25" mass="0.0000001" euler="1.57 0 0" />
         <geom type="capsule" pos="0 -0.040625 0" size="0.02 0.026875" condim="4" conaffinity="0" contype="0" group="1" rgba="0.28235294 0.52156863 0.92941176 0.25" mass="0.0000001" euler="1.57 0 0" />
 
-        <geom type="cylinder" pos="0 0 -0.01" size="0.028 0.014" condim="4" conaffinity="0" contype="0" group="1" rgba="0 0 0 0.05" mass="0.0000001" euler="0 0 0" />
+        <!-- <geom type="cylinder" pos="0 0 -0.01" size="0.028 0.014" condim="4" conaffinity="0" contype="0" group="1" rgba="0 0 0 0.05" mass="0.0000001" euler="0 0 0" /> -->
       </body>
 
       <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.024" name="bottom_site"/>

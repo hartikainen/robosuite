@@ -29,7 +29,7 @@
       <joint type="hinge" limited="true" damping=".1" armature="0.001" axis="1 0 0" range="-1.57 1.57"/>
     </default>
     <default class="finger-tip">
-      <site type="sphere" pos="0 0 0.076" size="0.01" rgba="1 1 1 1"/>
+      <site type="sphere" pos="0 0 0.076" size="0.01" rgba="1 1 1 1" group="0"/>
     </default>
   </default>
   <actuator>

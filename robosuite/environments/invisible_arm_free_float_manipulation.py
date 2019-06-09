@@ -29,7 +29,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         table_friction=(1., 5e-3, 1e-4),
         use_camera_obs=True,
         use_object_obs=True,
-        position_reward_weight=10.0,
+        object_to_eef_reward_weight=1.0,
+        object_to_target_reward_weight=10.0,
         orientation_reward_weight=1.0,
         objects_placement_initializer=None,
         visuals_placement_initializer=None,
@@ -39,7 +40,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         has_offscreen_renderer=False,
         render_collision_mesh=False,
         render_visual_mesh=True,
-        control_freq=15,
+        control_freq=10,
         horizon=1000,
         ignore_done=False,
         camera_name="frontview",
@@ -47,12 +48,16 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         camera_width=256,
         camera_depth=False,
         objects_type="screw",
+        initial_x_range=(-0.1, 0.1),
+        initial_y_range=(-0.1, 0.1),
+        initial_z_rotation_range=(0, 0),
+        num_starts=-1,
         target_x_range=(-0.1, 0.1),
         target_y_range=(-0.1, 0.1),
         target_z_rotation_range=(np.pi, np.pi),
         num_goals=-1,
-        fixed_arm=True,
-        fixed_claw=False,
+        fixed_arm=False,
+        fixed_claw=True,
     ):
         """
         Args:
@@ -111,7 +116,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
             camera_depth (bool): True if rendering RGB-D, and RGB otherwise.
         """
-        self._position_reward_weight = position_reward_weight
+        self._object_to_target_reward_weight = object_to_target_reward_weight
+        self._object_to_eef_reward_weight = object_to_eef_reward_weight
         self._orientation_reward_weight = orientation_reward_weight
         # initialize objects of interest
         if objects is None:
@@ -154,12 +160,22 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         if objects_placement_initializer:
             self.objects_placement_initializer = objects_placement_initializer
         else:
-            self.objects_placement_initializer = UniformRandomSampler(
-                x_range=[0, 0],
-                y_range=[0, 0],
-                ensure_object_boundary_in_range=False,
-                z_rotation=[0, 0],
-            )
+            if num_starts > 0:
+                self.objects_placement_initializer = DiscreteRandomSampler(
+                    x_range=initial_x_range,
+                    y_range=initial_y_range,
+                    ensure_object_boundary_in_range=False,
+                    z_rotation=initial_z_rotation_range,
+                    num_arrangements=num_starts,
+                )
+            else:
+                self.objects_placement_initializer = UniformRandomSampler(
+                    x_range=initial_x_range,
+                    y_range=initial_y_range,
+                    ensure_object_boundary_in_range=False,
+                    z_rotation=initial_z_rotation_range,
+                )
+
 
         # visual object placement initializer
         if visuals_placement_initializer:
@@ -288,7 +304,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
     def rewards(self, observations, actions):
         object_orientation_reward = 0.0
-        object_position_reward = 0.0
+        object_to_target_reward = 0.0
+        object_to_eef_reward = 0.0
 
         for object_name in self.mujoco_objects.keys():
             object_position = observations[
@@ -302,7 +319,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             target_quaternion = observations[
                 "{}_quaternion".format(target_name)][0]
 
-            position_distance = np.linalg.norm(
+            object_to_target_distance = np.linalg.norm(
                 object_position - target_position, ord=2, keepdims=True)
 
             object_euler_angles = transform_utils.quat2euler(
@@ -312,21 +329,23 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             rotation_distance = transform_utils.get_rotation_distance(
                 object_euler_angles, target_euler_angles)[None, ...]
 
-            object_to_eef_distance = observations[
+            object_to_eef_distances = observations[
                 "{}_to_eef_pos".format(object_name)]
             object_to_eef_distance = np.linalg.norm(
-                object_to_eef_distance, ord=2, axis=1)
+                object_to_eef_distances, ord=2, axis=1)
             # eps = 1
             # object_position_rewards -= np.log(
             #     self._position_reward_weight * position_distances + eps)
             # object_orientation_rewards -= np.log(
             #     self._orientation_reward_weight * rotation_distances + eps)
             object_orientation_reward -= rotation_distance
-            object_position_reward -= position_distance
-            # object_position_reward -= object_to_eef_distance
-        object_position_reward *= self._position_reward_weight
+            object_to_target_reward -= object_to_target_distance
+            object_to_eef_reward -= object_to_eef_distance
+            print(object_to_eef_distance)
         object_orientation_reward *= self._orientation_reward_weight
-        return object_position_reward, object_orientation_reward
+        object_to_target_reward *= self._object_to_target_reward_weight
+        object_to_eef_reward *= self._object_to_eef_reward_weight
+        return object_to_target_reward, object_orientation_reward, object_to_eef_reward
 
     def reward(self, action):
         """
@@ -354,27 +373,32 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             for key, value in self._get_observation().items()
         ))
         actions = action[None]
-        position_reward, orientation_reward = [
+        object_to_target_reward, orientation_reward, object_to_eef_reward = [
             rewards[0] for rewards in self.rewards(observations, actions)]
-        reward = position_reward + orientation_reward
-        return reward
+        reward = object_to_target_reward + orientation_reward + object_to_eef_reward
+        info = {
+            'object_to_target_reward': object_to_target_reward,
+            'orientation_reward': orientation_reward,
+            'object_to_eef_reward': object_to_eef_reward,
+        }
+        return reward, 0, info
 
     def _post_action(self, action):
         """Do any housekeeping after taking an action."""
-        reward, done, info = super(
-            InvisibleArmFreeFloatManipulation, self)._post_action(action)
-        observations = OrderedDict((
-            (key, value[None])
-            for key, value in self._get_observation().items()
-        ))
-        actions = action[None]
-        position_reward, orientation_reward = [
-            rewards[0] for rewards in self.rewards(observations, actions)]
-        info.update({
-            'position_reward': position_reward,
-            'orientation_reward': orientation_reward,
-        })
-        return reward, done, info
+        # reward, done, info = super(
+        #     InvisibleArmFreeFloatManipulation, self)._post_action(action)
+        # observations = OrderedDict((
+        #     (key, value[None])
+        #     for key, value in self._get_observation().items()
+        # ))
+        # actions = action[None]
+        # position_reward, orientation_reward = [
+        #     rewards[0] for rewards in self.rewards(observations, actions)]
+        # info.update({
+        #     'position_reward': position_reward,
+        #     'orientation_reward': orientation_reward,
+        # })
+        return self.reward(action)
 
     def _get_observation(self):
         """

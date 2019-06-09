@@ -14,22 +14,22 @@
   </asset>
   <default>
     <default class="dynamixel_base">
-      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="1" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="mx28" size="0.18 0.18 0.18" pos="0 0 0.022"/>
+      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="0" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="mx28" size="0.18 0.18 0.18" pos="0 0 0.022"/>
     </default>
     <default class="joint_0">
-      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="1" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="link0" size="0.018 0.018 0.027" pos="0 0 0"/>
+      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="0" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="link0" size="0.018 0.018 0.027" pos="0 0 0"/>
       <joint type="hinge" limited="true" damping=".1" armature="0.001" axis="0 0 1" range="-1.57 1.57"/>
     </default>
     <default class="joint_1">
-      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="1" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="link1" pos="0 0 0"/>
+      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="0" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="link1" pos="0 0 0"/>
       <joint type="hinge" limited="true" damping=".1" armature="0.001" axis="1 0 0" range="-1.57 1.57"/>
     </default>
     <default class="joint_2">
-      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="1" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="link2" pos="0 0 0"/>
+      <geom type="mesh" contype="1" conaffinity="1" condim="1" rgba="0 0 0 1" group="0" margin="0.001" solref=".02 1" solimp=".8 .8 .01" material="MatGeom" mesh="link2" pos="0 0 0"/>
       <joint type="hinge" limited="true" damping=".1" armature="0.001" axis="1 0 0" range="-1.57 1.57"/>
     </default>
     <default class="finger-tip">
-      <site type="sphere" pos="0 0 0.076" size="0.01" rgba="1 1 1 1"/>
+      <site type="sphere" pos="0 0 0.076" size="0.01" rgba="1 1 1 1" group="0"/>
     </default>
   </default>
   <actuator>
@@ -51,9 +51,9 @@
     <body name="palm" pos="0 0 0.0075" euler="0 0 3.14">
       <body name="palm_base" euler="0 0 0">
         <inertial pos="0 0 0" mass="0"/>
-        <geom name="gripper_palm" type="cylinder" size=".074 .0015" rgba="1 1 1 0.3" group="1"/>
-        <site name="grip_site" pos="0 0 0.175" size="0.01" rgba="1 0 0 1" type="sphere" group="1"/>
-        <site name="grip_site_cylinder" pos="0 0 0" size="0.005 10" rgba="0 1 0 0.3" type="cylinder" group="1"/>
+        <geom name="gripper_palm" type="cylinder" size=".074 .0015" rgba="1 1 1 0.3" group="0"/>
+        <site name="grip_site" pos="0 0 0.175" size="0.01" rgba="1 0 0 0" type="sphere" group="1"/>
+        <site name="grip_site_cylinder" pos="0 0 0" size="0.005 10" rgba="0 1 0 0" type="cylinder" group="1"/>
       </body>
 
       <body name="FFbase" pos=".04167 0.024 0" euler="0 0 2.0944">

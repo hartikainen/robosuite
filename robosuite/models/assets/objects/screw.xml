@@ -3,16 +3,16 @@
   <worldbody>
     <body>
       <body name="collision">
-        <geom type="capsule" pos="0.040625 0 0" size="0.02 0.026875" rgba="0.23529412 0.72941176 0.32941176 1" friction="0.95 0.3 0.1" euler="0 1.57 0" condim="4" group="1" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
-        <geom type="capsule" pos="-0.040625 0 0" size="0.02 0.026875" rgba="0.95686275 0.76078431 0.05098039 1" friction="0.95 0.3 0.1" euler="0 1.57 0" condim="4" group="1" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
+        <geom type="capsule" pos="0.040625 0 0" size="0.02 0.026875" rgba="0.23529412 0.72941176 0.32941176 1" friction="0.95 0.3 0.1" euler="0 1.57 0" condim="4" group="0" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
+        <geom type="capsule" pos="-0.040625 0 0" size="0.02 0.026875" rgba="0.95686275 0.76078431 0.05098039 1" friction="0.95 0.3 0.1" euler="0 1.57 0" condim="4" group="0" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
 
-        <geom type="capsule" pos="0 0.040625 0" size="0.02 0.026875" rgba="0.85882353 0.19607843 0.21176471 1" friction="0.95 0.3 0.1" euler="1.57 0 0" condim="4" group="1" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
-        <geom type="capsule" pos="0 -0.040625 0" size="0.02 0.026875" rgba="0.28235294 0.52156863 0.92941176 1" friction="0.95 0.3 0.1" euler="1.57 0 0" condim="4" group="1" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
+        <geom type="capsule" pos="0 0.040625 0" size="0.02 0.026875" rgba="0.85882353 0.19607843 0.21176471 1" friction="0.95 0.3 0.1" euler="1.57 0 0" condim="4" group="0" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
+        <geom type="capsule" pos="0 -0.040625 0" size="0.02 0.026875" rgba="0.28235294 0.52156863 0.92941176 1" friction="0.95 0.3 0.1" euler="1.57 0 0" condim="4" group="0" solimp="0.998 0.998 0.001" solref="0.02 1" density="25"  />
 
-        <!-- <geom type="cylinder" pos="0 0 -0.01" size="0.028 0.1" rgba="0 0 0 1" friction="0.95 0.3 0.1" euler="0 0 0" condim="4" group="1" solimp="0.9 0.95 0.001 0.5 1" solref="0.02 1" density="25" /> -->
+        <!-- <geom type="cylinder" pos="0 0 -0.01" size="0.028 0.1" rgba="0 0 0 1" friction="0.95 0.3 0.1" euler="0 0 0" condim="4" group="0" solimp="0.9 0.95 0.001 0.5 1" solref="0.02 1" density="25" /> -->
       </body>
 
-      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.024" name="bottom_site"/>
+      <site rgba="0 0 0 0" size="0.005" pos="0 0 -0.02" name="bottom_site"/>
       <site rgba="0 0 0 0" size="0.005" pos="0 0 0.02" name="top_site"/>
       <site rgba="0 0 0 0" size="0.005" pos="0.0675 0.0675 0" name="horizontal_radius_site"/>
     </body>

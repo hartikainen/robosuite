@@ -169,9 +169,9 @@ class MujocoEnv(metaclass=EnvMeta):
                 render_context = MjRenderContextOffscreen(self.sim)
                 self.sim.add_render_context(render_context)
             self.sim._render_context_offscreen.vopt.geomgroup[0] = (
-                1 if self.render_collision_mesh else 0)
+                int(self.render_collision_mesh))
             self.sim._render_context_offscreen.vopt.geomgroup[1] = (
-                1 if self.render_visual_mesh else 0)
+                int(self.render_visual_mesh))
 
         # additional housekeeping
         self.sim_state_initial = self.sim.get_state()

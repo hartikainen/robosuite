@@ -636,3 +636,9 @@ def get_pose_error(target_pose, current_pose):
     error[:3] = pos_err
     error[3:] = rot_err
     return error
+
+def get_rotation_distance(euler1, euler2):
+    """Wrapped l2 distance between two euler angle vectors."""
+    abs_diff = np.abs(euler1 - euler2)
+    wrapped_diff = np.minimum(abs_diff, 2*np.pi - abs_diff) # ensures pi and -pi are close to each other
+    return np.linalg.norm(wrapped_diff, ord=2, axis=-1)

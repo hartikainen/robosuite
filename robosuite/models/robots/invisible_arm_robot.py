@@ -6,9 +6,14 @@ from robosuite.utils.mjcf_utils import xml_path_completion, array_to_string
 class InvisibleArm(Robot):
     """InvisibleArm is a witty invisible-arm robot designed by no one."""
 
-    def __init__(self):
-        super().__init__(xml_path_completion("robots/invisible_arm/robot.xml"))
-        self.bottom_offset = np.array((0, 0, 0))
+    def __init__(self, fixed_arm=False):
+        self._fixed_arm = fixed_arm
+        if self._fixed_arm:
+            super().__init__(xml_path_completion("robots/invisible_arm/fixed_robot.xml"))
+        else:
+            super().__init__(xml_path_completion("robots/invisible_arm/robot.xml"))
+
+        self.bottom_offset = np.array((0, 0, -0.05))
 
     def set_base_xpos(self, pos):
         """Places the robot on position @pos."""
@@ -17,15 +22,21 @@ class InvisibleArm(Robot):
 
     @property
     def dof(self):
-        # return 3
-        return 0
+        if self._fixed_arm:
+            return 0
+        else:
+            return 3
 
     @property
     def joints(self):
-        # return ("arm_x_joint", "arm_y_joint", "arm_z_joint")
-        return ()
+        if self._fixed_arm:
+            return ()
+        else:
+            return ("arm_x_joint", "arm_y_joint", "arm_z_joint")
 
     @property
     def init_qpos(self):
-        # return np.array((0.0, 0.0, 0.0))
-        return np.array(())
+        if self._fixed_arm:
+            return np.array(())
+        else:
+            return np.array((0.0, 0.0, 0.0))

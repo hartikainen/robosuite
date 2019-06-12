@@ -28,6 +28,7 @@ class InvisibleArmEnv(MujocoEnv):
             camera_height=256,
             camera_width=256,
             camera_depth=False,
+            fixed_arm=False,
     ):
         """
         Args:
@@ -76,6 +77,8 @@ class InvisibleArmEnv(MujocoEnv):
         self.gripper_type = gripper_type
         self.gripper_visualization = gripper_visualization
         self.use_indicator_object = use_indicator_object
+        self._fixed_arm = fixed_arm
+        self._last_a = 0
         super().__init__(
             has_renderer=has_renderer,
             has_offscreen_renderer=has_offscreen_renderer,
@@ -94,7 +97,7 @@ class InvisibleArmEnv(MujocoEnv):
     def _load_model(self):
         """Loads robot and optionally add grippers."""
         super()._load_model()
-        self.mujoco_robot = InvisibleArm()
+        self.mujoco_robot = InvisibleArm(fixed_arm=self._fixed_arm)
         if self.has_gripper:
             self.gripper = gripper_factory(self.gripper_type)
             if not self.gripper_visualization:
@@ -208,6 +211,10 @@ class InvisibleArmEnv(MujocoEnv):
         bias = 0.5 * (ctrl_range[:, 1] + ctrl_range[:, 0])
         weight = 0.5 * (ctrl_range[:, 1] - ctrl_range[:, 0])
         applied_action = bias + weight * action
+        # applied_action[-self.gripper.dof:] = self.gripper.init_qpos
+        self._last_a = self._last_a * 0.9 + 0.1 * applied_action[0]
+        # print("apply: {}, exp_avg: {}".format(applied_action[0], self._last_a))
+        # print(applied_action)
         self.sim.data.ctrl[:] = applied_action
 
         # gravity compensation
@@ -253,6 +260,7 @@ class InvisibleArmEnv(MujocoEnv):
                 self.sim.data.qpos[x]
                 for x in self._ref_gripper_joint_pos_indexes
             ])
+            # print(di["gripper_qpos"])
             di["gripper_qvel"] = np.array([
                 self.sim.data.qvel[x]
                 for x in self._ref_gripper_joint_vel_indexes

@@ -14,6 +14,7 @@ from robosuite.models.tasks import (
     TableTopTask,
     UniformRandomSampler)
 
+from transferHMS.utils import quatmath
 
 class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
     """
@@ -39,13 +40,14 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         has_offscreen_renderer=True,
         render_collision_mesh=False,
         render_visual_mesh=True,
-        control_freq=10,
+        control_freq=15,
         horizon=1000,
         ignore_done=False,
         camera_name="frontview",
         camera_height=256,
         camera_width=256,
         camera_depth=False,
+        fixed_arm=True,
     ):
         """
         Args:
@@ -142,10 +144,10 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             self.object_initializer = object_initializer
         else:
             self.object_initializer = UniformRandomSampler(
-                x_range=[-0.0, 0.0],
-                y_range=[-0.0, 0.0],
+                x_range=[-1, -1],
+                y_range=[-1, -1],
                 ensure_object_boundary_in_range=False,
-                z_rotation=None)
+                z_rotation_range=[0, 0])
 
         if visual_initializer:
             self.visual_initializer = visual_initializer
@@ -154,7 +156,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
                 x_range=[-0.0, 0.0],
                 y_range=[-0.0, 0.0],
                 ensure_object_boundary_in_range=False,
-                z_rotation=np.pi)
+                z_rotation_range=(np.pi, np.pi))
 
         super().__init__(
             gripper_type=gripper_type,
@@ -172,6 +174,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             camera_height=camera_height,
             camera_width=camera_width,
             camera_depth=camera_depth,
+            fixed_arm=fixed_arm,
         )
 
         # information of objects
@@ -254,8 +257,9 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         self.model.place_visual()
 
         # reset joint positions
-        init_qpos = self.mujoco_robot.init_qpos.copy()
-        self.sim.data.qpos[self._ref_joint_pos_indexes] = np.array(init_qpos)
+        # init_qpos = self.mujoco_robot.init_qpos.copy()
+
+        # self.sim.data.qpos[self._ref_joint_pos_indexes] = np.array(init_qpos) * 0
 
     def rewards(self, observations, actions):
         object_orientation_rewards = 0.0
@@ -274,11 +278,15 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
             position_distances = np.linalg.norm(
                 object_positions - target_positions, ord=2, axis=-1)
-            rotation_coordinate_distances = (
-                transform_utils.get_orientation_error(
-                    target_quaternions, object_quaternions))
-            rotation_distances = np.linalg.norm(
-                rotation_coordinate_distances, ord=2, axis=-1)
+            # rotation_coordinate_distances = (
+            #     transform_utils.get_orientation_error(
+            #         target_quaternions, object_quaternions))
+            # rotation_distances = np.linalg.norm(
+            #     rotation_coordinate_distances, ord=2, axis=-1)
+            object_angles = quatmath.quat2euler(object_quaternions)
+            target_angles = quatmath.quat2euler(target_quaternions)
+            rotation_distances = transform_utils.get_rotation_distance(
+                object_angles, target_angles)
             object_orientation_rewards -= rotation_distances
             object_position_rewards -= position_distances
 

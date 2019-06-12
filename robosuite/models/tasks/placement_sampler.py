@@ -41,7 +41,7 @@ class UniformRandomSampler(ObjectPositionSampler):
             x_range=None,
             y_range=None,
             ensure_object_boundary_in_range=True,
-            z_rotation="random",
+            z_rotation_range=(-np.pi, np.pi),
     ):
         """
         Args:
@@ -63,7 +63,7 @@ class UniformRandomSampler(ObjectPositionSampler):
         self.x_range = x_range
         self.y_range = y_range
         self.ensure_object_boundary_in_range = ensure_object_boundary_in_range
-        self.z_rotation = z_rotation
+        self.z_rotation_range = z_rotation_range
 
     def sample_x(self, object_horizontal_radius):
         x_range = self.x_range
@@ -88,13 +88,8 @@ class UniformRandomSampler(ObjectPositionSampler):
         return np.random.uniform(high=maximum, low=minimum)
 
     def sample_quat(self):
-        if self.z_rotation is None:
-            rot_angle = np.random.uniform(high=2 * np.pi, low=0)
-        elif isinstance(self.z_rotation, collections.Iterable):
-            rot_angle = np.random.uniform(high=max(self.z_rotation),
-                                          low=min(self.z_rotation))
-        else:
-            rot_angle = self.z_rotation
+        rot_angle = np.random.uniform(
+            high=self.z_rotation_range[1], low=self.z_rotation_range[0])
 
         return [np.cos(rot_angle / 2), 0, 0, np.sin(rot_angle / 2)]
 
@@ -120,7 +115,7 @@ class UniformRandomSampler(ObjectPositionSampler):
                 if location_valid:
                     # location is valid, put the object down
                     pos = (self.table_top_offset - bottom_offset +
-                           np.array([object_x, object_y, 0]))
+                           np.array([object_x, object_y, 0.001]))
                     placed_objects.append(
                         (object_x, object_y, horizontal_radius))
                     # random z-rotation

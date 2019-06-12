@@ -66,8 +66,14 @@ class TableTopTask(Task):
             self.merge_asset(obj_mjcf)
             # Load object
             obj = obj_mjcf.get_collision(name=obj_name, site=True)
-            obj.append(new_joint(name=obj_name, type="free"))
-            # obj.append(new_joint(name=obj_name + "_hinge", type="hinge", axis="0 0 1"))
+            # obj.append(new_joint(name=obj_name, type="free"))
+            # obj.append(new_joint(name=obj_name + "_hinge_z", type="hinge", axis="0 0 1"))
+            # obj.append(new_joint(name=obj_name + "_hinge_x", type="hinge", axis="1 0 0"))
+            # obj.append(new_joint(name=obj_name + "_hinge_y", type="hinge", axis="0 1 0"))
+
+            # obj.append(new_joint(name=obj_name + "_slide_z", type="slide", axis="0 0 1"))
+            # obj.append(new_joint(name=obj_name + "_slide_y", type="slide", axis="0 1 0"))
+            # obj.append(new_joint(name=obj_name + "_slide_x", type="slide", axis="1 0 0"))
             self.objects.append(obj)
             self.worldbody.append(obj)
 

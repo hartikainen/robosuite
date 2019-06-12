@@ -196,6 +196,10 @@ class MujocoEnv(metaclass=EnvMeta):
         while self.cur_time < end_time:
             self.sim.step()
             self.cur_time += self.model_timestep
+            if (self.has_renderer and
+                self.viewer is not None and
+                not self.has_offscreen_renderer):
+                self.render()
         reward, done, info = self._post_action(action)
         return self._get_observation(), reward, done, info
 

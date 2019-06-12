@@ -38,7 +38,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         use_indicator_object=False,
         has_renderer=False,
         has_offscreen_renderer=False,
-        render_collision_mesh=False,
+        render_collision_mesh=True,
         render_visual_mesh=True,
         control_freq=10,
         horizon=1000,

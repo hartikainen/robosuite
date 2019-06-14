@@ -23,17 +23,17 @@ class InvisibleArm(Robot):
     @property
     def dof(self):
         if self._fixed_arm:
-            return 0
+            return 1
         return 2
 
     @property
     def joints(self):
         if self._fixed_arm:
-            return ()
+            return ("arm_z_joint", )
         return ("arm_x_joint", "arm_y_joint") #, "arm_z_joint")
 
     @property
     def init_qpos(self):
         if self._fixed_arm:
-            return np.array(())
+            return np.array((0.0))
         return np.array((0.0, 0.0))

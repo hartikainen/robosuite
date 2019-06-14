@@ -32,6 +32,10 @@ def main():
             has_offscreen_renderer=False,
             camera_name="agentview",
             use_camera_obs=False,
+            fixed_claw=False,
+            fixed_arm=True,
+            initial_x_range=(0, 0),
+            initial_y_range=(0, 0),
         )
     else:
         env = suite.make(
@@ -41,7 +45,8 @@ def main():
             camera_name="agentview",
             use_camera_obs=False,
         )
-    # env = gym.envs.make('Pusher2d-Default-v0')
+    # env = gym.envs.make('Pusher2d-Default-v0',
+    #                     reset_free=True)
 
     # for episode in range(args.num_episodes):
     #     env.reset()
@@ -49,7 +54,7 @@ def main():
     #         observation, reward, done, info = env.step(
     #             env.action_space.sample())
 
-    #         env.render(mode='human')
+    #         env.render(mode=args.render_mode)
 
     #         if done: break
 
@@ -59,7 +64,7 @@ def main():
         observation = env.reset()
         t0 = time.time()
         for i in range(args.episode_length):
-            action = np.random.uniform(-1, 1, env.dof)*0  # sample random action
+            action = np.random.uniform(-1, 1, env.dof)  # sample random action
             observation, reward, done, info = env.step(action)
             # if args.render_mode == "human":
             #     print(1 / env.control_freq - (time.time() - t0))

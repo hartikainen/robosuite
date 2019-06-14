@@ -14,6 +14,7 @@ from robosuite.models.tasks import (
     UniformRandomSampler,
     DiscreteRandomSampler,)
 
+from transferHMS.utils import quatmath
 
 class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
     """
@@ -322,10 +323,11 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             object_to_target_distance = np.linalg.norm(
                 object_position - target_position, ord=2, keepdims=True)
 
-            object_euler_angles = transform_utils.quat2euler(
+            object_euler_angles = quatmath.quat2euler(
                 object_quaternion)
-            target_euler_angles = transform_utils.quat2euler(
+            target_euler_angles = quatmath.quat2euler(
                 target_quaternion)
+
             rotation_distance = transform_utils.get_rotation_distance(
                 object_euler_angles, target_euler_angles)[None, ...]
 

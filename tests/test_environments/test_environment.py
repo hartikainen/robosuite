@@ -32,10 +32,13 @@ def main():
             has_offscreen_renderer=False,
             camera_name="agentview",
             use_camera_obs=False,
-            fixed_claw=False,
             fixed_arm=True,
-            initial_x_range=(0, 0),
-            initial_y_range=(0, 0),
+            fixed_claw=False,
+            initial_x_range=(0., 0.),
+            initial_y_range=(0., 0.),
+            target_x_range=(0., 0.),
+            target_y_range=(0., 0.),
+            render_visual_mesh=False
         )
     else:
         env = suite.make(

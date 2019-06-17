@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from mujoco_py import MjViewer, MjSim, MjRenderContextOffscreen
 from mujoco_py import load_model_from_xml
+import glfw
 
 from robosuite.utils import SimulationError, XMLError, MujocoPyRenderer
 
@@ -387,6 +388,9 @@ class MujocoEnv(metaclass=EnvMeta):
         # if there is an active viewer window, destroy it
         if self.viewer is not None:
             # self.viewer.finish()
+            if isinstance(self.viewer, MjViewer):
+                glfw.terminate()
+                # self.viewer.close()
             self.viewer = None
             self._viewers = {}
 

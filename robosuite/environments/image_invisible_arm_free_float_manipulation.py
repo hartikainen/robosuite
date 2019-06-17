@@ -2,7 +2,7 @@ import numpy as np
 from robosuite.environments.invisible_arm_free_float_manipulation import (
     InvisibleArmFreeFloatManipulation)
 
-class ImageInvisibleArmFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
+class InvisibleArmImageFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
     """
     Vision-based free float manipulation tasks. The `_get_observation` method still
     returns a dictionary with the full state, so use the _get_image_observation method
@@ -24,7 +24,7 @@ class ImageInvisibleArmFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
         self.image_shape = image_shape
         self.viewer_params = viewer_params
 
-        super(ImageInvisibleArmFreeFloatManipulation, self).__init__(
+        super(InvisibleArmImageFreeFloatManipulation, self).__init__(
             has_renderer=True,
             has_offscreen_renderer=True,
             use_camera_obs=True, # Include the image in the super obs
@@ -37,7 +37,7 @@ class ImageInvisibleArmFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
     def _get_observation(self):
         # Super observation contains full state
         width, height = self.image_shape[:2]
-        super_obs = super(ImageInvisibleArmFreeFloatManipulation, self)._get_observation(
+        super_obs = super(InvisibleArmImageFreeFloatManipulation, self)._get_observation(
             image_width=width, image_height=height)
         return super_obs
 

@@ -8,7 +8,7 @@ from robosuite.environments.sawyer_free_float_manipulation import (
 from robosuite.environments.invisible_arm_free_float_manipulation import (
     InvisibleArmFreeFloatManipulation)
 from robosuite.environments.image_invisible_arm_free_float_manipulation import (
-    ImageInvisibleArmFreeFloatManipulation)
+    InvisibleArmImageFreeFloatManipulation)
 from robosuite.environments.sawyer_pick_place import SawyerPickPlace
 from robosuite.environments.sawyer_nut_assembly import SawyerNutAssembly
 

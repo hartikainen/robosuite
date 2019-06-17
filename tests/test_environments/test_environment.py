@@ -8,7 +8,7 @@ from sac_envs.envs.dclaw import (
 # register_dclaw_environments()
 from softlearning.environments.gym import register_environments
 register_environments()
-from robosuite.environments.image_invisible_arm_free_float_manipulation import ImageInvisibleArmFreeFloatManipulation
+from robosuite.environments.image_invisible_arm_free_float_manipulation import InvisibleArmImageFreeFloatManipulation
 
 def parse_args():
     parser = argparse.ArgumentParser()

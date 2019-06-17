@@ -386,7 +386,7 @@ class MujocoEnv(metaclass=EnvMeta):
     def _destroy_viewer(self):
         # if there is an active viewer window, destroy it
         if self.viewer is not None:
-            # self.viewer.close()
+            # self.viewer.finish()
             self.viewer = None
 
     def close(self):

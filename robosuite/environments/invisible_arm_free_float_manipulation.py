@@ -348,13 +348,13 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             object_orientation_reward -= rotation_distance
             object_to_target_reward -= object_to_target_distance
             object_to_eef_reward -= object_to_eef_distance
-            print(object_to_eef_distance)
+            # print(object_to_eef_distance)
         object_orientation_reward *= self._orientation_reward_weight
         object_to_target_reward *= self._object_to_target_reward_weight
         object_to_eef_reward *= self._object_to_eef_reward_weight
         return object_to_target_reward, object_orientation_reward, object_to_eef_reward
 
-    def reward(self, action):
+    def reward(self, observations, action):
         """
         Reward function for the task.
 
@@ -377,7 +377,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         """
         observations = OrderedDict((
             (key, value[None])
-            for key, value in self._get_observation().items()
+            for key, value in observations.items()
         ))
         actions = action[None]
         object_to_target_reward, orientation_reward, object_to_eef_reward = [
@@ -405,9 +405,10 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         #     'position_reward': position_reward,
         #     'orientation_reward': orientation_reward,
         # })
-        return self.reward(action)
+        obs = self._get_observation()
+        return self.reward(obs, action)
 
-    def _get_observation(self):
+    def _get_observation(self, image_width=32, image_height=32):
         """
         Returns an OrderedDict containing observations [(name_string, np.array), ...].
 
@@ -422,7 +423,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         """
         observation = super()._get_observation()
         if self.use_camera_obs:
-            camera_obs = self.render(mode='rgb_array', width=32, height=32)
+            # Better way to pass in width/height?
+            camera_obs = self.render(mode='rgb_array', width=image_width, height=image_height)
 
             # camera_obs = self.sim.render(
             #     camera_name=self.camera_name,

@@ -14,7 +14,7 @@ from robosuite.models.tasks import (
     UniformRandomSampler,
     DiscreteRandomSampler,)
 
-from transferHMS.utils import quatmath
+# from transferHMS.utils import quatmath
 
 class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
     """
@@ -59,6 +59,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         num_goals=-1,
         fixed_arm=False,
         fixed_claw=True,
+        rotation_only=False,
     ):
         """
         Args:
@@ -177,6 +178,8 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
                     z_rotation=initial_z_rotation_range,
                 )
 
+        # Fixed screw setup (only "z" rotation allowed)
+        self.rotation_only = rotation_only
 
         # visual object placement initializer
         if visuals_placement_initializer:
@@ -259,6 +262,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             self.visual_objects,
             objects_initializer=self.objects_placement_initializer,
             visuals_initializer=self.visuals_placement_initializer,
+            rotation_only=self.rotation_only,
         )
 
         self.model.place_objects()
@@ -323,9 +327,10 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             object_to_target_distance = np.linalg.norm(
                 object_position - target_position, ord=2, keepdims=True)
 
-            object_euler_angles = quatmath.quat2euler(
+            # THESE MIGHT BE WRONG? (quat2euler)
+            object_euler_angles = transform_utils.quat2euler(
                 object_quaternion)
-            target_euler_angles = quatmath.quat2euler(
+            target_euler_angles = transform_utils.quat2euler(
                 target_quaternion)
 
             rotation_distance = transform_utils.get_rotation_distance(
@@ -417,16 +422,24 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         """
         observation = super()._get_observation()
         if self.use_camera_obs:
-            camera_obs = self.sim.render(
-                camera_name=self.camera_name,
-                width=self.camera_width,
-                height=self.camera_height,
-                depth=self.camera_depth,
-            )
-            if self.camera_depth:
-                observation["image"], observation["depth"] = camera_obs
-            else:
-                observation["image"] = camera_obs
+            camera_obs = self.render(mode='rgb_array', width=32, height=32)
+
+            # camera_obs = self.sim.render(
+            #     camera_name=self.camera_name,
+            #     width=self.camera_width,
+            #     height=self.camera_height,
+            #     depth=self.camera_depth,
+            # )
+            # Need to flip images to be right side up
+            # if self.camera_depth:
+            #     img, depth = camera_obs
+                # observation["image"] = img[::-1, :, :]
+                # observation["depth"] = depth[::-1, :, :]
+            # else:
+
+            img = camera_obs
+            # observation["image"] = img[::-1, :, :]
+            observation["image"] = img
 
         # low-level object information
         if self.use_object_obs:
@@ -495,3 +508,9 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         # color the gripper site appropriately based on distance to nearest object
         if self.gripper_visualization:
             pass
+
+    def viewer_setup(self):
+        self.viewer.cam.azimuth = 90
+        self.viewer.cam.elevation = -27.7
+        self.viewer.cam.distance = 0.30
+        self.viewer.cam.lookat[:] = np.array([-2.48756381e-18, -2.48756381e-18,  7.32824139e-01])

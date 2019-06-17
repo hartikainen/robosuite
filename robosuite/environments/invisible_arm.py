@@ -100,6 +100,7 @@ class InvisibleArmEnv(MujocoEnv):
         super()._load_model()
         self.mujoco_robot = InvisibleArm(fixed_arm=self._fixed_arm)
         if self.has_gripper:
+            print(self.gripper_type)
             self.gripper = gripper_factory(self.gripper_type)
             if not self.gripper_visualization:
                 self.gripper.hide_visualization()

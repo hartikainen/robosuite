@@ -29,16 +29,18 @@ def main():
         env = suite.make(
             args.environment_id,
             has_renderer=True,
-            has_offscreen_renderer=False,
-            camera_name="agentview",
-            use_camera_obs=False,
+            has_offscreen_renderer=True,
+            # camera_name="frontview",
+            use_camera_obs=True,
+            rotation_only=True,
             fixed_arm=True,
             fixed_claw=False,
             initial_x_range=(0., 0.),
             initial_y_range=(0., 0.),
             target_x_range=(0., 0.),
             target_y_range=(0., 0.),
-            render_visual_mesh=False
+            render_visual_mesh=False,
+            # image_shape=(32, 32, 3),
         )
     else:
         env = suite.make(
@@ -48,18 +50,6 @@ def main():
             camera_name="agentview",
             use_camera_obs=False,
         )
-    # env = gym.envs.make('Pusher2d-Default-v0',
-    #                     reset_free=True)
-
-    # for episode in range(args.num_episodes):
-    #     env.reset()
-    #     for step in range(args.episode_length):
-    #         observation, reward, done, info = env.step(
-    #             env.action_space.sample())
-
-    #         env.render(mode=args.render_mode)
-
-    #         if done: break
 
     # reset the environment
     import time
@@ -72,9 +62,8 @@ def main():
             # if args.render_mode == "human":
             #     print(1 / env.control_freq - (time.time() - t0))
             #     t0 = time.time()
-            #     env.render()  # render on display
-        print(observation['gripper_qpos'])
-
+            env.render()  # render on display
+            # print(observation['image'])
 
 if __name__ == "__main__":
     main()

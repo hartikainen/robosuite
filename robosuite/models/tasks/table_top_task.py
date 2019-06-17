@@ -16,7 +16,8 @@ class TableTopTask(Task):
                  mujoco_objects,
                  mujoco_visuals,
                  objects_initializer=None,
-                 visuals_initializer=None):
+                 visuals_initializer=None,
+                 rotation_only=False):
         """
         Args:
             mujoco_arena: MJCF model of robot workspace
@@ -25,6 +26,9 @@ class TableTopTask(Task):
             initializer: placement sampler to initialize object positions.
         """
         super().__init__()
+
+        # Disable/enable translations
+        self.rotation_only = rotation_only
 
         self.merge_arena(mujoco_arena)
         self.merge_robot(mujoco_robot)
@@ -67,12 +71,17 @@ class TableTopTask(Task):
             self.merge_asset(obj_mjcf)
             # Load object
             obj = obj_mjcf.get_collision(name=obj_name, site=True)
-            # obj.append(new_joint(name=obj_name, type="free"))
-            # obj.append(new_joint(name=obj_name + "_slide_x", type="slide", axis="1 0 0", range="-0.25 0.25"))
-            # obj.append(new_joint(name=obj_name + "_slide_y", type="slide", axis="0 1 0", range="-0.25 0.25"))
+
+            # Allow translation
+            if not self.rotation_only:
+                obj.append(new_joint(name=obj_name, type="free"))
+                obj.append(new_joint(name=obj_name + "_slide_x", type="slide", axis="1 0 0", range="-0.25 0.25"))
+                obj.append(new_joint(name=obj_name + "_slide_y", type="slide", axis="0 1 0", range="-0.25 0.25"))
+                obj.append(new_joint(name=obj_name + "_hinge_x", type="hinge", axis="1 0 0"))
+                obj.append(new_joint(name=obj_name + "_hinge_y", type="hinge", axis="0 1 0"))
+
+            # Allow rotation/sliding in the "z" axis
             obj.append(new_joint(name=obj_name + "_slide_z", type="slide", axis="0 0 1"))
-            # obj.append(new_joint(name=obj_name + "_hinge_x", type="hinge", axis="1 0 0"))
-            # obj.append(new_joint(name=obj_name + "_hinge_y", type="hinge", axis="0 1 0"))
             obj.append(new_joint(name=obj_name + "_hinge_z", type="hinge", axis="0 0 1"))
 
             self.objects.append(obj)

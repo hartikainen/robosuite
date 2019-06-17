@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from mujoco_py import MjSim, MjRenderContextOffscreen
+from mujoco_py import MjViewer, MjSim, MjRenderContextOffscreen
 from mujoco_py import load_model_from_xml
 
 from robosuite.utils import SimulationError, XMLError, MujocoPyRenderer
@@ -97,6 +97,8 @@ class MujocoEnv(metaclass=EnvMeta):
         self.viewer = None
         self.model = None
 
+        self._viewers = {}
+
         # settings for camera observations
         self.use_camera_obs = use_camera_obs
         if self.use_camera_obs and not self.has_offscreen_renderer:
@@ -153,25 +155,25 @@ class MujocoEnv(metaclass=EnvMeta):
         self.sim = MjSim(self.mjpy_model)
         self.initialize_time(self.control_freq)
 
-        # create visualization screen or renderer
-        if self.has_renderer and self.viewer is None:
-            self.viewer = MujocoPyRenderer(self.sim)
-            self.viewer.viewer.vopt.geomgroup[0] = (
-                1 if self.render_collision_mesh else 0)
-            self.viewer.viewer.vopt.geomgroup[1] = (
-                1 if self.render_visual_mesh else 0)
+        # # create visualization screen or renderer
+        # if self.has_renderer and self.viewer is None:
+        #     self.viewer = MujocoPyRenderer(self.sim)
+        #     self.viewer.viewer.vopt.geomgroup[0] = (
+        #         1 if self.render_collision_mesh else 0)
+        #     self.viewer.viewer.vopt.geomgroup[1] = (
+        #         1 if self.render_visual_mesh else 0)
 
-            # hiding the overlay speeds up rendering significantly
-            self.viewer.viewer._hide_overlay = True
+        #     # hiding the overlay speeds up rendering significantly
+        #     self.viewer.viewer._hide_overlay = True
 
-        elif self.has_offscreen_renderer:
-            if self.sim._render_context_offscreen is None:
-                render_context = MjRenderContextOffscreen(self.sim)
-                self.sim.add_render_context(render_context)
-            self.sim._render_context_offscreen.vopt.geomgroup[0] = (
-                int(self.render_collision_mesh))
-            self.sim._render_context_offscreen.vopt.geomgroup[1] = (
-                int(self.render_visual_mesh))
+        # elif self.has_offscreen_renderer:
+        #     if self.sim._render_context_offscreen is None:
+        #         render_context = MjRenderContextOffscreen(self.sim)
+        #         self.sim.add_render_context(render_context)
+        #     self.sim._render_context_offscreen.vopt.geomgroup[0] = (
+        #         int(self.render_collision_mesh))
+        #     self.sim._render_context_offscreen.vopt.geomgroup[1] = (
+        #         int(self.render_visual_mesh))
 
         # additional housekeeping
         self.sim_state_initial = self.sim.get_state()
@@ -219,9 +221,75 @@ class MujocoEnv(metaclass=EnvMeta):
         """Reward should be a function of state and action."""
         return 0
 
-    def render(self):
-        """Renders to an on-screen window."""
-        self.viewer.render()
+    # def render(self):
+    #     """Renders to an on-screen window."""
+    #     self.viewer.render()
+
+    def render(self,
+               mode='human',
+               width=500,
+               height=500,
+               camera_id=None,
+               camera_name=None):
+        if mode == 'rgb_array':
+            if camera_id is not None and camera_name is not None:
+                raise ValueError("Both `camera_id` and `camera_name` cannot be"
+                                 " specified at the same time.")
+
+            # no_camera_specified = camera_name is None and camera_id is None
+            # if no_camera_specified: #and self.rgb_rendering_tracking:
+            #     camera_name = 'track'
+
+            # if camera_id is None:
+            #     camera_id = self.model.camera_name2id(camera_name)
+
+            self._get_viewer(mode).render(width, height) #, camera_id=camera_id)
+            # window size used for old mujoco-py:
+            data = self._get_viewer(mode).read_pixels(width, height, depth=False)
+            # original image is upside-down, so flip it
+            return data[::-1, :, :]
+        elif mode == 'depth_array':
+            self._get_viewer(mode).render(width, height)
+            # window size used for old mujoco-py:
+            # Extract depth part of the read_pixels() tuple
+            data = self._get_viewer(mode).read_pixels(width, height, depth=True)[1]
+            # original image is upside-down, so flip it
+            return data[::-1, :]
+        elif mode == 'human':
+            self._get_viewer(mode).render() 
+
+    def _get_viewer(self, mode):
+        self.viewer = self._viewers.get(mode)
+        if self.viewer is None:
+            if mode == 'human':
+                self.viewer = MjViewer(self.sim)
+            elif mode == 'rgb_array' or mode == 'depth_array':
+                self.viewer = MjRenderContextOffscreen(self.sim, -1)
+
+            # self.viewer.vopt.geomgroup[0] = (
+            #     1 if self.render_collision_mesh else 0)
+            # self.viewer.vopt.geomgroup[1] = (
+            #     1 if self.render_visual_mesh else 0)
+
+            # # hiding the overlay speeds up rendering significantly
+            # self.viewer._hide_overlay = True
+
+        if self.has_offscreen_renderer:
+            if self.sim._render_context_offscreen is None:
+                render_context = MjRenderContextOffscreen(self.sim)
+                self.sim.add_render_context(render_context)
+            
+            self.viewer_setup()
+            self._viewers[mode] = self.viewer
+        return self.viewer
+
+    def viewer_setup(self):
+        """
+        This method is called when the viewer is initialized.
+        Optionally implement this method, if you need to tinker with camera position
+        and so forth.
+        """
+        pass
 
     def observation_spec(self):
         """Returns an observation as observation specification.
@@ -270,7 +338,7 @@ class MujocoEnv(metaclass=EnvMeta):
             # hiding the overlay speeds up rendering significantly
             self.viewer.viewer._hide_overlay = True
 
-        elif self.has_offscreen_renderer:
+        if self.has_offscreen_renderer:
             render_context = MjRenderContextOffscreen(self.sim)
             render_context.vopt.geomgroup[
                 0] = 1 if self.render_collision_mesh else 0
@@ -318,7 +386,7 @@ class MujocoEnv(metaclass=EnvMeta):
     def _destroy_viewer(self):
         # if there is an active viewer window, destroy it
         if self.viewer is not None:
-            self.viewer.close()  # change this to viewer.finish()?
+            # self.viewer.close()
             self.viewer = None
 
     def close(self):

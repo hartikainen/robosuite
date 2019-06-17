@@ -32,7 +32,7 @@ class ImageInvisibleArmFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
             *args, **kwargs)
 
     def _get_image_observation(self):
-        return self._get_observation()["image"]
+        return self._get_observation()["image"].reshape(-1)
 
     def _get_observation(self):
         # Super observation contains full state

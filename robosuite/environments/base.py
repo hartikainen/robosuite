@@ -388,6 +388,7 @@ class MujocoEnv(metaclass=EnvMeta):
         if self.viewer is not None:
             # self.viewer.finish()
             self.viewer = None
+            self._viewers = {}
 
     def close(self):
         """Do any cleanup necessary here."""

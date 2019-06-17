@@ -408,6 +408,38 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         obs = self._get_observation()
         return self.reward(obs, action)
 
+    def _get_rotation_distances(self):
+        dists = {}
+        observations = self._get_observation()
+
+        for object_name in self.mujoco_objects.keys():
+            # object_position = observations[
+            #     "{}_position".format(object_name)][0]
+            object_quaternion = observations[
+                "{}_quaternion".format(object_name)]
+
+            target_name = object_name + "-visual"
+            # target_position = observations[
+            #     "{}_position".format(target_name)][0]
+            target_quaternion = observations[
+                "{}_quaternion".format(target_name)]
+
+            # Calculate translation distance between object and goal.
+            # object_to_target_distance = np.linalg.norm(
+            #     object_position - target_position, ord=2, keepdims=True)
+
+            # THESE MIGHT BE WRONG? (quat2euler)
+            object_euler_angles = transform_utils.quat2euler(
+                object_quaternion)
+            target_euler_angles = transform_utils.quat2euler(
+                target_quaternion)
+
+            rotation_distance = transform_utils.get_rotation_distance(
+                object_euler_angles, target_euler_angles)[None, ...]
+            dists[object_name] = rotation_distance
+
+        return dists
+
     def _get_observation(self, image_width=32, image_height=32):
         """
         Returns an OrderedDict containing observations [(name_string, np.array), ...].
@@ -513,6 +545,6 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
     def viewer_setup(self):
         self.viewer.cam.azimuth = 90
-        self.viewer.cam.elevation = -27.7
         self.viewer.cam.distance = 0.30
+        self.viewer.cam.elevation = -27.7
         self.viewer.cam.lookat[:] = np.array([-2.48756381e-18, -2.48756381e-18,  7.32824139e-01])

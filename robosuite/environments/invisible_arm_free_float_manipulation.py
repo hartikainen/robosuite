@@ -343,7 +343,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
             object_orientation_reward -= rotation_distance
             object_to_target_reward -= object_to_target_distance
             object_to_eef_reward -= object_to_eef_distance
-            print(object_to_eef_distance)
+
         object_orientation_reward *= self._orientation_reward_weight
         object_to_target_reward *= self._object_to_target_reward_weight
         object_to_eef_reward *= self._object_to_eef_reward_weight

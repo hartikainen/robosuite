@@ -6,7 +6,7 @@
     <!-- <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_x_joint" name="arm_x_joint" /> -->
     <!-- <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_y_joint" name="arm_y_joint" /> -->
     <!-- <velocity ctrllimited="true" ctrlrange="-1 1" joint="arm_z_joint" name="arm_z_joint" /> -->
-    <position name="arm_z_joint" kp="10" joint="arm_z_joint" ctrllimited="true" ctrlrange="0 0.0001"/>
+    <!-- <position name="arm_z_joint" kp="10" joint="arm_z_joint" ctrllimited="true" ctrlrange="0 0.0001"/> -->
     <!-- <position name="arm_y_joint" kp="10" joint="arm_y_joint" ctrllimited="true" ctrlrange="-0.25 0.25" forcelimited="true" forcerange="-10 10"/> -->
 
   </actuator>

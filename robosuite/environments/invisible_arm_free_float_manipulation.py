@@ -431,15 +431,15 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         # low-level object information
         if self.use_object_obs:
             gripper_pose = transform_utils.pose2mat((
-                observation["eef_pos"], observation["eef_quat"]))
+                observation["eef_pos"].copy(), observation["eef_quat"].copy()))
             world_pose_in_gripper = transform_utils.pose_inv(gripper_pose)
 
             for object_name in self.mujoco_objects.keys():
                 object_body_id = self.object_body_ids[object_name]
-                object_position = self.sim.data.body_xpos[object_body_id]
+                object_position = (
+                    self.sim.data.body_xpos[object_body_id].copy())
                 object_quaternion = transform_utils.convert_quat(
-                    self.sim.data.body_xquat[object_body_id],
-                    to="xyzw")
+                    self.sim.data.body_xquat[object_body_id].copy(), to="xyzw")
 
                 observation.update((
                     ("{}_position".format(object_name), object_position),
@@ -463,10 +463,10 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
 
                 target_name = object_name + "-visual"
                 target_body_id = self.target_body_ids[target_name]
-                target_position = self.sim.data.body_xpos[target_body_id]
+                target_position = (
+                    self.sim.data.body_xpos[target_body_id].copy())
                 target_quaternion = transform_utils.convert_quat(
-                    self.sim.data.body_xquat[target_body_id],
-                    to="xyzw")
+                    self.sim.data.body_xquat[target_body_id].copy(), to="xyzw")
 
                 observation.update((
                     ("{}_position".format(target_name), target_position),

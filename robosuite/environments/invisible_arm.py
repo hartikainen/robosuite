@@ -109,12 +109,12 @@ class InvisibleArmEnv(MujocoEnv):
         """Sets initial pose of arm and grippers."""
         super()._reset_internal()
         self.sim.data.qpos[
-            self._ref_joint_pos_indexes] = self.mujoco_robot.init_qpos
+            self._ref_joint_pos_indexes] = self.mujoco_robot.init_qpos.copy()
 
         if self.has_gripper:
             self.sim.data.qpos[
-                self.
-                _ref_joint_gripper_actuator_indexes] = self.gripper.init_qpos
+                self._ref_joint_gripper_actuator_indexes
+            ] = self.gripper.init_qpos.copy()
 
     def _get_reference(self):
         """Sets up necessary reference for robots, grippers, and objects."""
@@ -258,9 +258,9 @@ class InvisibleArmEnv(MujocoEnv):
 
         if self.has_gripper:
             ## arm end effector pos + quat
-            di["eef_pos"] = self.sim.data.site_xpos[self.eef_site_id]
+            di["eef_pos"] = np.array(self.sim.data.site_xpos[self.eef_site_id])
             di["eef_quat"] = T.convert_quat(
-                self.sim.data.get_body_xquat("right_hand"), to="xyzw")
+                self.sim.data.get_body_xquat("right_hand").copy(), to="xyzw")
 
             ## gripper joint info
             di["gripper_qpos"] = np.array([
@@ -299,12 +299,13 @@ class InvisibleArmEnv(MujocoEnv):
         """A helper function that takes in a named data field and returns the
         pose of that object in the base frame."""
 
-        pos_in_world = self.sim.data.get_body_xpos(name)
-        rot_in_world = self.sim.data.get_body_xmat(name).reshape((3, 3))
+        pos_in_world = self.sim.data.get_body_xpos(name).copy()
+        rot_in_world = self.sim.data.get_body_xmat(name).reshape((3, 3)).copy()
         pose_in_world = T.make_pose(pos_in_world, rot_in_world)
 
-        base_pos_in_world = self.sim.data.get_body_xpos("base")
-        base_rot_in_world = self.sim.data.get_body_xmat("base").reshape((3, 3))
+        base_pos_in_world = self.sim.data.get_body_xpos("base").copy()
+        base_rot_in_world = (
+            self.sim.data.get_body_xmat("base").reshape((3, 3)).copy())
         base_pose_in_world = T.make_pose(base_pos_in_world, base_rot_in_world)
         world_pose_in_base = T.pose_inv(base_pose_in_world)
 
@@ -340,10 +341,10 @@ class InvisibleArmEnv(MujocoEnv):
         as a numpy array of shape (6,)"""
 
         # Use jacobian to translate joint velocities to end effector velocities.
-        Jp = self.sim.data.get_body_jacp("right_hand").reshape((3, -1))
+        Jp = self.sim.data.get_body_jacp("right_hand").reshape((3, -1)).copy()
         Jp_joint = Jp[:, self._ref_joint_vel_indexes]
 
-        Jr = self.sim.data.get_body_jacr("right_hand").reshape((3, -1))
+        Jr = self.sim.data.get_body_jacr("right_hand").reshape((3, -1)).copy()
         Jr_joint = Jr[:, self._ref_joint_vel_indexes]
 
         eef_lin_vel = Jp_joint.dot(self._joint_velocities)
@@ -380,7 +381,7 @@ class InvisibleArmEnv(MujocoEnv):
         Sawyer robots have 7 joints and positions are in rotation
         angles.
         """
-        return self.sim.data.qpos[self._ref_joint_pos_indexes]
+        return self.sim.data.qpos[self._ref_joint_pos_indexes].copy()
 
     @property
     def _joint_velocities(self):
@@ -389,7 +390,7 @@ class InvisibleArmEnv(MujocoEnv):
         Sawyer robots have 7 joints and velocities are angular
         velocities.
         """
-        return self.sim.data.qvel[self._ref_joint_vel_indexes]
+        return self.sim.data.qvel[self._ref_joint_vel_indexes].copy()
 
     def _gripper_visualization(self):
         """Do any needed visualization here."""

@@ -1,4 +1,4 @@
-
+from collections import OrderedDict
 import numpy as np
 from robosuite.environments.invisible_arm_free_float_manipulation import (
     InvisibleArmFreeFloatManipulation)
@@ -18,7 +18,7 @@ class InvisibleArmImageFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
                 depth/channels).
 
             viewer_params (dict): viewer camera settings, including the following keys:
-                1. `azimuth` (float), `elevation` (float), `distance` (float), `lookat`
+                `azimuth` (float), `elevation` (float), `distance` (float), `lookat`
                 (array[float], dim x 1)
         """
 
@@ -41,11 +41,28 @@ class InvisibleArmImageFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
         super_obs = super(InvisibleArmImageFreeFloatManipulation, self)._get_observation(
             image_width=width, image_height=height)
         image = super_obs["image"].reshape(-1)
-        return image
+        obs = OrderedDict()
+        obs["image"] = image
+        return obs
 
     def reward(self, action):
-        reward, done, info = super(InvisibleArmImageFreeFloatManipulation, self).reward(action)
-        return 0, done, info # take super reward info and return here
+        width, height = self.image_shape[:2]
+        super_obs = super(InvisibleArmImageFreeFloatManipulation, self)._get_observation(
+            image_width=width, image_height=height)
+        reward, done, info = super(InvisibleArmImageFreeFloatManipulation, self).reward(action, obs=super_obs)
+        info['rotation_distance'] = self._get_rotation_distances()["screw"][0]
+        return 0, done, info
+    
+    def _get_rotation_distances(self):
+        super_obs = super(InvisibleArmImageFreeFloatManipulation, self)._get_observation()
+        return super(InvisibleArmImageFreeFloatManipulation, self)._get_rotation_distances(super_obs)
+
+    """
+    def reward(self, action):
+        return 0, False, {
+            'rotation_distance': self._get_rotation_distances()["screw"][0]
+        }
+    """
 
     def viewer_setup(self): # Pass into params of env.
         self.viewer.cam.azimuth = self.viewer_params["azimuth"]

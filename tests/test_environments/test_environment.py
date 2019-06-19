@@ -40,7 +40,6 @@ def main():
     #         target_y_range=(0., 0.),
     #         render_visual_mesh=False,
     #     )
-
     if args.render_mode == "human":
         env = suite.make(
             args.environment_id,
@@ -81,12 +80,11 @@ def main():
             action = np.random.uniform(-1, 1, env.dof)  # sample random action
             observation, reward, done, info = env.step(action)
 
-            print(observation)
             # if args.render_mode == "human":
             #     print(1 / env.control_freq - (time.time() - t0))
             #     t0 = time.time()
-            env.render()  # render on display
-            # print(observation['image'])
+            # env.render()  # render on display
+            print(observation['image'])
 
 if __name__ == "__main__":
     main()

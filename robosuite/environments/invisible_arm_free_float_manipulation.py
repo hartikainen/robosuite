@@ -354,7 +354,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         object_to_eef_reward *= self._object_to_eef_reward_weight
         return object_to_target_reward, object_orientation_reward, object_to_eef_reward
 
-    def reward(self, observations, action):
+    def reward(self, action):
         """
         Reward function for the task.
 
@@ -377,7 +377,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         """
         observations = OrderedDict((
             (key, value[None])
-            for key, value in observations.items()
+            for key, value in self._get_observation().items()
         ))
         actions = action[None]
         object_to_target_reward, orientation_reward, object_to_eef_reward = [
@@ -405,8 +405,7 @@ class InvisibleArmFreeFloatManipulation(InvisibleArmEnv):
         #     'position_reward': position_reward,
         #     'orientation_reward': orientation_reward,
         # })
-        obs = self._get_observation()
-        return self.reward(obs, action)
+        return self.reward(action)
 
     def _get_rotation_distances(self):
         dists = {}

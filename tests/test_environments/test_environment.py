@@ -40,11 +40,14 @@ def main():
     #         target_y_range=(0., 0.),
     #         render_visual_mesh=False,
     #     )
-    
+
     if args.render_mode == "human":
         env = suite.make(
             args.environment_id,
             # camera_name="frontview",
+            has_renderer=True,
+            use_camera_obs=True,
+            has_offscreen_renderer=True,
             rotation_only=True,
             fixed_arm=True,
             fixed_claw=False,
@@ -52,13 +55,13 @@ def main():
             initial_y_range=(0., 0.),
             target_x_range=(0., 0.),
             target_y_range=(0., 0.),
-            image_shape=(32, 32, 3),
-            viewer_params={
-                "azimuth": 90,
-                "elevation": -27.7,
-                "distance": 0.30,
-                "lookat": np.array([-2.48756381e-18, -2.48756381e-18, 7.32824139e-01])
-            },
+            # image_shape=(32, 32, 3),
+            # viewer_params={
+            #     "azimuth": 90,
+            #     "elevation": -27.7,
+            #     "distance": 0.30,
+            #     "lookat": np.array([-2.48756381e-18, -2.48756381e-18, 7.32824139e-01])
+            # },
         )
     else:
         env = suite.make(
@@ -77,6 +80,8 @@ def main():
         for i in range(args.episode_length):
             action = np.random.uniform(-1, 1, env.dof)  # sample random action
             observation, reward, done, info = env.step(action)
+
+            print(observation)
             # if args.render_mode == "human":
             #     print(1 / env.control_freq - (time.time() - t0))
             #     t0 = time.time()

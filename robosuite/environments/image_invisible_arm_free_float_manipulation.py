@@ -1,3 +1,4 @@
+
 import numpy as np
 from robosuite.environments.invisible_arm_free_float_manipulation import (
     InvisibleArmFreeFloatManipulation)
@@ -13,11 +14,11 @@ class InvisibleArmImageFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
         """
         Args:
 
-            image_shape (3-tuple): dimensions of the image observations (width, height, 
+            image_shape (3-tuple): dimensions of the image observations (width, height,
                 depth/channels).
 
             viewer_params (dict): viewer camera settings, including the following keys:
-                1. `azimuth` (float), `elevation` (float), `distance` (float), `lookat` 
+                1. `azimuth` (float), `elevation` (float), `distance` (float), `lookat`
                 (array[float], dim x 1)
         """
 
@@ -25,7 +26,7 @@ class InvisibleArmImageFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
         self.viewer_params = viewer_params
 
         super(InvisibleArmImageFreeFloatManipulation, self).__init__(
-            has_renderer=True,
+            # has_renderer=True,
             has_offscreen_renderer=True,
             use_camera_obs=True, # Include the image in the super obs
             render_visual_mesh=False,
@@ -39,7 +40,12 @@ class InvisibleArmImageFreeFloatManipulation(InvisibleArmFreeFloatManipulation):
         width, height = self.image_shape[:2]
         super_obs = super(InvisibleArmImageFreeFloatManipulation, self)._get_observation(
             image_width=width, image_height=height)
-        return super_obs
+        image = super_obs["image"].reshape(-1)
+        return image
+
+    def reward(self, action):
+        reward, done, info = super(InvisibleArmImageFreeFloatManipulation, self).reward(action)
+        return 0, done, info # take super reward info and return here
 
     def viewer_setup(self): # Pass into params of env.
         self.viewer.cam.azimuth = self.viewer_params["azimuth"]

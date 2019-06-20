@@ -72,17 +72,21 @@ class TableTopTask(Task):
             # Load object
             obj = obj_mjcf.get_collision(name=obj_name, site=True)
 
-            # Allow translation
-            if not self.rotation_only:
+            if self.rotation_only:
+                # Allow rotation/sliding in the "z" axis
+                obj.append(new_joint(name=obj_name + "_slide_z", type="slide", axis="0 0 1"))
+                obj.append(new_joint(name=obj_name + "_hinge_z", type="hinge", axis="0 0 1"))
+            else:
                 obj.append(new_joint(name=obj_name, type="free"))
-                obj.append(new_joint(name=obj_name + "_slide_x", type="slide", axis="1 0 0", range="-0.25 0.25"))
-                obj.append(new_joint(name=obj_name + "_slide_y", type="slide", axis="0 1 0", range="-0.25 0.25"))
-                obj.append(new_joint(name=obj_name + "_hinge_x", type="hinge", axis="1 0 0"))
-                obj.append(new_joint(name=obj_name + "_hinge_y", type="hinge", axis="0 1 0"))
 
-            # Allow rotation/sliding in the "z" axis
-            obj.append(new_joint(name=obj_name + "_slide_z", type="slide", axis="0 0 1"))
-            obj.append(new_joint(name=obj_name + "_hinge_z", type="hinge", axis="0 0 1"))
+            # # Allow translation
+            # if not self.rotation_only:
+            #     obj.append(new_joint(name=obj_name, type="free"))
+            #     obj.append(new_joint(name=obj_name + "_slide_x", type="slide", axis="1 0 0", range="-0.25 0.25"))
+            #     obj.append(new_joint(name=obj_name + "_slide_y", type="slide", axis="0 1 0", range="-0.25 0.25"))
+            #     obj.append(new_joint(name=obj_name + "_hinge_x", type="hinge", axis="1 0 0"))
+            #     obj.append(new_joint(name=obj_name + "_hinge_y", type="hinge", axis="0 1 0"))
+
 
             self.objects.append(obj)
             self.worldbody.append(obj)

@@ -257,7 +257,7 @@ class MujocoEnv(metaclass=EnvMeta):
             # original image is upside-down, so flip it
             return data[::-1, :]
         elif mode == 'human':
-            self._get_viewer(mode).render() 
+            self._get_viewer(mode).render()
 
     def _get_viewer(self, mode):
         self.viewer = self._viewers.get(mode)
@@ -279,7 +279,7 @@ class MujocoEnv(metaclass=EnvMeta):
             if self.sim._render_context_offscreen is None:
                 render_context = MjRenderContextOffscreen(self.sim)
                 self.sim.add_render_context(render_context)
-            
+
             self.viewer_setup()
             self._viewers[mode] = self.viewer
         return self.viewer
